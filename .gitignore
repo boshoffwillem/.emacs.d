@@ -12,3 +12,8 @@ transient/
 # Projectile stuff
 projectile-bookmarks.eld
 projectile.cache
+
+# Magit
+server/
+.#*
+*#
