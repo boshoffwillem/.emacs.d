@@ -1,2 +1,14 @@
 # Backup files
 *~
+recentf
+
+# Package folders
+.cache/
+elpa/
+eshell/
+fonts/
+transient/
+
+# Projectile stuff
+projectile-bookmarks.eld
+projectile.cache
