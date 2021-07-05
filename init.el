@@ -1,3 +1,5 @@
+;; Basic UI Configuration ------------------------------------------------------
+
 ;; Basic window look and functionality
 (setq inhibit-startup-message t)
 (scroll-bar-mode -1) ;; Disable visible scrollbar
@@ -7,17 +9,28 @@
 (menu-bar-mode -1) ;; Disable the menu bar
 (setq visible-bell t) ;; Disable bell sounds
 
-;; Font
-(set-face-attribute 'default nil :font "CaskaydiaCove Nerd Font" :height 90)
-
 ;; Enable line numbers
 (column-number-mode)
 (global-display-line-numbers-mode t)
 ;; Disable line numbers for some modes
 (dolist (mode '(org-mode-hook
-		 term-mode-hook
-		 eshell-mode-hook))
+		term-mode-hook
+		shell-mode-hook
+		eshell-mode-hook))
 	 (add-hook mode (lambda () (display-line-numbers-mode 0))))
+
+;; Font Configuration ----------------------------------------------------------
+
+;; Font
+(set-face-attribute 'default nil :font "CaskaydiaCove Nerd Font" :height 93)
+
+;; Set the fixed pitch face
+(set-face-attribute 'fixed-pitch nil :font "CaskaydiaCove Nerd Font" :height 93)
+
+;; Set the variable pitch face
+(set-face-attribute 'variable-pitch nil :font "Iosevka Nerd Font" :height 100 :weight 'regular)
+
+;; Package Manager Configuration -----------------------------------------------
 
 ;; Initialize package sources
 (require 'package)
@@ -40,6 +53,8 @@
 ;; Log any commands pressed, and their description
 (use-package command-log-mode)
 
+;; Ivy Configuration -----------------------------------------------------------
+
 ;; Fuzzy search
 (use-package swiper)
 
@@ -55,6 +70,12 @@
 	 ("C-x C-f" . counsel-find-file)
 	 :map minibuffer-local-map
 	 ("C-r" . 'counsel-minibuffer-history)))
+
+;; NOTE: The first time you load your configuration on a new machine, you'll
+;; need to run the following command interactively so that mode line icons
+;; display correctly:
+;;
+;; M-x all-the-icons-install-fonts
 
 ;; Cool icons
 (use-package all-the-icons)
@@ -110,6 +131,8 @@
   ([remap describe-command] . helpful-command)
   ([remap describe-key] . helpful-key))
 
+;; Projectile Configuration ----------------------------------------------------
+
 ;; Better projects functionality
 (use-package projectile
   :diminish projectile-mode
@@ -125,23 +148,63 @@
 (use-package counsel-projectile
   :config (counsel-projectile-mode))
 
+;; Magit Configuration ---------------------------------------------------------
+
 ;; Git
 (use-package magit
   :custom
   (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
 
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-safe-themes
-   '("3db307fb06cedec4f2f6dfcbc189ffc26bca9653d7e149643d451b8411a8f039" default))
- '(package-selected-packages
-   '(counsel-projectile projectile helpful counsel doom-themes minions ivy-rich which-key rainbow-delimiters use-package tree-sitter-langs tree-sitter-indent swiper omnisharp kubernetes k8s-mode git doom-modeline dockerfile-mode docker-compose-mode docker-cli docker dashboard command-log-mode)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+;; Org Mode Configuration ------------------------------------------------------
+
+;; Org mode
+(defun wb/org-mode-setup ()
+  (org-indent-mode)
+  (variable-pitch-mode 1)
+  (visual-line-mode 1))
+
+(defun wb/org-font-setup ()
+  ;; Replace list hyphen with dot
+  (font-lock-add-keywords 'org-mode
+                          '(("^ *\\([-]\\) "
+                             (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+
+(dolist (face '((org-level-1 . 1.2)
+                (org-level-2 . 1.1)
+                (org-level-3 . 1.05)
+                (org-level-4 . 1.0)
+                (org-level-5 . 1.1)
+                (org-level-6 . 1.1)
+                (org-level-7 . 1.1)
+                (org-level-8 . 1.1)))
+  (set-face-attribute (car face) nil :font "Iosevka Nerd Font" :weight 'regular :height (cdr face)))
+
+;; Ensure that anything that should be fixed-pitch in Org files appears that way
+(set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
+(set-face-attribute 'org-table nil  :inherit 'fixed-pitch)
+(set-face-attribute 'org-formula nil  :inherit 'fixed-pitch)
+(set-face-attribute 'org-code nil   :inherit '(shadow fixed-pitch))
+(set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
+(set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
+(set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
+(set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch)
+  
+(use-package org
+  :hook (org-mode . wb/org-mode-setup)
+  :config
+  (setq org-ellipsis " ↓")
+  (wb/org-fontt-setup))
+
+(use-package org-bullets
+  :after org
+  :hook (org-mode . org-bullets-mode)
+  :custom
+  (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
+
+(defun wb/org-mode-visual-fill ()
+  (setq visual-fill-column-width 100
+        visual-fill-column-center-text t)
+  (visual-fill-column-mode 1))
+
+(use-package visual-fill-column
+  :hook (org-mode . wb/org-mode-visual-fill))
