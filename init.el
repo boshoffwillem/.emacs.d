@@ -31,13 +31,13 @@
 ;; Font Configuration ----------------------------------------------------------
 
 ;; Font
-(set-face-attribute 'default nil :font "CaskaydiaCove Nerd Font" :height 93)
+(set-face-attribute 'default nil :font "JetBrainsMono Nerd Font Mono" :height 93)
 
 ;; Set the fixed pitch face
-(set-face-attribute 'fixed-pitch nil :font "CaskaydiaCove Nerd Font" :height 93)
+(set-face-attribute 'fixed-pitch nil :font "JetBrainsMono Nerd Font Mono" :height 93)
 
 ;; Set the variable pitch face
-(set-face-attribute 'variable-pitch nil :font "Iosevka Nerd Font" :height 100 :weight 'regular)
+(set-face-attribute 'variable-pitch nil :font "JetBrainsMono Nerd Font" :height 100 :weight 'regular)
 
 ;; Package Manager Configuration -----------------------------------------------
 
@@ -176,7 +176,7 @@
   ;; Replace list hyphen with dot
   (font-lock-add-keywords 'org-mode
                           '(("^ *\\([-]\\) "
-                             (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+                             (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•")))))))
 
 (dolist (face '((org-level-1 . 1.2)
                 (org-level-2 . 1.1)
