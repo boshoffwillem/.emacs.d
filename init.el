@@ -31,13 +31,13 @@
 ;; Font Configuration ----------------------------------------------------------
 
 ;; Font
-(set-face-attribute 'default nil :font "JetBrainsMono Nerd Font Mono" :height 93)
+(set-face-attribute 'default nil :font "JetBrainsMono Nerd Font" :height 93 :weight 'regular)
 
 ;; Set the fixed pitch face
-(set-face-attribute 'fixed-pitch nil :font "JetBrainsMono Nerd Font Mono" :height 93)
+(set-face-attribute 'fixed-pitch nil :font "JetBrainsMono Nerd Font" :height 93 :weight 'regular)
 
 ;; Set the variable pitch face
-(set-face-attribute 'variable-pitch nil :font "JetBrainsMono Nerd Font" :height 100 :weight 'regular)
+(set-face-attribute 'variable-pitch nil :font "Iosevka Nerd Font" :height 100 :weight 'regular)
 
 ;; Package Manager Configuration -----------------------------------------------
 
@@ -176,7 +176,7 @@
   ;; Replace list hyphen with dot
   (font-lock-add-keywords 'org-mode
                           '(("^ *\\([-]\\) "
-                             (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•")))))))
+                             (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
 
 (dolist (face '((org-level-1 . 1.2)
                 (org-level-2 . 1.1)
@@ -196,13 +196,13 @@
 (set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
 (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
 (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
-(set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch)
+(set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch))
   
 (use-package org
   :hook (org-mode . wb/org-mode-setup)
   :config
   (setq org-ellipsis " ↓")
-  (wb/org-fontt-setup))
+  (wb/org-font-setup))
 
 (use-package org-bullets
   :after org
@@ -217,3 +217,16 @@
 
 (use-package visual-fill-column
   :hook (org-mode . wb/org-mode-visual-fill))
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   '(visual-fill-column org-bullets which-key use-package rainbow-delimiters magit helpful doom-themes doom-modeline counsel-projectile command-log-mode)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
