@@ -1,3 +1,12 @@
+;; Include the following code in the emacs main init.el
+;; Do not use `init.el` for `custom-*` code - use `custom-file.el`.
+;;(setq custom-file "~/.emacs.d/custom-file.el")
+
+;; Assuming that the code in custom-file is execute before the code
+;; ahead of this line is not a safe assumption. So load this file
+;; proactively.
+;;(load-file custom-file);
+
 ;; Basic UI Configuration ------------------------------------------------------
 
 ;; Basic window look and functionality
