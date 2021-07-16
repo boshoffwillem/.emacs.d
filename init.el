@@ -202,6 +202,12 @@
   :hook (org-mode . wb/org-mode-setup)
   :config
   (setq org-ellipsis " ↓")
+  (setq org-agenda-start-time-with-log-mode t)
+  (setq org-log-done 'time)
+  (setq org-log-into-drawer t)
+  (setq org-agenda-files
+	'("~/Documents/TODO.org"
+	  "~/Documents/Birthdays.org"))
   (wb/org-font-setup))
 
 (use-package org-bullets
@@ -217,13 +223,43 @@
 
 (use-package visual-fill-column
   :hook (org-mode . wb/org-mode-visual-fill))
+
+;; IDE setup
+
+(use-package flycheck
+  :ensure t
+  :init (global-flycheck-mode))
+
+(use-package lsp-mode
+  :init
+  (setq lsp-keymap-prefix "C-c l")
+  :config (lsp-enable-which-key-integration t)
+  :commands (lsp lsp-deferred))
+
+;; Programming language support -----------------------------------------
+
+(use-package typescript-mode
+  :mode "\\.ts\\'"
+  :hook (typescript-mode . lsp-deferred)
+  :config
+  (setq typescript-indent-level 4))
+
+(setq omnisharp-server-executable-path "C:\\Users\\willem.boshoff\\bin\\omnisharp-win-x86\\OmniSharp.exe")
+(use-package csharp-mode
+  :mode "\\.cs\\'"
+  :hook (csharp-mode . lsp-deferred)
+  :config
+  (setq csharp-indent-level 4))
+
+;; -----------------------------------------
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(visual-fill-column org-bullets which-key use-package rainbow-delimiters magit helpful doom-themes doom-modeline counsel-projectile command-log-mode)))
+   '(typescript-mode company omnisharp dap-mode lsp-treemacs lsp-ivy lsp-ui lsp-mode flycheck visual-fill-column org-bullets magit counsel-projectile projectile helpful which-key rainbow-delimiters doom-modeline doom-themes all-the-icons counsel swiper command-log-mode use-package)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
