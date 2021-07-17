@@ -25,6 +25,7 @@
 (dolist (mode '(org-mode-hook
 		term-mode-hook
 		shell-mode-hook
+		treemacs-mode-hook
 		eshell-mode-hook))
 	 (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
@@ -102,7 +103,7 @@
   ;; Enable custom neotree theme (all-the-icons must be installed!)
   (doom-themes-neotree-config)
   ;; or for treemacs users
-  (setq doom-themes-treemacs-theme "doom-atom") ; use "doom-colors" for less minimal icon theme
+  (setq doom-themes-treemacs-theme "doom-dracula") ; use "doom-colors" for less minimal icon theme
   (doom-themes-treemacs-config)
   ;; Corrects (and improves) org-mode's native fontification.
   (doom-themes-org-config))
@@ -150,8 +151,8 @@
   :bind-keymap
   ("C-c p" . projectile-command-map)
   :init
-  (when (file-directory-p "C:\git")
-    (setq projectile-project-search-path '("C:\git")))
+  (when (file-directory-p "~/git")
+    (setq projectile-project-search-path '("~/git")))
   (setq projectile-switch-project-action #'projectile-dired))
 
 (use-package counsel-projectile
@@ -224,17 +225,31 @@
 (use-package visual-fill-column
   :hook (org-mode . wb/org-mode-visual-fill))
 
-;; IDE setup
-
+;;IDE setup
 (use-package flycheck
   :ensure t
   :init (global-flycheck-mode))
+
+(defun wb/lsp-mode-setup ()
+  (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
+  (lsp-headerline-breadcrumb-mode))
 
 (use-package lsp-mode
   :init
   (setq lsp-keymap-prefix "C-c l")
   :config (lsp-enable-which-key-integration t)
-  :commands (lsp lsp-deferred))
+  :commands (lsp lsp-deferred)
+  :hook (lsp-mode . wb/lsp-mode-setup))
+
+(use-package lsp-ui
+  :hook (lsp-mode . lsp-ui-mode)
+  :custom
+  (lsp-ui-doc-position 'bottom))
+
+(use-package lsp-treemacs
+  :after lsp)
+
+(use-package lsp-ivy)
 
 ;; Programming language support -----------------------------------------
 
@@ -242,15 +257,29 @@
   :mode "\\.ts\\'"
   :hook (typescript-mode . lsp-deferred)
   :config
-  (setq typescript-indent-level 4))
+  (setq typescript-indent-level 2))
 
-(setq omnisharp-server-executable-path "C:\\Users\\willem.boshoff\\bin\\omnisharp-win-x86\\OmniSharp.exe")
+;;(setq omnisharp-server-executable-path "~/bin/omnisharp-linux-x86/omnisharp/OmniSharp.exe")
 (use-package csharp-mode
   :mode "\\.cs\\'"
   :hook (csharp-mode . lsp-deferred)
   :config
   (setq csharp-indent-level 4))
 
+;; Code completion
+(use-package company
+  :after lsp-mode
+  :hook (lsp-mode . company-mode)
+  :bind (:map company-active-map
+         ("<tab>" . company-complete-selection))
+        (:map lsp-mode-map
+         ("<tab>" . company-indent-or-complete-common))
+  :custom
+  (company-minimum-prefix-length 1)
+  (company-idle-delay 0.0))
+
+(use-package company-box
+  :hook (company-mode . company-box-mode))
 ;; -----------------------------------------
 
 (custom-set-variables
@@ -258,6 +287,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(delete-selection-mode nil)
  '(package-selected-packages
    '(typescript-mode company omnisharp dap-mode lsp-treemacs lsp-ivy lsp-ui lsp-mode flycheck visual-fill-column org-bullets magit counsel-projectile projectile helpful which-key rainbow-delimiters doom-modeline doom-themes all-the-icons counsel swiper command-log-mode use-package)))
 (custom-set-faces
