@@ -162,7 +162,10 @@
 
 (use-package company
   :init
-  (add-hook 'after-init-hook 'global-company-mode))
+  (add-hook 'after-init-hook 'global-company-mode)
+  :config
+  (setq company-minimum-prefix-length 1
+	company-idle-delay 0.0))
 
 (use-package org
   :config
@@ -222,26 +225,33 @@
 (use-package dockerfile-mode
   :mode (("Dockerfile\\'" . dockerfile-mode)))
 
-;; Javascript
-(use-package rjsx-mode
-  :mode "\\.js\\'")
+(use-package web-mode
+  :mode (
+	 ("\\.css\\'" . web-mode)
+	 ("\\.scss\\'" . web-mode)
+	 ("\\.js\\'" . web-mode)
+	 ("\\.jsx\\'" .  web-mode)
+	 ("\\.json\\'" . web-mode)
+	 ("\\.ts\\'" . web-mode)
+	 ("\\.tsx\\'" . web-mode)
+	 ("\\.html\\'" . web-mode)
+	 ("\\.cshtml\\'" . web-mode)
+	 ("\\.xml\\'" . web-mode))
+  :commands web-mode
+  :config
+  (setq web-mode-markup-indent-offset 2)
+  (setq web-mode-code-indent-offset 2)
+  (setq web-mode-css-indent-offset 2))
 
-;; Typescript
-(defun setup-tide-mode()
-  (interactive)
-  (tide-setup)
-  (flycheck-mode +1)
-  (setq flycheck-check-syntax-automatically '(save-mode-enabled))
-  (tide-hl-identifier-mode +1)
-  (company-mode +1))
+(use-package prettier-js)
 
-(use-package tide
-  :after (rjsx-mode company flycheck)
-  :hook (rjsx-mode . setup-tide-mode))
+(add-hook 'web-mode-hook #'(lambda ()
+			     (enable-minor-mode
+			      '("\\.jsx?\\'" . prettier-js-mode))
+			     (enable-minor-mode
+			      '("\\.tsx?\\'" . prettier-js-mode))))
 
-(use-package prettier-js
-  :after (rjsx-mode)
-  :hook (rjsx-mode . prettier-js-mode))
+;;(use-package json-mode)
 
 ;; Markdown support
 (use-package markdown-mode
@@ -250,6 +260,40 @@
 	 ("\\.md\\'" . markdown-mode)
 	 ("\\.markdown\\'" . markdown-mode))
   :init (setq markdown-command "multimarkdown"))
+
+(use-package lsp-mode
+  :init
+  ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
+  (setq lsp-keymap-prefix "C-c l"
+	lsp-log-io nil
+	lsp-restart 'auto-restart)
+  :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
+	 (csharp-mode . lsp-deferred)
+	 (dockerfile-mode . lsp-deferred)
+	 (markdown-mode .lsp-deferred)
+	 (web-mode . lsp-deferred)
+	 (lsp-mode . lsp-enable-which-key-integration))
+  :commands (lsp lsp-deferred)
+  :config
+  (setq gc-cons-threshold 100000000
+	read-process-output-max (* 1024 1024)) ;; 1mb
+  )
+
+;; optionally
+(use-package lsp-ui
+  :commands lsp-ui-mode
+  :config
+  (setq lsp-ui-sideline-show-diagnostics t
+	lsp-ui-sideline-show-hover t
+	lsp-ui-sideline-show-code-actions t))
+
+(use-package helm-lsp :commands helm-lsp-workspace-symbol)
+
+(use-package lsp-treemacs :commands lsp-treemacs-errors-list)
+
+;; optionally if you want to use debugger
+;;(use-package dap-mode)
+;; (use-package dap-LANGUAGE) to load the dap adapter for your language
 
 ;; Code snippets
 (use-package yasnippet
