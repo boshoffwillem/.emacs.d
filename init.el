@@ -221,6 +221,28 @@
 ;; Dockerfile support
 (use-package dockerfile-mode
   :mode (("Dockerfile\\'" . dockerfile-mode)))
+
+;; Javascript
+(use-package rjsx-mode
+  :mode "\\.js\\'")
+
+;; Typescript
+(defun setup-tide-mode()
+  (interactive)
+  (tide-setup)
+  (flycheck-mode +1)
+  (setq flycheck-check-syntax-automatically '(save-mode-enabled))
+  (tide-hl-identifier-mode +1)
+  (company-mode +1))
+
+(use-package tide
+  :after (rjsx-mode company flycheck)
+  :hook (rjsx-mode . setup-tide-mode))
+
+(use-package prettier-js
+  :after (rjsx-mode)
+  :hook (rjsx-mode . prettier-js-mode))
+
 ;; Markdown support
 (use-package markdown-mode
   :commands (markdown-mode gfm-mode)
@@ -228,21 +250,6 @@
 	 ("\\.md\\'" . markdown-mode)
 	 ("\\.markdown\\'" . markdown-mode))
   :init (setq markdown-command "multimarkdown"))
-
-(use-package web-mode)
-(add-to-list 'auto-mode-alist '("\\.as[cp]x\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.css\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.scss\\'" . web-mode))
-(setq web-mode-engines-alist
-      '(("csharp"  . "\\.as[cp]x\\.")))
-(defun my-web-mode-hook ()
-  "Hooks for Web mode."
-  (setq web-mode-markup-indent-offset 4)
-  (setq web-mode-css-indent-offset 4)
-  (setq web-mode-code-indent-offset 4)
-  )
-(add-hook 'web-mode-hook  'my-web-mode-hook)
 
 ;; Code snippets
 (use-package yasnippet

@@ -2,7 +2,12 @@
 ;;; This format is meant to be slightly human-readable;
 ;;; nevertheless, you probably don't want to edit it.
 ;;; -*- End Of Bookmark File Format Version Stamp -*-
-(("Emacs config"
+(("Work.org"
+ (filename . "~/git/Work.org")
+ (front-context-string . "* DONE [[Https:/")
+ (rear-context-string)
+ (position . 1))
+("Emacs config"
  (filename . "~/.emacs.d/init.org")
  (front-context-string . "** Cool modeline")
  (rear-context-string . "))\n   #+END_SRC\n")
