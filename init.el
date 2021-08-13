@@ -88,7 +88,7 @@
   ;; Enable custom neotree theme (all-the-icons must be installed!)
   (doom-themes-neotree-config)
   ;; or for treemacs users
-  (setq doom-themes-treemacs-theme "doom-dracula") ; use "doom-colors" for less minimal icon theme
+  (setq doom-themes-treemacs-theme "doom-atom") ; use "doom-colors" for less minimal icon theme
   (doom-themes-treemacs-config)
   ;; Corrects (and improves) org-mode's native fontification.
   (doom-themes-org-config))
@@ -214,7 +214,6 @@
 ;; C# support
 (use-package csharp-mode)
 (add-hook 'csharp-mode-hook 'imenu-add-menubar-index)
-(add-hook 'csharp-mode-hook 'flymake-mode)
 
 ;; DotNet support
 (use-package dotnet)
@@ -227,6 +226,8 @@
 
 (use-package web-mode
   :mode (
+	 ("\\.[agj]sp\\'" . web-mode)
+	 ("\\.as[cp]x\\'" . web-mode)
 	 ("\\.css\\'" . web-mode)
 	 ("\\.scss\\'" . web-mode)
 	 ("\\.js\\'" . web-mode)
@@ -234,13 +235,16 @@
 	 ("\\.json\\'" . web-mode)
 	 ("\\.ts\\'" . web-mode)
 	 ("\\.tsx\\'" . web-mode)
+	 ("\\.phtml\\'" . web-mode)
+	 ("\\.tpl\\.php\\'" . web-mode)
 	 ("\\.html\\'" . web-mode)
 	 ("\\.cshtml\\'" . web-mode)
+	 ("\\.djhtml\\'" . web-mode)
 	 ("\\.xml\\'" . web-mode))
   :commands web-mode
   :config
   (setq web-mode-markup-indent-offset 2)
-  (setq web-mode-code-indent-offset 2)
+  (setq web-mode-code-indent-offset 4)
   (setq web-mode-css-indent-offset 2))
 
 (use-package prettier-js)
@@ -250,8 +254,6 @@
 			      '("\\.jsx?\\'" . prettier-js-mode))
 			     (enable-minor-mode
 			      '("\\.tsx?\\'" . prettier-js-mode))))
-
-;;(use-package json-mode)
 
 ;; Markdown support
 (use-package markdown-mode
@@ -277,6 +279,7 @@
   :config
   (setq gc-cons-threshold 100000000
 	read-process-output-max (* 1024 1024)) ;; 1mb
+  (global-set-key (kbd "M-RET") 'lsp-execute-code-action)
   )
 
 ;; optionally
@@ -285,7 +288,13 @@
   :config
   (setq lsp-ui-sideline-show-diagnostics t
 	lsp-ui-sideline-show-hover t
-	lsp-ui-sideline-show-code-actions t))
+	lsp-ui-sideline-show-code-actions nil
+	lsp-ui-sideline-update-mode 'point
+	lsp-ui-doc-enable t
+	lsp-ui-doc-position 'at-point
+	lsp-ui-doc-delay 0.1
+	lsp-ui-doc-show-with-cursor t
+	lsp-ui-doc-show-with-mouse t))
 
 (use-package helm-lsp :commands helm-lsp-workspace-symbol)
 
