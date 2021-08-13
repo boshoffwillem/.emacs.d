@@ -56,7 +56,7 @@
 ;; Set the fixed pitch face
 (set-face-attribute 'fixed-pitch nil :font "JetBrainsMono Nerd Font" :height 95 :weight 'regular)
 ;; Set the variable pitch face
-(set-face-attribute 'variable-pitch nil :font "Iosevka Nerd Font" :height 110 :weight 'regular)
+(set-face-attribute 'variable-pitch nil :font "Cantarell" :height 120 :weight 'regular)
 
 (setq bookmark-default-file "~/.emacs.d/bookmarks")
 
@@ -68,6 +68,9 @@
 ;; M-x all-the-icons-install-fonts
 ;; Cool icons
 (use-package all-the-icons)
+
+(use-package all-the-icons-dired
+:hook (dired-mode . all-the-icons-dired-mode))
 
 (use-package paren
   :config
@@ -167,14 +170,56 @@
   (setq company-minimum-prefix-length 1
 	company-idle-delay 0.0))
 
+(defun efs/org-font-setup ()
+  ;; Set faces for heading levels
+  (dolist (face '((org-level-1 . 1.2)
+		  (org-level-2 . 1.1)
+		  (org-level-3 . 1.05)
+		  (org-level-4 . 1.0)
+		  (org-level-5 . 1.1)
+		  (org-level-6 . 1.1)
+		  (org-level-7 . 1.1)
+		  (org-level-8 . 1.1)))
+    (set-face-attribute (car face) nil :font "Cantarell" :weight 'regular :height (cdr face)))
+  ;; Ensure that anything that should be fixed-pitch in Org files appears that way
+  (set-face-attribute 'org-block nil    :foreground nil :inherit 'fixed-pitch)
+  (set-face-attribute 'org-table nil    :inherit 'fixed-pitch)
+  (set-face-attribute 'org-formula nil  :inherit 'fixed-pitch)
+  (set-face-attribute 'org-code nil     :inherit '(shadow fixed-pitch))
+  (set-face-attribute 'org-table nil    :inherit '(shadow fixed-pitch))
+  (set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
+  (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
+  (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
+  (set-face-attribute 'org-checkbox nil  :inherit 'fixed-pitch)
+  (set-face-attribute 'line-number nil :inherit 'fixed-pitch)
+  (set-face-attribute 'line-number-current-line nil :inherit 'fixed-pitch))
+
+(defun efs/org-mode-setup ()
+  (org-indent-mode)
+  (variable-pitch-mode 1)
+  (visual-line-mode 1))
+
 (use-package org
+  :hook (org-mode . efs/org-mode-setup)
   :config
+  (setq org-todo-keywords
+	'((sequence "TODO(t)" "BUSY(b)" "|" "DONE(d!)")))
   (setq org-support-shift-select t
-	org-src-tab-acts-natively t))
+	org-src-tab-acts-natively t)
+  (efs/org-font-setup))
 
 (use-package org-bullets
-  :config
-  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+  :hook (org-mode . org-bullets-mode)
+  :custom
+  (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
+
+(defun efs/org-mode-visual-fill ()
+  (setq visual-fill-column-width 100
+	visual-fill-column-center-text t)
+  (visual-fill-column-mode 1))
+
+(use-package visual-fill-column
+  :hook (org-mode . efs/org-mode-visual-fill))
 
 (use-package magit)
 
