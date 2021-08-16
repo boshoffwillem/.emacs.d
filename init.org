@@ -283,6 +283,14 @@ Ivy
     (company-prescient-mode 1))
   
 #+end_src
+** Multiple cursors
+#+begin_src emacs-lisp
+  (use-package multiple-cursors
+    :bind (
+           ("C-S-c C-S-c" . mc/edit-lines)
+           ))
+#+end_src
+
 * Org Mode
 *** Font setup
 #+begin_src emacs-lisp
@@ -327,9 +335,9 @@ Ivy
     :hook (org-mode . efs/org-mode-setup)
     :config
     (setq org-todo-keywords
-	  '((sequence "TODO(t)" "BUSY(b)" "|" "DONE(d!)")))
+          '((sequence "TODO(t)" "BUSY(b)" "|" "DONE(d!)")))
     (setq org-support-shift-select t
-	  org-src-tab-acts-natively t)
+          org-src-tab-acts-natively t)
     (efs/org-font-setup))
 #+end_src
 
@@ -394,44 +402,25 @@ Ivy
     :after treemacs projectile)
 #+end_src
 
-** Syntax checker
-Flycheck will require certain programs to be installed, depending on the language you use,
-and that those programs are added to you PATH.
+** Programming language support
+There are three aspects to supporting a programming language in emacs.
+Firstly, you need to add a major mode for your particular language.
+Secondly, add syntax support for your language.
+Thirdly, add IDE support (intellisense, etc.) for your language.
 
-#+begin_src emacs-lisp
-  (use-package flycheck
-    :init
-    ;;(setq flycheck-markdown-markdownlint-cli-executable "markdownlint")
-    (global-flycheck-mode))
-#+end_src
+This config supports the following languages:
+- [ ] C#/F#/DotNet
+- [ ] CSS/SCSS/SASS/LESS
+- [ ] Dockerfile
+- [ ] HTML
+- [ ] Javascript/Typescript
+- [ ] Json
+- [ ] Markdown
+- [X] XML
+- [ ] YAML
 
-*** Language requirements
-**** Dockerfile
-[[https://github.com/hadolint/hadolint][Hadolint]] must be installed on your PATH.
-Download the binaries and install.
-**** Javascript
-[[https://eslint.org/docs/user-guide/getting-started][ESLint]] must be installed on your PATH.
-Install with:
-#+begin_src bash
-  npm install eslint --global
-#+end_src
-
-**** Json
-[[https://github.com/zaach/jsonlint][JsonLint]] must be installed on your PATH.
-Install with:
-#+begin_src bash
-  npm install jsonlint --global
-#+end_src
-
-**** Markdown
-[[https://github.com/igorshubovych/markdownlint-cli][Markdownlint]] must be installed on your PATH
-Install with:
-#+begin_src bash
-  npm install -g markdownlint-cli
-#+end_src
-
-** Programming languages
-*** DotNet environment
+*** Major mode
+****  C#/F#/DotNet
 #+begin_src emacs-lisp
   ;; C# support
   (use-package csharp-mode)
@@ -443,59 +432,106 @@ Install with:
   (add-hook 'fsharp-mode-hook 'dotnet-mode)
 #+end_src
 
-*** Docker environment
+****  CSS/SCSS/SASS/LESS
+****  Dockerfile
 #+begin_src emacs-lisp
   ;; Dockerfile support
   (use-package dockerfile-mode
-    :mode (("Dockerfile\\'" . dockerfile-mode)))
-#+end_src
-
-*** Web support (HTML, CSS, JS, JSX, TS, TSX)
-#+begin_src emacs-lisp
-  (use-package web-mode
     :mode (
-	   ("\\.[agj]sp\\'" . web-mode)
-	   ("\\.as[cp]x\\'" . web-mode)
-	   ("\\.css\\'" . web-mode)
-	   ("\\.scss\\'" . web-mode)
-	   ("\\.js\\'" . web-mode)
-	   ("\\.jsx\\'" .  web-mode)
-	   ("\\.json\\'" . web-mode)
-	   ("\\.ts\\'" . web-mode)
-	   ("\\.tsx\\'" . web-mode)
-	   ("\\.phtml\\'" . web-mode)
-	   ("\\.tpl\\.php\\'" . web-mode)
-	   ("\\.html\\'" . web-mode)
-	   ("\\.cshtml\\'" . web-mode)
-	   ("\\.djhtml\\'" . web-mode)
-	   ("\\.xml\\'" . web-mode))
-    :commands web-mode
-    :config
-    (setq web-mode-markup-indent-offset 2)
-    (setq web-mode-code-indent-offset 4)
-    (setq web-mode-css-indent-offset 2))
-  
-  (use-package prettier-js)
-  
-  (add-hook 'web-mode-hook #'(lambda ()
-			       (enable-minor-mode
-				'("\\.jsx?\\'" . prettier-js-mode))
-			       (enable-minor-mode
-				'("\\.tsx?\\'" . prettier-js-mode))))
+           ("Dockerfile\\'" . dockerfile-mode)
+           ))
 #+end_src
 
-*** Markdown environment
+****  HTML
+****  Javascript/Typescript
+****  Json
+****  Markdown
 #+begin_src emacs-lisp
   ;; Markdown support
   (use-package markdown-mode
     :commands (markdown-mode gfm-mode)
-    :mode (("README\\.md\\'" . gfm-mode)
-	   ("\\.md\\'" . markdown-mode)
-	   ("\\.markdown\\'" . markdown-mode))
+    :mode (
+           ("README\\.md\\'" . gfm-mode)
+           ("\\.md\\'" . markdown-mode)
+           ("\\.markdown\\'" . markdown-mode)
+           )
     :init (setq markdown-command "multimarkdown"))
 #+end_src
 
-** IDE features
+****  XML
+#+begin_src emacs-lisp
+  (use-package nxml
+    :mode(
+          ("\\.xml\\'" . nxml-mode)
+          ))
+#+end_src
+****  YAML
+
+*** Syntax checker
+
+Flycheck will require certain programs to be installed, depending on the language you use,
+and that those programs are added to you PATH.
+
+#+begin_src emacs-lisp
+  (use-package flycheck
+    :init
+    ;;(setq flycheck-markdown-markdownlint-cli-executable "markdownlint")
+    (global-flycheck-mode))
+#+end_src
+
+**** Language specific binaries required
+***** C#/F#/DotNet
+***** CSS/SCSS/SASS/LESS
+[[https://stylelint.io/][Stylelint]] must be installed on your PATH.
+Install with:
+
+#+begin_src bash
+  npm install --global stylelint stylelint-config-standard
+#+end_src
+
+***** Dockerfile
+[[https://github.com/hadolint/hadolint][Hadolint]] must be installed on your PATH.
+Download the binaries and install.
+
+***** HTML
+[[https://www.html-tidy.org/][HTML-Tidy]]  should be installed on your PATH.
+
+***** Javascript/Typescript
+[[https://eslint.org/docs/user-guide/getting-started][ESLint]] must be installed on your PATH.
+Install with:
+
+#+begin_src bash
+  npm install eslint --global
+#+end_src
+
+***** Json
+[[https://github.com/zaach/jsonlint][JsonLint]] must be installed on your PATH.
+Install with:
+
+#+begin_src bash
+  npm install jsonlint --global
+#+end_src
+
+***** Markdown
+[[https://github.com/igorshubovych/markdownlint-cli][Markdownlint]] must be installed on your PATH
+Install with:
+
+#+begin_src bash
+  npm install -g markdownlint-cli
+#+end_src
+
+***** XML
+[[http://xmlstar.sourceforge.net/][XMLStarlet]] must be installed on your PATH.
+
+***** YAML
+[[https://github.com/nodeca/js-yaml][JS-YAML]] must be installed on your PATH.
+Install with:
+
+#+begin_src bash
+  npm install js-yaml --global
+#+end_src
+
+*** IDE support
 #+begin_src emacs-lisp
   (use-package lsp-mode
     :init
@@ -508,7 +544,9 @@ Install with:
            (dockerfile-mode . lsp-deferred)
            (markdown-mode .lsp-deferred)
            (web-mode . lsp-deferred)
-           (lsp-mode . lsp-enable-which-key-integration))
+           (nxml-mode . lsp-deferred)
+           (lsp-mode . lsp-enable-which-key-integration)
+           )
     :commands (lsp lsp-deferred)
     :config
     (setq gc-cons-threshold 100000000
@@ -542,6 +580,42 @@ Install with:
   ;; (use-package dap-LANGUAGE) to load the dap adapter for your language
   
 #+end_src
+
+** Programming languages
+*** Web support (HTML, CSS, JS, JSX, TS, TSX)
+#+begin_src emacs-lisp
+  (use-package web-mode
+    :mode (
+           ("\\.[agj]sp\\'" . web-mode)
+           ("\\.as[cp]x\\'" . web-mode)
+           ("\\.css\\'" . web-mode)
+           ("\\.scss\\'" . web-mode)
+           ("\\.js\\'" . web-mode)
+           ("\\.jsx\\'" .  web-mode)
+           ("\\.json\\'" . web-mode)
+           ("\\.ts\\'" . web-mode)
+           ("\\.tsx\\'" . web-mode)
+           ("\\.phtml\\'" . web-mode)
+           ("\\.tpl\\.php\\'" . web-mode)
+           ("\\.html\\'" . web-mode)
+           ("\\.cshtml\\'" . web-mode)
+           ("\\.djhtml\\'" . web-mode)
+           )
+    :commands web-mode
+    :config
+    (setq web-mode-markup-indent-offset 2)
+    (setq web-mode-code-indent-offset 4)
+    (setq web-mode-css-indent-offset 2))
+  
+  (use-package prettier-js)
+  
+  (add-hook 'web-mode-hook #'(lambda ()
+                               (enable-minor-mode
+                                '("\\.jsx?\\'" . prettier-js-mode))
+                               (enable-minor-mode
+                                '("\\.tsx?\\'" . prettier-js-mode))))
+#+end_src
+
 
 ** Programming language snippets
 #+begin_src emacs-lisp

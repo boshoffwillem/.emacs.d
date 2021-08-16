@@ -204,6 +204,11 @@
   :config
   (company-prescient-mode 1))
 
+(use-package multiple-cursors
+  :bind (
+         ("C-S-c C-S-c" . mc/edit-lines)
+         ))
+
 (defun efs/org-font-setup ()
   ;; Replace list hyphen with dot
   (font-lock-add-keywords 'org-mode
@@ -242,9 +247,9 @@
   :hook (org-mode . efs/org-mode-setup)
   :config
   (setq org-todo-keywords
-	'((sequence "TODO(t)" "BUSY(b)" "|" "DONE(d!)")))
+        '((sequence "TODO(t)" "BUSY(b)" "|" "DONE(d!)")))
   (setq org-support-shift-select t
-	org-src-tab-acts-natively t)
+        org-src-tab-acts-natively t)
   (efs/org-font-setup))
 
 (use-package org-bullets
@@ -296,11 +301,6 @@
 (use-package treemacs-projectile
   :after treemacs projectile)
 
-(use-package flycheck
-  :init
-  ;;(setq flycheck-markdown-markdownlint-cli-executable "markdownlint")
-  (global-flycheck-mode))
-
 ;; C# support
 (use-package csharp-mode)
 (add-hook 'csharp-mode-hook 'imenu-add-menubar-index)
@@ -312,46 +312,29 @@
 
 ;; Dockerfile support
 (use-package dockerfile-mode
-  :mode (("Dockerfile\\'" . dockerfile-mode)))
-
-(use-package web-mode
   :mode (
-	 ("\\.[agj]sp\\'" . web-mode)
-	 ("\\.as[cp]x\\'" . web-mode)
-	 ("\\.css\\'" . web-mode)
-	 ("\\.scss\\'" . web-mode)
-	 ("\\.js\\'" . web-mode)
-	 ("\\.jsx\\'" .  web-mode)
-	 ("\\.json\\'" . web-mode)
-	 ("\\.ts\\'" . web-mode)
-	 ("\\.tsx\\'" . web-mode)
-	 ("\\.phtml\\'" . web-mode)
-	 ("\\.tpl\\.php\\'" . web-mode)
-	 ("\\.html\\'" . web-mode)
-	 ("\\.cshtml\\'" . web-mode)
-	 ("\\.djhtml\\'" . web-mode)
-	 ("\\.xml\\'" . web-mode))
-  :commands web-mode
-  :config
-  (setq web-mode-markup-indent-offset 2)
-  (setq web-mode-code-indent-offset 4)
-  (setq web-mode-css-indent-offset 2))
-
-(use-package prettier-js)
-
-(add-hook 'web-mode-hook #'(lambda ()
-			     (enable-minor-mode
-			      '("\\.jsx?\\'" . prettier-js-mode))
-			     (enable-minor-mode
-			      '("\\.tsx?\\'" . prettier-js-mode))))
+         ("Dockerfile\\'" . dockerfile-mode)
+         ))
 
 ;; Markdown support
 (use-package markdown-mode
   :commands (markdown-mode gfm-mode)
-  :mode (("README\\.md\\'" . gfm-mode)
-	 ("\\.md\\'" . markdown-mode)
-	 ("\\.markdown\\'" . markdown-mode))
+  :mode (
+         ("README\\.md\\'" . gfm-mode)
+         ("\\.md\\'" . markdown-mode)
+         ("\\.markdown\\'" . markdown-mode)
+         )
   :init (setq markdown-command "multimarkdown"))
+
+(use-package nxml
+  :mode(
+        ("\\.xml\\'" . nxml-mode)
+        ))
+
+(use-package flycheck
+  :init
+  ;;(setq flycheck-markdown-markdownlint-cli-executable "markdownlint")
+  (global-flycheck-mode))
 
 (use-package lsp-mode
   :init
@@ -364,7 +347,9 @@
          (dockerfile-mode . lsp-deferred)
          (markdown-mode .lsp-deferred)
          (web-mode . lsp-deferred)
-         (lsp-mode . lsp-enable-which-key-integration))
+         (nxml-mode . lsp-deferred)
+         (lsp-mode . lsp-enable-which-key-integration)
+         )
   :commands (lsp lsp-deferred)
   :config
   (setq gc-cons-threshold 100000000
@@ -396,6 +381,37 @@
 ;; optionally if you want to use debugger
 ;;(use-package dap-mode)
 ;; (use-package dap-LANGUAGE) to load the dap adapter for your language
+
+(use-package web-mode
+  :mode (
+         ("\\.[agj]sp\\'" . web-mode)
+         ("\\.as[cp]x\\'" . web-mode)
+         ("\\.css\\'" . web-mode)
+         ("\\.scss\\'" . web-mode)
+         ("\\.js\\'" . web-mode)
+         ("\\.jsx\\'" .  web-mode)
+         ("\\.json\\'" . web-mode)
+         ("\\.ts\\'" . web-mode)
+         ("\\.tsx\\'" . web-mode)
+         ("\\.phtml\\'" . web-mode)
+         ("\\.tpl\\.php\\'" . web-mode)
+         ("\\.html\\'" . web-mode)
+         ("\\.cshtml\\'" . web-mode)
+         ("\\.djhtml\\'" . web-mode)
+         )
+  :commands web-mode
+  :config
+  (setq web-mode-markup-indent-offset 2)
+  (setq web-mode-code-indent-offset 4)
+  (setq web-mode-css-indent-offset 2))
+
+(use-package prettier-js)
+
+(add-hook 'web-mode-hook #'(lambda ()
+                             (enable-minor-mode
+                              '("\\.jsx?\\'" . prettier-js-mode))
+                             (enable-minor-mode
+                              '("\\.tsx?\\'" . prettier-js-mode))))
 
 ;; Code snippets
 (use-package yasnippet

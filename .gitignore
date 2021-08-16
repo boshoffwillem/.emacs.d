@@ -9,6 +9,7 @@ eshell/
 fonts/
 transient/
 straight/
+url/
 
 # Projectile stuff
 projectile-bookmarks.eld
@@ -21,3 +22,6 @@ server/
 
 # LSP stuff
 .lsp*
+
+# Multicursor stuff
+.mc-lists.el
