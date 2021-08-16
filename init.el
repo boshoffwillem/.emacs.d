@@ -140,23 +140,52 @@
   ([remap describe-command] . helpful-command)
   ([remap describe-key] . helpful-key))
 
-(use-package helm
-  :init
-  (require 'helm-config)
-  (setq helm-split-window-in-side-p t
-	helm-move-to-line-cycle-in-source t)
+;; (use-package helm
+;;   :init
+;;   (require 'helm-config)
+;;   (setq helm-split-window-in-side-p t
+;; 	helm-move-to-line-cycle-in-source t)
+;;   :config
+;;   (helm-mode 1) ;; Most of Emacs prompts become helm-enabled
+;;   (helm-autoresize-mode 1) ;; Helm resizes according to the number of candidates
+;;   (global-set-key (kbd "C-x b") 'helm-buffers-list) ;; List buffers ( Emacs way )
+;;   (global-set-key (kbd "C-x r b") 'helm-bookmarks) ;; Bookmarks menu
+;;   (global-set-key (kbd "C-x C-f") 'helm-find-files) ;; Finding files with Helm
+;;   (global-set-key (kbd "M-c") 'helm-calcul-expression) ;; Use Helm for calculations
+;;   (global-set-key (kbd "C-s") 'helm-occur)  ;; Replaces the default isearch keybinding
+;;   (global-set-key (kbd "C-h a") 'helm-apropos)  ;; Helmized apropos interface
+;;   (global-set-key (kbd "M-x") 'helm-M-x)  ;; Improved M-x menu
+;;   (global-set-key (kbd "M-y") 'helm-show-kill-ring)  ;; Show kill ring, pick something to paste
+;;   )
+
+(use-package swiper
+  :bind(("C-s" . swiper-isearch)))
+
+(use-package counsel
+  :bind(("M-x" . counsel-M-x)
+        ("C-x C-f" . counsel-find-file)
+        ("M-y" . counsel-yank-pop)
+        :map minibuffer-local-map
+        ("C-r" . counsel-minibuffer-history)))
+
+(use-package ivy
+  :bind (("C-x b" . ivy-switch-buffer)
+         :map ivy-minibuffer-map
+         ("TAB" . ivy-alt-done))
   :config
-  (helm-mode 1) ;; Most of Emacs prompts become helm-enabled
-  (helm-autoresize-mode 1) ;; Helm resizes according to the number of candidates
-  (global-set-key (kbd "C-x b") 'helm-buffers-list) ;; List buffers ( Emacs way )
-  (global-set-key (kbd "C-x r b") 'helm-bookmarks) ;; Bookmarks menu
-  (global-set-key (kbd "C-x C-f") 'helm-find-files) ;; Finding files with Helm
-  (global-set-key (kbd "M-c") 'helm-calcul-expression) ;; Use Helm for calculations
-  (global-set-key (kbd "C-s") 'helm-occur)  ;; Replaces the default isearch keybinding
-  (global-set-key (kbd "C-h a") 'helm-apropos)  ;; Helmized apropos interface
-  (global-set-key (kbd "M-x") 'helm-M-x)  ;; Improved M-x menu
-  (global-set-key (kbd "M-y") 'helm-show-kill-ring)  ;; Show kill ring, pick something to paste
-  )
+  (setq ivy-use-virtual-buffers t
+        ivy-count-format "(%d/%d) ")
+  (ivy-mode 1))
+
+(use-package ivy-rich
+  :after ivy
+  :init
+  (ivy-rich-mode 1))
+
+(use-package ivy-prescient
+  :after counsel
+  :config
+  (ivy-prescient-mode 1))
 
 (use-package expand-region
   :bind
@@ -168,7 +197,12 @@
   (add-hook 'after-init-hook 'global-company-mode)
   :config
   (setq company-minimum-prefix-length 1
-	company-idle-delay 0.0))
+        company-idle-delay 0.0))
+
+(use-package company-prescient
+  :after company
+  :config
+  (company-prescient-mode 1))
 
 (defun efs/org-font-setup ()
   ;; Set faces for heading levels
@@ -231,13 +265,19 @@
   (setq projectile-enable-caching t)
   (setq projectile-indexing-method 'alien)
   (setq projectile-globally-ignored-file-suffixes
-	'("#" "~" ".swp" ".o" ".so" ".exe" ".dll" ".elc" ".pyc" ".jar"))
+        '("#" "~" ".swp" ".o" ".so" ".exe" ".dll" ".elc" ".pyc" ".jar"))
   (setq projectile-globally-ignored-directories
-	'(".git" "node_modules" "__pycache__" ".vs"))
-  (setq projectile-globally-ignored-files '("TAGS" "tags" ".DS_Store")))
+        '(".git" "node_modules" "__pycache__" ".vs"))
+  (setq projectile-globally-ignored-files '("TAGS" "tags" ".DS_Store"))
+  :custom
+  (projectile-completion-system 'ivy))
 
-(use-package helm-projectile
-  :config (helm-projectile-on))
+;;(use-package helm-projectile
+  ;;:config (helm-projectile-on))
+
+(use-package counsel-projectile
+  :after projectile
+  :config (counsel-projectile-mode))
 
 ;; Project structure tree view
 (use-package treemacs
@@ -312,18 +352,18 @@
   :init
   ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
   (setq lsp-keymap-prefix "C-c l"
-	lsp-log-io nil
-	lsp-restart 'auto-restart)
+        lsp-log-io nil
+        lsp-restart 'auto-restart)
   :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
-	 (csharp-mode . lsp-deferred)
-	 (dockerfile-mode . lsp-deferred)
-	 (markdown-mode .lsp-deferred)
-	 (web-mode . lsp-deferred)
-	 (lsp-mode . lsp-enable-which-key-integration))
+         (csharp-mode . lsp-deferred)
+         (dockerfile-mode . lsp-deferred)
+         (markdown-mode .lsp-deferred)
+         (web-mode . lsp-deferred)
+         (lsp-mode . lsp-enable-which-key-integration))
   :commands (lsp lsp-deferred)
   :config
   (setq gc-cons-threshold 100000000
-	read-process-output-max (* 1024 1024)) ;; 1mb
+        read-process-output-max (* 1024 1024)) ;; 1mb
   (global-set-key (kbd "M-RET") 'lsp-execute-code-action)
   )
 
@@ -332,16 +372,19 @@
   :commands lsp-ui-mode
   :config
   (setq lsp-ui-sideline-show-diagnostics t
-	lsp-ui-sideline-show-hover t
-	lsp-ui-sideline-show-code-actions nil
-	lsp-ui-sideline-update-mode 'point
-	lsp-ui-doc-enable t
-	lsp-ui-doc-position 'at-point
-	lsp-ui-doc-delay 0.1
-	lsp-ui-doc-show-with-cursor t
-	lsp-ui-doc-show-with-mouse t))
+        lsp-ui-sideline-show-hover t
+        lsp-ui-sideline-show-code-actions nil
+        lsp-ui-sideline-update-mode 'point
+        lsp-ui-doc-enable t
+        lsp-ui-doc-position 'at-point
+        lsp-ui-doc-delay 0.1
+        lsp-ui-doc-show-with-cursor t
+        lsp-ui-doc-show-with-mouse t))
 
-(use-package helm-lsp :commands helm-lsp-workspace-symbol)
+;;(use-package helm-lsp :commands helm-lsp-workspace-symbol)
+
+(use-package lsp-ivy
+  :after lsp)
 
 (use-package lsp-treemacs :commands lsp-treemacs-errors-list)
 
