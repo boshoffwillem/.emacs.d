@@ -1,105 +1,163 @@
 * Use Straight Package Manager
 #+begin_src emacs-lisp
+  
   (setq package-enable-at-startup nil)
-  (defvar bootstrap-version)
-  (let ((bootstrap-file
-	 (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
-	(bootstrap-version 5))
-    (unless (file-exists-p bootstrap-file)
-      (with-current-buffer
-	  (url-retrieve-synchronously
-	   "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
-	   'silent 'inhibit-cookies)
-	(goto-char (point-max))
-	(eval-print-last-sexp)))
-    (load bootstrap-file nil 'nomessage))
-  (straight-use-package 'use-package)
-  (cl-dolist (mode '(emacs-lisp-mode lisp-interaction-mode))
-    (font-lock-add-keywords
-     mode
-     '(("(\\<\\(straight-use-package\\)\\>" 1 font-lock-keyword-face))))
-  (setq straight-use-package-by-default 1)
+    (defvar bootstrap-version)
+    (let ((bootstrap-file
+           (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+          (bootstrap-version 5))
+      (unless (file-exists-p bootstrap-file)
+        (with-current-buffer
+            (url-retrieve-synchronously
+             "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+             'silent 'inhibit-cookies)
+          (goto-char (point-max))
+          (eval-print-last-sexp)))
+      (load bootstrap-file nil 'nomessage))
+    (straight-use-package 'use-package)
+    (cl-dolist (mode '(emacs-lisp-mode lisp-interaction-mode))
+      (font-lock-add-keywords
+       mode
+       '(("(\\<\\(straight-use-package\\)\\>" 1 font-lock-keyword-face))))
+    (setq straight-use-package-by-default 1)
+  
 #+end_src
+
 * Base Emacs Improvements
 ** Disable startup message
 #+begin_src emacs-lisp
+  
   (setq inhibit-startup-message t) ;; Disable the startup message.
+  
 #+end_src
+
 ** Disable scrollbar
 #+begin_src emacs-lisp
+  
   (scroll-bar-mode -1) ;; Disable visible scrollbar.
+  
 #+end_src
+
 ** Disable tooltips
 #+begin_src emacs-lisp
+  
   (tooltip-mode -1) ;; Disable tooltips.
+  
 #+end_src
+
 ** Disable toolbar
 #+begin_src emacs-lisp
+  
   (tool-bar-mode -1) ;; Disable the toolbar.
+  
 #+end_src
+
 ** Give text some margin
 #+begin_src emacs-lisp
+  
   (set-fringe-mode 30) ;; Give some breathing room.
+  
 #+end_src
+
 ** Disable menu bar
 #+begin_src emacs-lisp
+  
   (menu-bar-mode -1) ;; Disable the menu bar.
+  
 #+end_src
+
 ** Disable bell sounds
 #+begin_src emacs-lisp
+  
   (setq visible-bell t) ;; Disable bell sounds.
+  
 #+end_src
+
 ** Replace highlighted text instead of inserting
 #+begin_src emacs-lisp
+  
   (delete-selection-mode 1) ;; Will replace highlighted text instead of inserting.
+  
 #+end_src
+
 ** Highlight current line
 #+begin_src emacs-lisp
+  
   (global-hl-line-mode +1) ;; Highlight the current line.
+  
 #+end_src
+
 ** Change directory for Emacs backups
 #+begin_src emacs-lisp
+  
   (setq backup-directory-alist '(("." . "~/.emacs-backups"))) ;; Saves emacs backup files to a different directory.
+  
 #+end_src
+
 ** Create shortcut for duplicating a line
 #+begin_src emacs-lisp
-  (global-set-key "\C-c\C-d" "\C-a\C- \C-n\M-w\C-y") ;; Shortcut to duplicate a line.
+  
+  (defun duplicate-line()
+    (interactive)
+    (move-beginning-of-line 1)
+    (kill-line)
+    (yank)
+    (open-line 1)
+    (next-line 1)
+    (yank))
+  (global-set-key (kbd "C-S-d") 'duplicate-line)
+  
 #+end_src
+
 ** Enable line numbers
 #+begin_src emacs-lisp
+  
   ;; Enable line numbers
   (column-number-mode)
   (global-display-line-numbers-mode t)
   ;; Disable line numbers for some modes
   (dolist (mode '(org-mode-hook
-		  term-mode-hook
-		  shell-mode-hook
-		  treemacs-mode-hook
-		  eshell-mode-hook))
+                  term-mode-hook
+                  shell-mode-hook
+                  treemacs-mode-hook
+                  eshell-mode-hook))
     (add-hook mode (lambda () (display-line-numbers-mode 0))))
+  
 #+end_src
+
 ** Use custom font
 #+begin_src emacs-lisp
+  
   ;; Font
   (set-face-attribute 'default nil :font "JetBrainsMono Nerd Font" :height 95 :weight 'regular)
   ;; Set the fixed pitch face
   (set-face-attribute 'fixed-pitch nil :font "JetBrainsMono Nerd Font" :height 95 :weight 'regular)
   ;; Set the variable pitch face
   (set-face-attribute 'variable-pitch nil :font "Cantarell" :height 120 :weight 'regular)
+  
 #+end_src
+
 ** Bookmarks
 Set deafult bookmarks file.
+
 #+begin_src emacs-lisp
+  
   (setq bookmark-default-file "~/.emacs.d/bookmarks")
+  
 #+end_src
 
 Save bookmarks when modified
+
 #+begin_src emacs-lisp
+  
   (setq bookmark-save-flag 1)
+  
 #+end_src
+
 * UI Improvements
 ** Cool icons
 #+begin_src emacs-lisp
+  
   ;; NOTE: The first time you load your configuration on a new machine, you'll
   ;; need to run the following command interactively so that mode line icons
   ;; display correctly:
@@ -109,26 +167,35 @@ Save bookmarks when modified
   
   (use-package all-the-icons-dired
   :hook (dired-mode . all-the-icons-dired-mode))
+  
 #+end_src
+
 ** Highlight matching brackets
 #+begin_src emacs-lisp
+  
   (use-package paren
     :config
     (set-face-attribute 'show-paren-match-expression nil :background "#363e4a")
     (show-paren-mode 1))
+  
 #+end_src
+
 ** Give different colors to different bracket sets
 #+begin_src emacs-lisp
+  
   (use-package rainbow-delimiters
     :hook (prog-mode . rainbow-delimiters-mode))
+  
 #+end_src
+
 ** Custom theme
 #+begin_src emacs-lisp
+  
   (use-package doom-themes
     :config
     ;; Global settings (defaults)
     (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
-	  doom-themes-enable-italic t) ; if nil, italics is universally disabled
+          doom-themes-enable-italic t) ; if nil, italics is universally disabled
     (load-theme 'doom-dracula t)
     ;; Enable flashing mode-line on errors
     (doom-themes-visual-bell-config)
@@ -139,41 +206,59 @@ Save bookmarks when modified
     (doom-themes-treemacs-config)
     ;; Corrects (and improves) org-mode's native fontification.
     (doom-themes-org-config))
+  
 #+end_src
+
 ** Cool modeline
 #+begin_src emacs-lisp
+  
   (use-package doom-modeline
     :hook (after-init . doom-modeline-mode))
+  
 #+end_src
+
 ** Create a dashboard
 #+begin_src emacs-lisp
+  
   (use-package dashboard
     :init
     (progn
       (setq dashboard-items '((recents . 5)
-			      (projects . 5)
-			      (bookmarks . 5)
-			      (agenda . 5)))
+                              (projects . 5)
+                              (bookmarks . 5)
+                              (agenda . 5)))
       (setq dashboard-set-file-icons t)
       (setq dashboard-set-heading-icons t)
       )
     :config
     (dashboard-setup-startup-hook))
+  
 #+end_src
+
 ** Show buffers as tabs
 #+begin_src emacs-lisp
+  
   (use-package centaur-tabs
     :config
     (setq centaur-tabs-set-bar 'under
-	  centaur-tabs-set-icons t
-	  centaur-tabs-gray-out-icons 'buffer
-	  centaur-tabs-height 32
-	  centaur-tabs-set-modified-marker t
-	  centaur-tabs-modified-marker "*")
+          centaur-tabs-set-icons t
+          centaur-tabs-gray-out-icons 'buffer
+          centaur-tabs-height 32
+          centaur-tabs-set-modified-marker t
+          centaur-tabs-modified-marker "*")
     (centaur-tabs-headline-match)
     (centaur-tabs-change-fonts "JetBrainsMono Nerd Font" 100)
     (centaur-tabs-mode t))
+  
 #+end_src
+
+** Better completion styles
+#+begin_src emacs-lisp
+  
+  (setq completion-styles '(flex))
+  
+#+end_src
+
 * Enhance Emacs funtionality
 ** Show available remaining key strokes
 #+begin_src emacs-lisp
@@ -200,63 +285,75 @@ Save bookmarks when modified
     ([remap describe-key] . helpful-key))
   
 #+end_src
+
 ** Better everything in Emacs
 Helm
+
 #+begin_src emacs-lisp
   
-  ;; (use-package helm
-  ;;   :init
-  ;;   (require 'helm-config)
-  ;;   (setq helm-split-window-in-side-p t
-  ;; 	helm-move-to-line-cycle-in-source t)
-  ;;   :config
-  ;;   (helm-mode 1) ;; Most of Emacs prompts become helm-enabled
-  ;;   (helm-autoresize-mode 1) ;; Helm resizes according to the number of candidates
-  ;;   (global-set-key (kbd "C-x b") 'helm-buffers-list) ;; List buffers ( Emacs way )
-  ;;   (global-set-key (kbd "C-x r b") 'helm-bookmarks) ;; Bookmarks menu
-  ;;   (global-set-key (kbd "C-x C-f") 'helm-find-files) ;; Finding files with Helm
-  ;;   (global-set-key (kbd "M-c") 'helm-calcul-expression) ;; Use Helm for calculations
-  ;;   (global-set-key (kbd "C-s") 'helm-occur)  ;; Replaces the default isearch keybinding
-  ;;   (global-set-key (kbd "C-h a") 'helm-apropos)  ;; Helmized apropos interface
-  ;;   (global-set-key (kbd "M-x") 'helm-M-x)  ;; Improved M-x menu
-  ;;   (global-set-key (kbd "M-y") 'helm-show-kill-ring)  ;; Show kill ring, pick something to paste
-  ;;   )
+  (use-package helm
+    :init
+    (require 'helm-config)
+    :bind(
+          ("C-x b" . helm-mini)
+          ("C-x r b" . helm-bookmarks)
+          ("C-x C-f" . helm-find-files)
+          ("C-s" . helm-occur)
+          ("M-x" . helm-M-x)
+          ("M-y" . helm-show-kill-ring)
+          ("C-c h" . helm-command-prefix)
+          )
+    :config
+    (helm-mode 1) ;; Most of Emacs prompts become helm-enabled
+    (helm-autoresize-mode t) ;; Helm resizes according to the number of candidates
+    (global-unset-key (kbd "C-x c")) ;; Unset deafult helm-command-prefix
+    (add-to-list 'helm-sources-using-default-as-input 'helm-source-man-pages)
+    (setq helm-M-x-fuzzy-match t
+          helm-buffers-fuzzy-matching t
+          helm-recentf-fuzzy-match t
+          helm-semantic-fuzzy-match t
+          helm-imenu-fuzzy-match t
+          helm-locate-fuzzy-match t
+          helm-lisp-fuzzy-completion t
+          helm-mode-fuzzy-match t
+          helm-completion-in-region-fuzzy-match t)
+    )
   
 #+end_src
 
 Ivy
 #+begin_src emacs-lisp
   
-  (use-package swiper
-    :bind(("C-s" . swiper-isearch)))
+  ;; (use-package swiper
+  ;;   :bind(("C-s" . swiper-isearch)))
   
-  (use-package counsel
-    :bind(("M-x" . counsel-M-x)
-          ("C-x C-f" . counsel-find-file)
-          ("M-y" . counsel-yank-pop)
-          :map minibuffer-local-map
-          ("C-r" . counsel-minibuffer-history)))
+  ;; (use-package counsel
+  ;;   :bind(("M-x" . counsel-M-x)
+  ;;         ("C-x C-f" . counsel-find-file)
+  ;;         ("M-y" . counsel-yank-pop)
+  ;;         :map minibuffer-local-map
+  ;;         ("C-r" . counsel-minibuffer-history)))
   
-  (use-package ivy
-    :bind (("C-x b" . ivy-switch-buffer)
-           :map ivy-minibuffer-map
-           ("TAB" . ivy-alt-done))
-    :config
-    (setq ivy-use-virtual-buffers t
-          ivy-count-format "(%d/%d) ")
-    (ivy-mode 1))
+  ;; (use-package ivy
+  ;;   :bind (("C-x b" . ivy-switch-buffer)
+  ;;          :map ivy-minibuffer-map
+  ;;          ("TAB" . ivy-alt-done))
+  ;;   :config
+  ;;   (setq ivy-use-virtual-buffers t
+  ;;         ivy-count-format "(%d/%d) ")
+  ;;   (ivy-mode 1))
   
-  (use-package ivy-rich
-    :after ivy
-    :init
-    (ivy-rich-mode 1))
+  ;; (use-package ivy-rich
+  ;;   :after ivy
+  ;;   :init
+  ;;   (ivy-rich-mode 1))
   
-  (use-package ivy-prescient
-    :after counsel
-    :config
-    (ivy-prescient-mode 1))
+  ;; (use-package ivy-prescient
+  ;;   :after counsel
+  ;;   :config
+  ;;   (ivy-prescient-mode 1))
   
-#+End_src
+#+end_src
 
 ** Better text selection
 #+begin_src emacs-lisp
@@ -267,6 +364,7 @@ Ivy
     ("C--" . er/contract-region))
   
 #+end_src
+
 ** Basic text completion
 #+begin_src emacs-lisp
   
@@ -283,17 +381,47 @@ Ivy
     (company-prescient-mode 1))
   
 #+end_src
+
 ** Multiple cursors
 #+begin_src emacs-lisp
+  
   (use-package multiple-cursors
     :bind (
            ("C-S-c C-S-c" . mc/edit-lines)
            ))
+  
+#+end_src
+
+* Emacs Shell
+#+begin_src emacs-lisp
+  
+    (defun efs/configure-eshell ()
+      ;; Save command history when commands are entered
+      (add-hook 'eshell-pre-command-hook 'eshell-save-some-history)
+      ;; Truncate buffer for performance
+      (add-to-list 'eshell-output-filter-functions 'eshell-truncate-buffer)
+      (setq eshell-history-size         10000
+            eshell-buffer-maximum-lines 10000
+            eshell-hist-ignoredups t
+            eshell-scroll-to-bottom-on-input t))
+  
+  (use-package eshell-git-prompt
+    :after eshell)
+  
+  (use-package eshell
+    :hook (eshell-first-time-mode . efs/configure-eshell)
+    :config
+    (with-eval-after-load 'esh-opt
+      (setq eshell-destroy-buffer-when-process-dies t)
+      (setq eshell-visual-commands '("htop" "vim")))
+    (eshell-git-prompt-use-theme 'powerline))
+  
 #+end_src
 
 * Org Mode
 *** Font setup
 #+begin_src emacs-lisp
+  
   (defun efs/org-font-setup ()
     ;; Replace list hyphen with dot
     (font-lock-add-keywords 'org-mode
@@ -322,10 +450,12 @@ Ivy
     (set-face-attribute 'org-checkbox nil  :inherit 'fixed-pitch)
     (set-face-attribute 'line-number nil :inherit 'fixed-pitch)
     (set-face-attribute 'line-number-current-line nil :inherit 'fixed-pitch))
+  
 #+end_src
 
 *** Org setup
 #+begin_src emacs-lisp
+  
   (defun efs/org-mode-setup ()
     (org-indent-mode)
     (variable-pitch-mode 1)
@@ -339,10 +469,12 @@ Ivy
     (setq org-support-shift-select t
           org-src-tab-acts-natively t)
     (efs/org-font-setup))
+  
 #+end_src
 
 *** Visual changes
 #+begin_src emacs-lisp
+  
   (use-package org-bullets
     :hook (org-mode . org-bullets-mode)
     :custom
@@ -350,20 +482,25 @@ Ivy
   
   (defun efs/org-mode-visual-fill ()
     (setq visual-fill-column-width 100
-	  visual-fill-column-center-text t)
+          visual-fill-column-center-text t)
     (visual-fill-column-mode 1))
   
   (use-package visual-fill-column
     :hook (org-mode . efs/org-mode-visual-fill))
+  
 #+end_src
+
 * IDE Features
 ** Git support
 #+begin_src emacs-lisp
+  
   (use-package magit)
+  
 #+end_src
 
 ** Project support
 #+begin_src emacs-lisp
+  
   ;; Project functionality
   (use-package projectile
     :config
@@ -377,29 +514,38 @@ Ivy
           '(".git" "node_modules" "__pycache__" ".vs"))
     (setq projectile-globally-ignored-files '("TAGS" "tags" ".DS_Store"))
     :custom
-    (projectile-completion-system 'ivy))
+    ;;(projectile-completion-system 'ivy)
+    (projectile-completion-system 'helm)
+    )
   
-  ;;(use-package helm-projectile
-    ;;:config (helm-projectile-on))
-  
-  (use-package counsel-projectile
+  (use-package helm-projectile
     :after projectile
-    :config (counsel-projectile-mode))
+    :config
+    (helm-projectile-on)
+    (setq projectile-switch-project-action 'helm-projectile)
+    )
+  
+  ;; (use-package counsel-projectile
+  ;;   :after projectile
+  ;;   :config (counsel-projectile-mode))
+  
 #+end_src
 
 ** View project file structure
 #+begin_src emacs-lisp
+  
   ;; Project structure tree view
   (use-package treemacs
     :bind
     (:map global-map
-	  ([f8] . treemacs)
-	  ("C-<f8>" . treemacs-select-window))
+          ([f8] . treemacs)
+          ("C-<f8>" . treemacs-select-window))
     :config
     (setq treemacs-is-never-other-window t))
   
   (use-package treemacs-projectile
     :after treemacs projectile)
+  
 #+end_src
 
 ** Programming language support
@@ -409,44 +555,104 @@ Secondly, add syntax support for your language.
 Thirdly, add IDE support (intellisense, etc.) for your language.
 
 This config supports the following languages:
-- [ ] C#/F#/DotNet
-- [ ] CSS/SCSS/SASS/LESS
-- [ ] Dockerfile
-- [ ] HTML
-- [ ] Javascript/Typescript
-- [ ] Json
-- [ ] Markdown
+- [X] C#/F#/DotNet
+- [X] CSS/SCSS/SASS/LESS
+- [X] Dockerfile
+- [X] HTML
+- [X] Javascript/Typescript
+- [X] Json
+- [X] Markdown
 - [X] XML
-- [ ] YAML
+- [X] YAML
 
 *** Major mode
-****  C#/F#/DotNet
+**** DONE C#/F#/DotNet
+- State "DONE"       from "BUSY"       [2021-08-17 Tue 09:24]
 #+begin_src emacs-lisp
+  
   ;; C# support
-  (use-package csharp-mode)
+  (use-package csharp-mode
+    :mode(
+          ("\\.cs\\'" . csharp-mode)
+          ))
   (add-hook 'csharp-mode-hook 'imenu-add-menubar-index)
+  
+  ;; F# support
+  (use-package fsharp-mode
+    :mode(
+          ("\\.fs\\'" . fsharp-mode)
+          ))
+  (add-hook 'fsharp-mode-hook 'imenu-add-menubar-index)
   
   ;; DotNet support
   (use-package dotnet)
   (add-hook 'csharp-mode-hook 'dotnet-mode)
   (add-hook 'fsharp-mode-hook 'dotnet-mode)
+  
 #+end_src
 
-****  CSS/SCSS/SASS/LESS
-****  Dockerfile
+**** DONE CSS/SCSS/SASS/LESS
+- State "DONE"       from "BUSY"       [2021-08-17 Tue 15:55]
 #+begin_src emacs-lisp
+  
+  (use-package css-mode
+    :mode (
+           ("\\.css\\.scss\\.sass\\.less\\'" . css-mode)
+           ))
+  
+#+end_src
+
+**** DONE Dockerfile
+- State "DONE"       from "BUSY"       [2021-08-17 Tue 09:32]
+#+begin_src emacs-lisp
+  
   ;; Dockerfile support
   (use-package dockerfile-mode
     :mode (
            ("Dockerfile\\'" . dockerfile-mode)
            ))
+  
 #+end_src
 
-****  HTML
-****  Javascript/Typescript
-****  Json
-****  Markdown
+**** DONE HTML
+- State "DONE"       from "BUSY"       [2021-08-17 Tue 15:54]
 #+begin_src emacs-lisp
+  
+  (use-package mhtml-mode
+    :mode (
+           ("\\.html\\'" . mhtml-mode)
+           ))
+  
+#+end_src
+**** DONE Javascript/Typescript
+- State "DONE"       from "BUSY"       [2021-08-17 Tue 15:59]
+#+begin_src emacs-lisp
+  
+  (use-package js
+    :mode (
+           ("\\.js\\'" . js-mode)
+           ))
+  
+  (use-package typescript-mode
+    :mode (
+           ("\\.ts\\'" . typescript-mode)
+           ))
+  
+#+end_src
+**** DONE Json
+- State "DONE"       from "BUSY"       [2021-08-17 Tue 16:06]
+#+begin_src emacs-lisp
+  
+  (use-package json-mode
+    :mode (
+           ("\\.json\\'" . json-mode)
+           ))
+  
+#+end_src
+**** DONE Markdown
+- State "DONE"       from "BUSY"       [2021-08-17 Tue 09:45]
+#+begin_src emacs-lisp
+  
   ;; Markdown support
   (use-package markdown-mode
     :commands (markdown-mode gfm-mode)
@@ -456,16 +662,30 @@ This config supports the following languages:
            ("\\.markdown\\'" . markdown-mode)
            )
     :init (setq markdown-command "multimarkdown"))
+  
 #+end_src
 
-****  XML
+**** DONE XML
+- State "DONE"       from "BUSY"       [2021-08-17 Tue 09:11]
 #+begin_src emacs-lisp
+  
   (use-package nxml
     :mode(
           ("\\.xml\\'" . nxml-mode)
           ))
+  
 #+end_src
-****  YAML
+
+**** DONE YAML
+- State "DONE"       from "BUSY"       [2021-08-17 Tue 09:31]
+#+begin_src emacs-lisp
+  
+  (use-package yaml-mode
+    :mode (
+           ("\\.yml\\.yaml\\'" . yaml-mode)
+           ))
+  
+#+end_src
 
 *** Syntax checker
 
@@ -473,84 +693,126 @@ Flycheck will require certain programs to be installed, depending on the languag
 and that those programs are added to you PATH.
 
 #+begin_src emacs-lisp
+  
   (use-package flycheck
     :init
     ;;(setq flycheck-markdown-markdownlint-cli-executable "markdownlint")
     (global-flycheck-mode))
+  
 #+end_src
 
 **** Language specific binaries required
-***** C#/F#/DotNet
-***** CSS/SCSS/SASS/LESS
+***** DONE C#/F#/DotNet
+- State "DONE"       from "BUSY"       [2021-08-17 Tue 09:12]
+***** DONE CSS/SCSS/SASS/LESS
+- State "DONE"       from "BUSY"       [2021-08-17 Tue 15:47]
 [[https://stylelint.io/][Stylelint]] must be installed on your PATH.
 Install with:
 
 #+begin_src bash
+  
   npm install --global stylelint stylelint-config-standard
+  
 #+end_src
 
-***** Dockerfile
+***** DONE Dockerfile
+- State "DONE"       from "BUSY"       [2021-08-17 Tue 09:32]
 [[https://github.com/hadolint/hadolint][Hadolint]] must be installed on your PATH.
 Download the binaries and install.
 
-***** HTML
+***** DONE HTML
+- State "DONE"       from "BUSY"       [2021-08-17 Tue 15:54]
 [[https://www.html-tidy.org/][HTML-Tidy]]  should be installed on your PATH.
 
-***** Javascript/Typescript
+***** DONE Javascript/Typescript
+- State "DONE"       from "BUSY"       [2021-08-17 Tue 15:59]
 [[https://eslint.org/docs/user-guide/getting-started][ESLint]] must be installed on your PATH.
 Install with:
 
 #+begin_src bash
+  
   npm install eslint --global
+  
 #+end_src
 
-***** Json
+***** DONE Json
+- State "DONE"       from "BUSY"       [2021-08-17 Tue 16:06]
 [[https://github.com/zaach/jsonlint][JsonLint]] must be installed on your PATH.
 Install with:
 
 #+begin_src bash
+  
   npm install jsonlint --global
+  
 #+end_src
 
-***** Markdown
+***** DONE Markdown
+- State "DONE"       from "BUSY"       [2021-08-17 Tue 09:45]
 [[https://github.com/igorshubovych/markdownlint-cli][Markdownlint]] must be installed on your PATH
 Install with:
 
 #+begin_src bash
+  
   npm install -g markdownlint-cli
+  
 #+end_src
 
-***** XML
+***** DONE XML
+- State "DONE"       from "BUSY"       [2021-08-17 Tue 09:13]
 [[http://xmlstar.sourceforge.net/][XMLStarlet]] must be installed on your PATH.
 
-***** YAML
+***** DONE YAML
+- State "DONE"       from "BUSY"       [2021-08-17 Tue 09:24]
 [[https://github.com/nodeca/js-yaml][JS-YAML]] must be installed on your PATH.
 Install with:
 
 #+begin_src bash
+  
   npm install js-yaml --global
+  
 #+end_src
 
 *** IDE support
 #+begin_src emacs-lisp
+  
   (use-package lsp-mode
     :init
     ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
     (setq lsp-keymap-prefix "C-c l"
           lsp-log-io nil
-          lsp-restart 'auto-restart)
-    :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
-           (csharp-mode . lsp-deferred)
-           (dockerfile-mode . lsp-deferred)
-           (markdown-mode .lsp-deferred)
-           (web-mode . lsp-deferred)
-           (nxml-mode . lsp-deferred)
+          lsp-restart 'auto-restart
+          lsp-diagnostic-clean-after-change t
+          lsp-modeline-diagnostics-enable t
+          lsp-modeline-diagnostics-scope :workspace
+          lsp-lens-enable t
+          lsp-lens-place-position 'above-line
+          lsp-modeline-code-actions-mode t
+          lsp-modeline-code-actions-segments '(count icon name)
+          lsp-headerline-breadcrumb-mode t
+          lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
+    :bind (
+           ([f12] . lsp-find-definition)
+           ("C-<f12>" . lsp-find-references)
+           )
+    :hook (
+           (csharp-mode . lsp-deferred) ;; Automatically installs language server -- csharp
+           (fsharp-mode . lsp-deferred) ;; Automatically installs language server -- fsac
+           (dockerfile-mode . lsp-deferred) ;; Automatically installs language server -- dockerfile-ls
+           (markdown .lsp-deferred) ;; Does not automatically install language server
+           (css-mode . lsp-deferred) ;; Automatically installs language server -- css-ls
+           (mhtml-mode . lsp-deferred) ;; Automatically installs language server -- html-ls
+           (js-mode . lsp-deferred) ;; Does not automatically install labguage server
+           (json-mode . lsp-deferred) ;; Automatically install language server -- json-ls
+           (typescript-mode . lsp-deferred) ;; Does not automatically install labguage server
+           (nxml-mode . lsp-deferred) ;; Automatically installs language server -- xmlls
+           (yaml-mode . lsp-deferred) ;; Automatically installs language server -- yamlls
            (lsp-mode . lsp-enable-which-key-integration)
            )
     :commands (lsp lsp-deferred)
     :config
-    (setq gc-cons-threshold 100000000
-          read-process-output-max (* 1024 1024)) ;; 1mb
+    (setq gc-cons-threshold (* 100000000 10)
+          read-process-output-max (* 1024 1024)
+          lsp-idle-delay 0.500) ;; 1mb
     (global-set-key (kbd "M-RET") 'lsp-execute-code-action)
     )
   
@@ -558,8 +820,8 @@ Install with:
   (use-package lsp-ui
     :commands lsp-ui-mode
     :config
-    (setq lsp-ui-sideline-show-diagnostics t
-          lsp-ui-sideline-show-hover t
+    (setq lsp-ui-sideline-show-diagnostics nil
+          lsp-ui-sideline-show-hover nil
           lsp-ui-sideline-show-code-actions nil
           lsp-ui-sideline-update-mode 'point
           lsp-ui-doc-enable t
@@ -568,10 +830,12 @@ Install with:
           lsp-ui-doc-show-with-cursor t
           lsp-ui-doc-show-with-mouse t))
   
-  ;;(use-package helm-lsp :commands helm-lsp-workspace-symbol)
+  (use-package helm-lsp
+    :after lsp
+    :commands helm-lsp-workspace-symbol)
   
-  (use-package lsp-ivy
-    :after lsp)
+  ;;(use-package lsp-ivy
+    ;;:after lsp)
   
   (use-package lsp-treemacs :commands lsp-treemacs-errors-list)
   
@@ -581,47 +845,28 @@ Install with:
   
 #+end_src
 
-** Programming languages
-*** Web support (HTML, CSS, JS, JSX, TS, TSX)
-#+begin_src emacs-lisp
-  (use-package web-mode
-    :mode (
-           ("\\.[agj]sp\\'" . web-mode)
-           ("\\.as[cp]x\\'" . web-mode)
-           ("\\.css\\'" . web-mode)
-           ("\\.scss\\'" . web-mode)
-           ("\\.js\\'" . web-mode)
-           ("\\.jsx\\'" .  web-mode)
-           ("\\.json\\'" . web-mode)
-           ("\\.ts\\'" . web-mode)
-           ("\\.tsx\\'" . web-mode)
-           ("\\.phtml\\'" . web-mode)
-           ("\\.tpl\\.php\\'" . web-mode)
-           ("\\.html\\'" . web-mode)
-           ("\\.cshtml\\'" . web-mode)
-           ("\\.djhtml\\'" . web-mode)
-           )
-    :commands web-mode
-    :config
-    (setq web-mode-markup-indent-offset 2)
-    (setq web-mode-code-indent-offset 4)
-    (setq web-mode-css-indent-offset 2))
+**** Manual language servers to install
+***** Markdown
+#+begin_src bash
   
-  (use-package prettier-js)
+  npm i -g unified-language-server
   
-  (add-hook 'web-mode-hook #'(lambda ()
-                               (enable-minor-mode
-                                '("\\.jsx?\\'" . prettier-js-mode))
-                               (enable-minor-mode
-                                '("\\.tsx?\\'" . prettier-js-mode))))
 #+end_src
-
+***** Javascript/Typescript
+#+begin_src bash
+  
+  npm i -g typescript-language-server &&
+      npm i -g typescript
+  
+#+end_src
 
 ** Programming language snippets
 #+begin_src emacs-lisp
+  
   ;; Code snippets
   (use-package yasnippet
     :config
     (yas-global-mode 1))
   (add-hook 'prog-mode-hook 'yas-minor-mode)
+  
 #+end_src

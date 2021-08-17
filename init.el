@@ -1,22 +1,22 @@
 (setq package-enable-at-startup nil)
-(defvar bootstrap-version)
-(let ((bootstrap-file
-       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
-      (bootstrap-version 5))
-  (unless (file-exists-p bootstrap-file)
-    (with-current-buffer
-	(url-retrieve-synchronously
-	 "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
-	 'silent 'inhibit-cookies)
-      (goto-char (point-max))
-      (eval-print-last-sexp)))
-  (load bootstrap-file nil 'nomessage))
-(straight-use-package 'use-package)
-(cl-dolist (mode '(emacs-lisp-mode lisp-interaction-mode))
-  (font-lock-add-keywords
-   mode
-   '(("(\\<\\(straight-use-package\\)\\>" 1 font-lock-keyword-face))))
-(setq straight-use-package-by-default 1)
+  (defvar bootstrap-version)
+  (let ((bootstrap-file
+         (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+        (bootstrap-version 5))
+    (unless (file-exists-p bootstrap-file)
+      (with-current-buffer
+          (url-retrieve-synchronously
+           "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+           'silent 'inhibit-cookies)
+        (goto-char (point-max))
+        (eval-print-last-sexp)))
+    (load bootstrap-file nil 'nomessage))
+  (straight-use-package 'use-package)
+  (cl-dolist (mode '(emacs-lisp-mode lisp-interaction-mode))
+    (font-lock-add-keywords
+     mode
+     '(("(\\<\\(straight-use-package\\)\\>" 1 font-lock-keyword-face))))
+  (setq straight-use-package-by-default 1)
 
 (setq inhibit-startup-message t) ;; Disable the startup message.
 
@@ -38,17 +38,25 @@
 
 (setq backup-directory-alist '(("." . "~/.emacs-backups"))) ;; Saves emacs backup files to a different directory.
 
-(global-set-key "\C-c\C-d" "\C-a\C- \C-n\M-w\C-y") ;; Shortcut to duplicate a line.
+(defun duplicate-line()
+  (interactive)
+  (move-beginning-of-line 1)
+  (kill-line)
+  (yank)
+  (open-line 1)
+  (next-line 1)
+  (yank))
+(global-set-key (kbd "C-S-d") 'duplicate-line)
 
 ;; Enable line numbers
 (column-number-mode)
 (global-display-line-numbers-mode t)
 ;; Disable line numbers for some modes
 (dolist (mode '(org-mode-hook
-		term-mode-hook
-		shell-mode-hook
-		treemacs-mode-hook
-		eshell-mode-hook))
+                term-mode-hook
+                shell-mode-hook
+                treemacs-mode-hook
+                eshell-mode-hook))
   (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
 ;; Font
@@ -84,7 +92,7 @@
   :config
   ;; Global settings (defaults)
   (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
-	doom-themes-enable-italic t) ; if nil, italics is universally disabled
+        doom-themes-enable-italic t) ; if nil, italics is universally disabled
   (load-theme 'doom-dracula t)
   ;; Enable flashing mode-line on errors
   (doom-themes-visual-bell-config)
@@ -103,9 +111,9 @@
   :init
   (progn
     (setq dashboard-items '((recents . 5)
-			    (projects . 5)
-			    (bookmarks . 5)
-			    (agenda . 5)))
+                            (projects . 5)
+                            (bookmarks . 5)
+                            (agenda . 5)))
     (setq dashboard-set-file-icons t)
     (setq dashboard-set-heading-icons t)
     )
@@ -115,14 +123,16 @@
 (use-package centaur-tabs
   :config
   (setq centaur-tabs-set-bar 'under
-	centaur-tabs-set-icons t
-	centaur-tabs-gray-out-icons 'buffer
-	centaur-tabs-height 32
-	centaur-tabs-set-modified-marker t
-	centaur-tabs-modified-marker "*")
+        centaur-tabs-set-icons t
+        centaur-tabs-gray-out-icons 'buffer
+        centaur-tabs-height 32
+        centaur-tabs-set-modified-marker t
+        centaur-tabs-modified-marker "*")
   (centaur-tabs-headline-match)
   (centaur-tabs-change-fonts "JetBrainsMono Nerd Font" 100)
   (centaur-tabs-mode t))
+
+(setq completion-styles '(flex))
 
 ;; Show available key-strokes for currently typed commands
 (use-package which-key
@@ -140,52 +150,62 @@
   ([remap describe-command] . helpful-command)
   ([remap describe-key] . helpful-key))
 
-;; (use-package helm
-;;   :init
-;;   (require 'helm-config)
-;;   (setq helm-split-window-in-side-p t
-;; 	helm-move-to-line-cycle-in-source t)
-;;   :config
-;;   (helm-mode 1) ;; Most of Emacs prompts become helm-enabled
-;;   (helm-autoresize-mode 1) ;; Helm resizes according to the number of candidates
-;;   (global-set-key (kbd "C-x b") 'helm-buffers-list) ;; List buffers ( Emacs way )
-;;   (global-set-key (kbd "C-x r b") 'helm-bookmarks) ;; Bookmarks menu
-;;   (global-set-key (kbd "C-x C-f") 'helm-find-files) ;; Finding files with Helm
-;;   (global-set-key (kbd "M-c") 'helm-calcul-expression) ;; Use Helm for calculations
-;;   (global-set-key (kbd "C-s") 'helm-occur)  ;; Replaces the default isearch keybinding
-;;   (global-set-key (kbd "C-h a") 'helm-apropos)  ;; Helmized apropos interface
-;;   (global-set-key (kbd "M-x") 'helm-M-x)  ;; Improved M-x menu
-;;   (global-set-key (kbd "M-y") 'helm-show-kill-ring)  ;; Show kill ring, pick something to paste
-;;   )
-
-(use-package swiper
-  :bind(("C-s" . swiper-isearch)))
-
-(use-package counsel
-  :bind(("M-x" . counsel-M-x)
-        ("C-x C-f" . counsel-find-file)
-        ("M-y" . counsel-yank-pop)
-        :map minibuffer-local-map
-        ("C-r" . counsel-minibuffer-history)))
-
-(use-package ivy
-  :bind (("C-x b" . ivy-switch-buffer)
-         :map ivy-minibuffer-map
-         ("TAB" . ivy-alt-done))
-  :config
-  (setq ivy-use-virtual-buffers t
-        ivy-count-format "(%d/%d) ")
-  (ivy-mode 1))
-
-(use-package ivy-rich
-  :after ivy
+(use-package helm
   :init
-  (ivy-rich-mode 1))
-
-(use-package ivy-prescient
-  :after counsel
+  (require 'helm-config)
+  :bind(
+        ("C-x b" . helm-mini)
+        ("C-x r b" . helm-bookmarks)
+        ("C-x C-f" . helm-find-files)
+        ("C-s" . helm-occur)
+        ("M-x" . helm-M-x)
+        ("M-y" . helm-show-kill-ring)
+        ("C-c h" . helm-command-prefix)
+        )
   :config
-  (ivy-prescient-mode 1))
+  (helm-mode 1) ;; Most of Emacs prompts become helm-enabled
+  (helm-autoresize-mode t) ;; Helm resizes according to the number of candidates
+  (global-unset-key (kbd "C-x c")) ;; Unset deafult helm-command-prefix
+  (add-to-list 'helm-sources-using-default-as-input 'helm-source-man-pages)
+  (setq helm-M-x-fuzzy-match t
+        helm-buffers-fuzzy-matching t
+        helm-recentf-fuzzy-match t
+        helm-semantic-fuzzy-match t
+        helm-imenu-fuzzy-match t
+        helm-locate-fuzzy-match t
+        helm-lisp-fuzzy-completion t
+        helm-mode-fuzzy-match t
+        helm-completion-in-region-fuzzy-match t)
+  )
+
+;; (use-package swiper
+;;   :bind(("C-s" . swiper-isearch)))
+
+;; (use-package counsel
+;;   :bind(("M-x" . counsel-M-x)
+;;         ("C-x C-f" . counsel-find-file)
+;;         ("M-y" . counsel-yank-pop)
+;;         :map minibuffer-local-map
+;;         ("C-r" . counsel-minibuffer-history)))
+
+;; (use-package ivy
+;;   :bind (("C-x b" . ivy-switch-buffer)
+;;          :map ivy-minibuffer-map
+;;          ("TAB" . ivy-alt-done))
+;;   :config
+;;   (setq ivy-use-virtual-buffers t
+;;         ivy-count-format "(%d/%d) ")
+;;   (ivy-mode 1))
+
+;; (use-package ivy-rich
+;;   :after ivy
+;;   :init
+;;   (ivy-rich-mode 1))
+
+;; (use-package ivy-prescient
+;;   :after counsel
+;;   :config
+;;   (ivy-prescient-mode 1))
 
 (use-package expand-region
   :bind
@@ -208,6 +228,27 @@
   :bind (
          ("C-S-c C-S-c" . mc/edit-lines)
          ))
+
+(defun efs/configure-eshell ()
+    ;; Save command history when commands are entered
+    (add-hook 'eshell-pre-command-hook 'eshell-save-some-history)
+    ;; Truncate buffer for performance
+    (add-to-list 'eshell-output-filter-functions 'eshell-truncate-buffer)
+    (setq eshell-history-size         10000
+          eshell-buffer-maximum-lines 10000
+          eshell-hist-ignoredups t
+          eshell-scroll-to-bottom-on-input t))
+
+(use-package eshell-git-prompt
+  :after eshell)
+
+(use-package eshell
+  :hook (eshell-first-time-mode . efs/configure-eshell)
+  :config
+  (with-eval-after-load 'esh-opt
+    (setq eshell-destroy-buffer-when-process-dies t)
+    (setq eshell-visual-commands '("htop" "vim")))
+  (eshell-git-prompt-use-theme 'powerline))
 
 (defun efs/org-font-setup ()
   ;; Replace list hyphen with dot
@@ -259,7 +300,7 @@
 
 (defun efs/org-mode-visual-fill ()
   (setq visual-fill-column-width 100
-	visual-fill-column-center-text t)
+        visual-fill-column-center-text t)
   (visual-fill-column-mode 1))
 
 (use-package visual-fill-column
@@ -280,21 +321,27 @@
         '(".git" "node_modules" "__pycache__" ".vs"))
   (setq projectile-globally-ignored-files '("TAGS" "tags" ".DS_Store"))
   :custom
-  (projectile-completion-system 'ivy))
+  ;;(projectile-completion-system 'ivy)
+  (projectile-completion-system 'helm)
+  )
 
-;;(use-package helm-projectile
-  ;;:config (helm-projectile-on))
-
-(use-package counsel-projectile
+(use-package helm-projectile
   :after projectile
-  :config (counsel-projectile-mode))
+  :config
+  (helm-projectile-on)
+  (setq projectile-switch-project-action 'helm-projectile)
+  )
+
+;; (use-package counsel-projectile
+;;   :after projectile
+;;   :config (counsel-projectile-mode))
 
 ;; Project structure tree view
 (use-package treemacs
   :bind
   (:map global-map
-	([f8] . treemacs)
-	("C-<f8>" . treemacs-select-window))
+        ([f8] . treemacs)
+        ("C-<f8>" . treemacs-select-window))
   :config
   (setq treemacs-is-never-other-window t))
 
@@ -302,18 +349,53 @@
   :after treemacs projectile)
 
 ;; C# support
-(use-package csharp-mode)
+(use-package csharp-mode
+  :mode(
+        ("\\.cs\\'" . csharp-mode)
+        ))
 (add-hook 'csharp-mode-hook 'imenu-add-menubar-index)
+
+;; F# support
+(use-package fsharp-mode
+  :mode(
+        ("\\.fs\\'" . fsharp-mode)
+        ))
+(add-hook 'fsharp-mode-hook 'imenu-add-menubar-index)
 
 ;; DotNet support
 (use-package dotnet)
 (add-hook 'csharp-mode-hook 'dotnet-mode)
 (add-hook 'fsharp-mode-hook 'dotnet-mode)
 
+(use-package css-mode
+  :mode (
+         ("\\.css\\.scss\\.sass\\.less\\'" . css-mode)
+         ))
+
 ;; Dockerfile support
 (use-package dockerfile-mode
   :mode (
          ("Dockerfile\\'" . dockerfile-mode)
+         ))
+
+(use-package mhtml-mode
+  :mode (
+         ("\\.html\\'" . mhtml-mode)
+         ))
+
+(use-package js
+  :mode (
+         ("\\.js\\'" . js-mode)
+         ))
+
+(use-package typescript-mode
+  :mode (
+         ("\\.ts\\'" . typescript-mode)
+         ))
+
+(use-package json-mode
+  :mode (
+         ("\\.json\\'" . json-mode)
          ))
 
 ;; Markdown support
@@ -331,6 +413,11 @@
         ("\\.xml\\'" . nxml-mode)
         ))
 
+(use-package yaml-mode
+  :mode (
+         ("\\.yml\\.yaml\\'" . yaml-mode)
+         ))
+
 (use-package flycheck
   :init
   ;;(setq flycheck-markdown-markdownlint-cli-executable "markdownlint")
@@ -341,19 +428,39 @@
   ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
   (setq lsp-keymap-prefix "C-c l"
         lsp-log-io nil
-        lsp-restart 'auto-restart)
-  :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
-         (csharp-mode . lsp-deferred)
-         (dockerfile-mode . lsp-deferred)
-         (markdown-mode .lsp-deferred)
-         (web-mode . lsp-deferred)
-         (nxml-mode . lsp-deferred)
+        lsp-restart 'auto-restart
+        lsp-diagnostic-clean-after-change t
+        lsp-modeline-diagnostics-enable t
+        lsp-modeline-diagnostics-scope :workspace
+        lsp-lens-enable t
+        lsp-lens-place-position 'above-line
+        lsp-modeline-code-actions-mode t
+        lsp-modeline-code-actions-segments '(count icon name)
+        lsp-headerline-breadcrumb-mode t
+        lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
+  :bind (
+         ([f12] . lsp-find-definition)
+         ("C-<f12>" . lsp-find-references)
+         )
+  :hook (
+         (csharp-mode . lsp-deferred) ;; Automatically installs language server -- csharp
+         (fsharp-mode . lsp-deferred) ;; Automatically installs language server -- fsac
+         (dockerfile-mode . lsp-deferred) ;; Automatically installs language server -- dockerfile-ls
+         (markdown .lsp-deferred) ;; Does not automatically install language server
+         (css-mode . lsp-deferred) ;; Automatically installs language server -- css-ls
+         (mhtml-mode . lsp-deferred) ;; Automatically installs language server -- html-ls
+         (js-mode . lsp-deferred) ;; Does not automatically install labguage server
+         (json-mode . lsp-deferred) ;; Automatically install language server -- json-ls
+         (typescript-mode . lsp-deferred) ;; Does not automatically install labguage server
+         (nxml-mode . lsp-deferred) ;; Automatically installs language server -- xmlls
+         (yaml-mode . lsp-deferred) ;; Automatically installs language server -- yamlls
          (lsp-mode . lsp-enable-which-key-integration)
          )
   :commands (lsp lsp-deferred)
   :config
-  (setq gc-cons-threshold 100000000
-        read-process-output-max (* 1024 1024)) ;; 1mb
+  (setq gc-cons-threshold (* 100000000 10)
+        read-process-output-max (* 1024 1024)
+        lsp-idle-delay 0.500) ;; 1mb
   (global-set-key (kbd "M-RET") 'lsp-execute-code-action)
   )
 
@@ -361,8 +468,8 @@
 (use-package lsp-ui
   :commands lsp-ui-mode
   :config
-  (setq lsp-ui-sideline-show-diagnostics t
-        lsp-ui-sideline-show-hover t
+  (setq lsp-ui-sideline-show-diagnostics nil
+        lsp-ui-sideline-show-hover nil
         lsp-ui-sideline-show-code-actions nil
         lsp-ui-sideline-update-mode 'point
         lsp-ui-doc-enable t
@@ -371,47 +478,18 @@
         lsp-ui-doc-show-with-cursor t
         lsp-ui-doc-show-with-mouse t))
 
-;;(use-package helm-lsp :commands helm-lsp-workspace-symbol)
+(use-package helm-lsp
+  :after lsp
+  :commands helm-lsp-workspace-symbol)
 
-(use-package lsp-ivy
-  :after lsp)
+;;(use-package lsp-ivy
+  ;;:after lsp)
 
 (use-package lsp-treemacs :commands lsp-treemacs-errors-list)
 
 ;; optionally if you want to use debugger
 ;;(use-package dap-mode)
 ;; (use-package dap-LANGUAGE) to load the dap adapter for your language
-
-(use-package web-mode
-  :mode (
-         ("\\.[agj]sp\\'" . web-mode)
-         ("\\.as[cp]x\\'" . web-mode)
-         ("\\.css\\'" . web-mode)
-         ("\\.scss\\'" . web-mode)
-         ("\\.js\\'" . web-mode)
-         ("\\.jsx\\'" .  web-mode)
-         ("\\.json\\'" . web-mode)
-         ("\\.ts\\'" . web-mode)
-         ("\\.tsx\\'" . web-mode)
-         ("\\.phtml\\'" . web-mode)
-         ("\\.tpl\\.php\\'" . web-mode)
-         ("\\.html\\'" . web-mode)
-         ("\\.cshtml\\'" . web-mode)
-         ("\\.djhtml\\'" . web-mode)
-         )
-  :commands web-mode
-  :config
-  (setq web-mode-markup-indent-offset 2)
-  (setq web-mode-code-indent-offset 4)
-  (setq web-mode-css-indent-offset 2))
-
-(use-package prettier-js)
-
-(add-hook 'web-mode-hook #'(lambda ()
-                             (enable-minor-mode
-                              '("\\.jsx?\\'" . prettier-js-mode))
-                             (enable-minor-mode
-                              '("\\.tsx?\\'" . prettier-js-mode))))
 
 ;; Code snippets
 (use-package yasnippet
