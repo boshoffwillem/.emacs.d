@@ -1,7 +1,7 @@
 ;; Font
-(set-face-attribute 'default nil :font "JetBrainsMono Nerd Font" :height 95 :weight 'regular)
+(set-face-attribute 'default nil :font "FiraCode Nerd Font" :height 110 :weight 'regular)
 ;; Set the fixed pitch face
-(set-face-attribute 'fixed-pitch nil :font "JetBrainsMono Nerd Font" :height 95 :weight 'regular)
+(set-face-attribute 'fixed-pitch nil :font "FiraCode Nerd Font" :height 110 :weight 'regular)
 ;; Set the variable pitch face
 (set-face-attribute 'variable-pitch nil :font "Cantarell" :height 120 :weight 'regular)
 
@@ -59,5 +59,18 @@
   :bind
   (("C-<" . #'centaur-tabs-backward)
    ("C->" . #'centaur-tabs-forward)))
+
+(use-package dashboard
+  :init
+  (progn
+    (setq dashboard-items '((recents . 5)
+                            (projects . 5)
+                            (bookmarks . 5)
+                            (agenda . 5)))
+    (setq dashboard-set-file-icons t)
+    (setq dashboard-set-heading-icons t)
+    )
+  :config
+  (dashboard-setup-startup-hook))
 
 (provide 'look-and-feel)

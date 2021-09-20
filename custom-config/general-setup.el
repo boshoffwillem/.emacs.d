@@ -4,8 +4,6 @@
 
 ;; Better defaults
 (setq
- ;; The default is 800 kilobytes.  Measured in bytes.
- gc-cons-threshold (* 50 1000 1000)
  ;; No need to see GNU agitprop.
  inhibit-startup-screen t
  inhibit-startup-message t
@@ -29,6 +27,8 @@
  compilation-scroll-output t
  ;; my source directory
  default-directory "~/code/"
+ ;; Set default bookmarks directory
+ ;;(setq bookmark-default-file "~/.emacs.d/bookmarks")
  ;; Don't warn me about large files
  large-file-warning-threshold nil
  ;; Delete selected text instead of inserting

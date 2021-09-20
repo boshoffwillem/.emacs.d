@@ -37,6 +37,7 @@
         ("C-<f8>" . treemacs-select-window))
   :config
   (treemacs-tag-follow-mode t)
+  (treemacs-follow-mode t)
   (treemacs-project-follow-mode t)
   (treemacs-fringe-indicator-mode 'always)
   (treemacs-git-mode 'deferred)
@@ -72,6 +73,7 @@
   (company-async-timeout 20 "Some requests can take a long time. That's fine.")
   (company-idle-delay 0.5 "Default is way too low.")
   :config
+  (setq lsp-completion-provider :capf)
   (setq company-minimum-prefix-length 1)
   ;; Use the numbers 0-9 to select company completion candidates
   (let ((map company-active-map))
@@ -130,6 +132,27 @@
 (use-package web-mode
   :mode ("\\.html$" . web-mode))
 
+;; Enable scala-mode for highlighting, indentation and motion commands
+(use-package scala-mode
+  :interpreter
+  ("scala" . scala-mode))
+
+;; Enable sbt mode for executing sbt commands
+(use-package sbt-mode
+  :commands sbt-start sbt-command
+  :config
+  ;; WORKAROUND: https://github.com/ensime/emacs-sbt-mode/issues/31
+  ;; allows using SPACE when in the minibuffer
+  (substitute-key-definition
+   'minibuffer-complete-word
+   'self-insert-command
+   minibuffer-local-completion-map)
+  ;; sbt-supershell kills sbt-mode:  https://github.com/hvesalai/emacs-sbt-mode/issues/152
+  (setq sbt:program-options '("-Dsbt.supershell=false")))
+
+;; Add metals backend for lsp-mode
+(use-package lsp-metals)
+
 ;; (use-package rust-mode
 ;;   :hook ((rust-mode . lsp)
 ;;          (rust-mode . lsp-lens-mode)
@@ -156,7 +179,6 @@
 ;;   :hook ((elm-mode . elm-format-on-save-mode)
 ;;          (elm-mode . elm-indent-mode)))
 
-
 ;; ===================================== Syntax analyzer
 (use-package flycheck
   :custom
@@ -179,13 +201,24 @@
 
 (use-package tree-sitter-langs)
 
+;; ===================================== Code folding
+(use-package origami
+  :hook
+  (yaml-mode . origami-mode)
+  (csharp-mode . origami-mode)
+  (fsharp-mode . origami-mode)
+  (scala-mode . origami-mode)
+  (dockerfile-mode . origami-mode)
+  (elisp-mode . origami-mode)
+  :bind
+  ("<C-tab>" . origami-toggle-node)
+  )
 
 ;; ===================================== Intellisense and IDE features
 (use-package lsp-mode
   :init
   ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
   (setq lsp-keymap-prefix "C-c l"
-        lsp-log-io nil
         lsp-restart 'auto-restart
         lsp-diagnostic-clean-after-change t
         lsp-modeline-diagnostics-enable t
@@ -194,12 +227,18 @@
         lsp-file-watch-threshold 5000
         lsp-ui-doc-mode t
         lsp-enable-file-watchers nil
-        lsp-lens-enable t
         lsp-lens-place-position 'above-line
         lsp-modeline-code-actions-mode t
         lsp-modeline-code-actions-segments '(count icon name)
         lsp-headerline-breadcrumb-mode t
         lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
+  :config
+  (setq gc-cons-threshold 100000000) ;; 100mb
+  (setq read-process-output-max (* 1024 1024)) ;; 1mb
+  (setq lsp-idle-delay 0.500)
+  (setq lsp-log-io nil)
+  (setq lsp-completion-provider :capf)
+  (setq lsp-prefer-flymake nil)
   :bind (
          ([f12] . lsp-find-definition)
          ("C-<f12>" . lsp-find-references)
@@ -209,7 +248,7 @@
          (csharp-mode . lsp) ;; Automatically installs language server -- csharp
          (fsharp-mode . lsp) ;; Automatically installs language server -- fsac
          (dockerfile-mode . lsp) ;; Automatically installs language server -- dockerfile-ls
-         ;;(markdown .lsp) ;; Does not automatically install language server
+         (markdown .lsp) ;; Does not automatically install language server
          ;;(css-mode . lsp) ;; Automatically installs language server -- css-ls
          ;;(mhtml-mode . lsp) ;; Automatically installs language server -- html-ls
          ;;(js-mode . lsp) ;; Does not automatically install labguage server
@@ -217,8 +256,11 @@
          ;;(typescript-mode . lsp) ;; Does not automatically install labguage server
          ;;(nxml-mode . lsp) ;; Automatically installs language server -- xmlls
          (yaml-mode . lsp) ;; Automatically installs language server -- yamlls
+         (scala-mode . lsp)
+         (lsp-mode . lsp-lens-mode)
          (lsp-mode . lsp-enable-which-key-integration)
          (lsp-mode . lsp-diagnostics-modeline-mode)
+         ;;(lsp-mode . lsp-treemacs-symbols)
          )
   :commands (lsp lsp-execute-code-action)
   )
@@ -240,36 +282,35 @@
 (use-package lsp-ivy
   :after (ivy lsp-mode))
 
-(use-package company-lsp
-  :disabled
-  :custom (company-lsp-enable-snippet t)
-  :after (company lsp-mode))
+;; (use-package company-lsp
+;;   :disabled
+;;   :custom (company-lsp-enable-snippet t)
+;;   :after (company lsp-mode))
 
 (use-package lsp-treemacs :commands lsp-treemacs-errors-list)
 
 ;; =====================================  Code snippets
 (use-package yasnippet
   :config
+  (setq yas-snippet-dirs '("~/.emacs.d/straight/repos/yasnippet-snippets/snippets"))
   (yas-global-mode 1)
-  (add-hook 'prog-mode-hook 'yas-minor-mode))
+  (add-hook 'prog-mode-hook 'yas-minor-mode)
+  ;; Jump to end of snippet definition
+  (define-key yas-keymap (kbd "<return>") 'yas-exit-all-snippets)
+  )
+
+(use-package yasnippet-snippets)
 
 ;; ===================================== Debugging functionality
+;; Use the Debug Adapter Protocol for running tests and debugging
+(use-package posframe
+;; Posframe is a pop-up tool that must be manually installed for dap-mode
+)
+
 (use-package dap-mode
-  :bind
-  (("C-c b b" . dap-breakpoint-toggle)
-   ("C-c b r" . dap-debug-restart)
-   ("C-c b l" . dap-debug-last)
-   ("C-c b d" . dap-debug))
-  :init
-  ;;(require 'dap-go)
-  ;; NB: dap-go-setup appears to be broken, so you have to download the extension from GH, rename its file extension
-  ;; unzip it, and copy it into the config so that the following path lines up
-  ;;(setq dap-go-debug-program '("node" "/Users/patrickt/.config/emacs/.extension/vscode/golang.go/extension/dist/debugAdapter.js"))
-  :config
-  (dap-mode)
-  (dap-auto-configure-mode)
-  (dap-ui-mode)
-  (dap-ui-controls-mode)
+  :hook
+  (lsp-mode . dap-mode)
+  (lsp-mode . dap-ui-mode)
   )
 
 (provide 'ide-features)

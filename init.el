@@ -26,3 +26,8 @@
 
 ;; ====================================== Completion framework
 (require 'completion-framework)
+
+;; ====================================== Org config
+(require 'org-config)
+
+;;; init.el ends here

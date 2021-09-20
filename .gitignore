@@ -1,6 +1,7 @@
 # Backup files
 *~
 recentf
+backups/
 
 # Package folders
 .cache/
@@ -22,6 +23,9 @@ server/
 
 # LSP stuff
 .lsp*
+.dap-breakpoints
 
 # Multicursor stuff
 .mc-lists.el
+
+smex-items

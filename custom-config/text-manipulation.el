@@ -4,8 +4,11 @@
   ("C--" . er/contract-region))
 
 (use-package multiple-cursors
-  :bind (("C-c m m" . #'mc/edit-lines )
-         ("C-c m d" . #'mc/mark-all-dwim )))
+  :bind (
+         ("C-S-c s" . set-rectangular-region-anchor)
+         ("C-S-c e" . #'mc/edit-lines)
+         ("C-S-<mouse-1>" . mc/add-cursor-on-click)
+         ))
 
 ;; Create shortcut for duplicating a line
 (defun duplicate-line()
@@ -13,8 +16,9 @@
   (move-beginning-of-line 1)
   (kill-line)
   (yank)
-  (open-line 1)
-  (next-line 1)
+  ;;(open-line 1)
+  ;;(next-line 1)
+  (previous-line 1)
   (yank))
 (global-set-key (kbd "C-S-d") 'duplicate-line)
 
