@@ -64,8 +64,7 @@
         '(org-crypt
           org-habit
           org-bookmark
-          org-eshell
-          org-irc))
+          org-eshell))
 
   (setq org-refile-targets '((nil :maxlevel . 1)
                              (org-agenda-files :maxlevel . 1)))

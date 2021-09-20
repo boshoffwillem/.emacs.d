@@ -129,8 +129,55 @@
          )
   :init (setq markdown-command "multimarkdown"))
 
-(use-package web-mode
-  :mode ("\\.html$" . web-mode))
+(use-package mhtml-mode
+  :mode (
+         ("\\.html\\'" . mhtml-mode)
+         ))
+
+(use-package css-mode
+  :mode (
+         ("\\.css\\.scss\\.sass\\.less\\'" . css-mode)
+         ))
+
+(use-package js
+  :mode (
+         ("\\.js\\'" . js-mode)
+         ))
+
+(use-package typescript-mode
+  :mode (
+         ("\\.ts\\'" . typescript-mode)
+         ))
+
+(use-package json-mode
+  :mode (
+         ("\\.json\\'" . json-mode)
+         ))
+
+(use-package nxml
+  :mode(
+        ("\\.xml\\'" . nxml-mode)
+        ))
+
+(use-package csv-mode
+  :config
+  (setq csv-separators '("," ";" "\t"))
+  )
+
+;; (use-package web-mode
+;;   :mode
+;;   ("\\.html$" . web-mode)
+;;   ("\\.scss\\'" . web-mode)
+;;   ("\\.css\\'" . web-mode)
+;;   ("\\.js\\'" . web-mode)
+;;   :custom
+;;   (setq web-mode-markup-indent-offset 2)
+;;   (setq web-mode-css-indent-offset 2)
+;;   (setq web-mode-code-indent-offset 2)
+;;   (setq web-mode-enable-css-colorization t)
+;;   (setq web-mode-enable-current-element-highlight t)
+;;   (setq web-mode-enable-current-column-highlight t)
+;;   )
 
 ;; Enable scala-mode for highlighting, indentation and motion commands
 (use-package scala-mode
@@ -249,14 +296,15 @@
          (fsharp-mode . lsp) ;; Automatically installs language server -- fsac
          (dockerfile-mode . lsp) ;; Automatically installs language server -- dockerfile-ls
          (markdown .lsp) ;; Does not automatically install language server
-         ;;(css-mode . lsp) ;; Automatically installs language server -- css-ls
-         ;;(mhtml-mode . lsp) ;; Automatically installs language server -- html-ls
-         ;;(js-mode . lsp) ;; Does not automatically install labguage server
-         ;;(json-mode . lsp) ;; Automatically install language server -- json-ls
-         ;;(typescript-mode . lsp) ;; Does not automatically install labguage server
-         ;;(nxml-mode . lsp) ;; Automatically installs language server -- xmlls
+         (css-mode . lsp) ;; Automatically installs language server -- css-ls
+         (mhtml-mode . lsp) ;; Automatically installs language server -- html-ls
+         (js-mode . lsp) ;; Does not automatically install labguage server
+         (json-mode . lsp) ;; Automatically install language server -- json-ls
+         (typescript-mode . lsp) ;; Does not automatically install labguage server
+         (nxml-mode . lsp) ;; Automatically installs language server -- xmlls
          (yaml-mode . lsp) ;; Automatically installs language server -- yamlls
          (scala-mode . lsp)
+         (web-mode . lsp)
          (lsp-mode . lsp-lens-mode)
          (lsp-mode . lsp-enable-which-key-integration)
          (lsp-mode . lsp-diagnostics-modeline-mode)
