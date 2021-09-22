@@ -1,4 +1,6 @@
 (use-package lsp-mode
+  :init
+  (setq lsp-keymap-prefix "C-c l")
   :config
   (setq gc-cons-threshold (* 100 1024 1024)) ;; 100mb
   (setq read-process-output-max (* 1024 1024)) ;; 1mb
@@ -20,10 +22,10 @@
         lsp-headerline-breadcrumb-mode t
         lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
   :bind (
-         ([f12] . lsp-find-definition)
-         ("C-<f12>" . lsp-find-references)
-         ("M-RET" . helm-lsp-code-actions)
-         ("C-c l" . lsp-keymap-prefix)
+         ("M-." . lsp-find-definition)
+         ("M-," . lsp-goto-implementation)
+         ("M-?" . lsp-find-references)
+         ;;("M-RET" . helm-lsp-code-actions)
          )
   :hook (
          ;;(prog-mode . lsp)
@@ -63,13 +65,13 @@
         lsp-ui-doc-show-with-mouse t))
 
 ;; if you are helm user
-(use-package helm-lsp
-  :commands helm-lsp-workspace-symbol
-  :config
-  (define-key lsp-mode-map [remap xref-find-apropos] #'helm-lsp-workspace-symbol)
-  )
+;; (use-package helm-lsp
+;;   :commands helm-lsp-workspace-symbol
+;;   :config
+;;   (define-key lsp-mode-map [remap xref-find-apropos] #'helm-lsp-workspace-symbol)
+;;   )
 ;; if you are ivy user
-;;(use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
+(use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
 
 ;; (use-package company-lsp
 ;;   :disabled

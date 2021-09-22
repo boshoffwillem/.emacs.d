@@ -16,8 +16,8 @@
          ("C-c p" . #'projectile-command-map)
          ("C-M-g" . #'projectile-grep))
   :custom
-  ;;(projectile-completion-system 'ivy)
-  (projectile-completion-system 'helm)
+  (projectile-completion-system 'ivy)
+  ;;(projectile-completion-system 'helm)
   (projectile-indexing-method 'alien)
   (projectile-sort-order 'recently-active)
   (projectile-enable-caching t)
@@ -26,10 +26,10 @@
   (projectile-project-search-path '("~/code/" "~/RiderProjects/" ("~/.emacs.d" . 1) ("~/source" . 1))) ;; The ("" . 1) specifies the search depth
   :config (projectile-mode))
 
-;;(use-package counsel-projectile
-;;  :bind (("C-c f" . #'counsel-projectile)
-;;         ("C-c F" . #'counsel-projectile-switch-project)
-;;         ("C-c H" . #'counsel-projectile-rg)))
+(use-package counsel-projectile
+ :bind (;;("C-c f" . #'counsel-projectile)
+        ;;("C-c F" . #'counsel-projectile-switch-project)
+        ("C-c f" . #'counsel-projectile-rg)))
 
 (use-package treemacs
   :bind
