@@ -33,6 +33,12 @@
   (move-end-of-line nil)
   (newline-and-indent))
 
-(bind-key "C-<return>" #'wb/eol-then-newline)
+(bind-key "C-RET" #'wb/eol-then-newline)
+
+(use-package ace-jump-mode
+  :bind
+    ("C-c SPC" . ace-jump-mode)
+    ("C-x SPC" . ace-jump-mode-pop-mark)
+  )
 
 (provide 'text-manipulation)
