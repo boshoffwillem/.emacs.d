@@ -1,4 +1,4 @@
-(defun efs/org-font-setup ()
+(defun wb/org-font-setup ()
   ;; Replace list hyphen with dot
   (font-lock-add-keywords 'org-mode
                           '(("^ *\\([-]\\) "
@@ -16,9 +16,6 @@
                   (org-level-8 . 1.1)))
     (set-face-attribute (car face) nil :font "Cantarell" :weight 'medium :height (cdr face)))
 
-  ;; Make sure org-indent face is available
-  (require 'org-indent)
-
   ;; Ensure that anything that should be fixed-pitch in Org files appears that way
   (set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
   (set-face-attribute 'org-table nil  :inherit 'fixed-pitch)
@@ -35,45 +32,36 @@
   (set-face-attribute 'org-column-title nil :background nil)
   )
 
-(defun dw/org-mode-setup ()
+(defun wb/org-mode-setup ()
   (org-indent-mode)
   (variable-pitch-mode 1)
-  (auto-fill-mode 0)
   (visual-line-mode 1))
 
 (use-package org
-  :defer t
   :hook
-  (org-mode . dw/org-mode-setup)
-  (org-mode . efs/org-font-setup)
+  (org-mode . wb/org-mode-setup)
   :config
   (setq org-ellipsis " ▾"
+        org-agenda-files '("~/.emacs.d/OrgFiles/Tasks.org")
+        org-agenda-start-with-log-mode t
+        org-log-done 'time
+        org-log-into-drawer t
         org-hide-emphasis-markers t
-        org-src-fontify-natively t
         org-fontify-quote-and-verse-blocks t
-        org-src-tab-acts-natively t
-        org-edit-src-content-indentation 2
-        org-hide-block-startup nil
-        org-src-preserve-indentation nil
-        org-startup-folded 'content
-        org-cycle-separator-lines 2
+        org-src-preserve-indentation t
         org-todo-keywords
-        '((sequence "TODO(t)" "BUSY(b)" "|" "DONE(d!)")))
-
-  (setq org-modules
-        '(org-crypt
-          org-habit
-          org-bookmark
-          org-eshell))
-
-  (setq org-refile-targets '((nil :maxlevel . 1)
-                             (org-agenda-files :maxlevel . 1)))
-
-  (setq org-outline-path-complete-in-steps nil)
-  (setq org-refile-use-outline-path t)
+        '((sequence "TODO(t)" "BUSY(b)" "|" "DONE(d!)")
+          (sequence "BACKLOG(b)" "IN-PROGRESS(i)" "REVIEW(r)" "|" "COMPLETED(c)")))
+  (wb/org-font-setup)
   )
 
-(setq-default fill-column 80)
+(defun wb/org-mode-visual-fill ()
+  (setq visual-fill-column-width 100
+        visual-fill-column-center-text t)
+  (visual-fill-column-mode 1))
+
+(use-package visual-fill-column
+  :hook (org-mode . wb/org-mode-visual-fill))
 
 (use-package org-superstar
   :after org

@@ -16,6 +16,7 @@
          ("C-c p" . #'projectile-command-map)
          ("C-M-g" . #'projectile-grep))
   :custom
+  ;;(projectile-completion-system 'ido)
   (projectile-completion-system 'ivy)
   ;;(projectile-completion-system 'helm)
   (projectile-indexing-method 'alien)
@@ -25,11 +26,6 @@
   (projectile-require-project-root t)
   (projectile-project-search-path '("~/code/" "~/RiderProjects/" ("~/.emacs.d" . 1) ("~/source" . 1))) ;; The ("" . 1) specifies the search depth
   :config (projectile-mode))
-
-(use-package counsel-projectile
- :bind (;;("C-c f" . #'counsel-projectile)
-        ;;("C-c F" . #'counsel-projectile-switch-project)
-        ("C-c f" . #'counsel-projectile-rg)))
 
 (use-package treemacs
   :bind
@@ -106,18 +102,18 @@
 (use-package tree-sitter-langs)
 
 ;; ===================================== Code folding
-(use-package origami
-  :hook
-  (prog-mode . origami-mode)
-  ;;(yaml-mode . origami-mode)
-  ;;(csharp-mode . origami-mode)
-  ;;(fsharp-mode . origami-mode)
-  ;;(scala-mode . origami-mode)
-  ;;(dockerfile-mode . origami-mode)
-  ;;(elisp-mode . origami-mode)
-  :bind
-  ("<C-tab>" . origami-toggle-node)
-  )
+;; (use-package origami
+;;   :hook
+;;   (prog-mode . origami-mode)
+;;   ;;(yaml-mode . origami-mode)
+;;   ;;(csharp-mode . origami-mode)
+;;   ;;(fsharp-mode . origami-mode)
+;;   ;;(scala-mode . origami-mode)
+;;   ;;(dockerfile-mode . origami-mode)
+;;   ;;(elisp-mode . origami-mode)
+;;   :bind
+;;   ("<C-tab>" . origami-toggle-node)
+;;   )
 
 ;; ===================================== Programming labguages
 (require 'programming-languages)
@@ -128,12 +124,14 @@
 ;; =====================================  Code snippets
 (use-package yasnippet
   :config
-  (setq yas-snippet-dirs '("~/.emacs.d/straight/repos/yasnippet-snippets/snippets"))
+  (setq yas-snippet-dirs '("~/.emacs.d/custom-config/snippets"))
   (yas-global-mode 1)
   (add-hook 'prog-mode-hook 'yas-minor-mode)
   ;; Jump to end of snippet definition
   (define-key yas-keymap (kbd "<return>") 'yas-exit-all-snippets)
+  (define-key global-map (kbd "C-,") 'yas-insert-snippet)
   )
+
 
 (use-package yasnippet-snippets)
 

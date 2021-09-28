@@ -48,4 +48,11 @@
 
 (use-package helm-rg)
 
+;; if you are helm user
+(use-package helm-lsp
+  :commands helm-lsp-workspace-symbol
+  :config
+  (define-key lsp-mode-map [remap xref-find-apropos] #'helm-lsp-workspace-symbol)
+  )
+
 (provide 'completion-framework-helm)

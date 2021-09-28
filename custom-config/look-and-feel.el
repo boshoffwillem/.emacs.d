@@ -1,7 +1,7 @@
 ;; Font
-(set-face-attribute 'default nil :font "FiraCode Nerd Font" :height 110 :weight 'regular)
+(set-face-attribute 'default nil :font "FiraCode Nerd Font" :height 100 :weight 'regular)
 ;; Set the fixed pitch face
-(set-face-attribute 'fixed-pitch nil :font "FiraCode Nerd Font" :height 110 :weight 'regular)
+(set-face-attribute 'fixed-pitch nil :font "FiraCode Nerd Font" :height 100 :weight 'regular)
 ;; Set the variable pitch face
 (set-face-attribute 'variable-pitch nil :font "Cantarell" :height 120 :weight 'regular)
 

@@ -39,6 +39,13 @@
   :bind
     ("C-c SPC" . ace-jump-mode)
     ("C-x SPC" . ace-jump-mode-pop-mark)
-  )
+    )
+
+(use-package flyspell
+  :config
+  (setenv "LANG" "en_US.UTF-8")
+  (setq ispell-program-name "c:/hunspell/bin/hunspell.exe")
+  (setq ispell-dictionary "en_US")
+  (flyspell-mode 1))
 
 (provide 'text-manipulation)

@@ -1,84 +1,89 @@
+(defun wb/core-settings ()
+  (setq lsp-completion-default-behaviour :insert
+        lsp-document-sync-method 'lsp--sync-full
+        lsp-enable-file-watchers t
+        lsp-idle-delay 0.1
+        lsp-log-io t
+        lsp-restart 'auto-restart)
+  (define-key (kbd "C-c l") 'lsp-keymap-prefix)
+  )
+
+(defun wb/diagnostic-settings ()
+  (setq lsp-diagnostic-clean-after-change t)
+  )
+
+(defun wb/lens-settings ()
+  (setq lsp-lens-enable t
+        lsp-lens-place-position 'above-line)
+  )
+
+(defun wb/semantic-tokens-settings ()
+  (setq lsp-semantic-tokens-enable t
+        lsp-semantic-tokens-honor-refresh-requests t
+        lsp-semantic-tokens-warn-on-missing-face t)
+  )
+
 (use-package lsp-mode
-  :init
-  (setq lsp-keymap-prefix "C-c l")
   :config
   (setq gc-cons-threshold (* 100 1024 1024)) ;; 100mb
   (setq read-process-output-max (* 1024 1024)) ;; 1mb
-  (setq lsp-idle-delay 0.1)
-  (setq lsp-log-io nil)
-  (setq lsp-completion-provider :capf)
-  (setq lsp-prefer-flymake nil)
   (setq create-lockfiles nil)
-  (setq lsp-restart 'auto-restart
-        lsp-diagnostic-clean-after-change t
-        lsp-modeline-diagnostics-enable t
-        lsp-response-timeout 2
-        lsp-file-watch-threshold 5000
-        lsp-ui-doc-mode t
-        lsp-enable-file-watchers nil
-        lsp-lens-place-position 'above-line
-        lsp-modeline-code-actions-mode t
-        lsp-modeline-code-actions-segments '(count icon name)
-        lsp-headerline-breadcrumb-mode t
-        lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
-  :bind (
-         ("M-." . lsp-find-definition)
-         ("M-," . lsp-goto-implementation)
-         ("M-?" . lsp-find-references)
-         ;;("M-RET" . helm-lsp-code-actions)
-         )
   :hook (
          ;;(prog-mode . lsp)
-         (csharp-mode . lsp) ;; Automatically installs language server -- csharp
-         (fsharp-mode . lsp) ;; Automatically installs language server -- fsac
-         (dockerfile-mode . lsp) ;; Automatically installs language server -- dockerfile-ls
-         (markdown .lsp) ;; Does not automatically install language server
-         (css-mode . lsp) ;; Automatically installs language server -- css-ls
-         (mhtml-mode . lsp) ;; Automatically installs language server -- html-ls
-         (js-mode . lsp) ;; Does not automatically install labguage server
-         (json-mode . lsp) ;; Automatically install language server -- json-ls
-         (typescript-mode . lsp) ;; Does not automatically install labguage server
-         (nxml-mode . lsp) ;; Automatically installs language server -- xmlls
-         (yaml-mode . lsp) ;; Automatically installs language server -- yamlls
-         (scala-mode . lsp)
+         (csharp-mode . lsp-deferred) ;; Automatically installs language server -- csharp
+         (fsharp-mode . lsp-deferred) ;; Automatically installs language server -- fsac
+         (dockerfile-mode . lsp-deferred) ;; Automatically installs language server -- dockerfile-ls
+         (markdown .lsp-deferred) ;; Does not automatically install language server
+         (css-mode . lsp-deferred) ;; Automatically installs language server -- css-ls
+         (mhtml-mode . lsp-deferred) ;; Automatically installs language server -- html-ls
+         (js-mode . lsp-deferred) ;; Does not automatically install labguage server
+         (json-mode . lsp-deferred) ;; Automatically install language server -- json-ls
+         (typescript-mode . lsp-deferred) ;; Does not automatically install labguage server
+         (nxml-mode . lsp-deferred) ;; Automatically installs language server -- xmlls
+         (yaml-mode . lsp-deferred) ;; Automatically installs language server -- yamlls
+         (scala-mode . lsp-deferred)
          ;; (web-mode . lsp)
-         (lsp-mode . lsp-lens-mode)
          (lsp-mode . lsp-enable-which-key-integration)
-         (lsp-mode . lsp-diagnostics-modeline-mode)
-         ;;(lsp-mode . lsp-treemacs-symbols)
+         (lsp-mode . wb/core-settings)
+         (lsp-mode . lsp-completion-mode)
+         (lsp-mode . lsp-diagnostics-mode)
+         (lsp-diagnostics-mode . wb/diagnostic-settings)
+         (lsp-mode . lsp-lens-mode)
+         (lsp-lens-mode . wb/lens-settings)
+         (lsp-mode . lsp-semantic-tokens-mode)
+         (lsp-semantic-tokens-mode . wb/semantic-tokens-settings)
          )
-  :commands (lsp lsp-execute-code-action)
+  :commands (lsp lsp-deferred)
   )
 
 ;; optionally
 (use-package lsp-ui
-  :commands lsp-ui-mode
   :config
-  (setq lsp-ui-sideline-show-diagnostics nil
-        lsp-ui-sideline-show-hover nil
-        lsp-ui-sideline-show-code-actions nil
-        lsp-ui-sideline-update-mode 'point
-        lsp-ui-doc-enable t
-        lsp-ui-doc-position 'at-point
-        lsp-ui-doc-delay 0.1
-        lsp-ui-doc-show-with-cursor t
-        lsp-ui-doc-show-with-mouse t))
+  (define-key lsp-ui-mode-map [remap xref-find-definitions] #'lsp-ui-peek-find-definitions)
+  (define-key lsp-ui-mode-map [remap xref-find-references] #'lsp-ui-peek-find-references)
+  :commands lsp-ui-mode
+  :custom
+  ;; Peek settings.
+  (setq lsp-ui-sideline-show-hover t
+        lsp-ui-sideline-update-mode 'point)
 
-;; if you are helm user
-;; (use-package helm-lsp
-;;   :commands helm-lsp-workspace-symbol
-;;   :config
-;;   (define-key lsp-mode-map [remap xref-find-apropos] #'helm-lsp-workspace-symbol)
-;;   )
-;; if you are ivy user
-(use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
+  ;; Doc settings
+  (setq lsp-ui-doc-position 'at-point
+        lsp-ui-doc-delay 0.1)
+
+  ;; Imenu settings.
+  (setq lsp-ui-imenu-auto-refresh t)
+  )
+
+(use-package lsp-treemacs
+  :commands lsp-treemacs-errors-list
+  :config
+  (lsp-treemacs-sync-mode))
 
 ;; (use-package company-lsp
 ;;   :disabled
 ;;   :custom (company-lsp-enable-snippet t)
 ;;   :after (company lsp-mode))
-
-(use-package lsp-treemacs :commands lsp-treemacs-errors-list)
 
 ;; Add metals backend for lsp-mode
 (use-package lsp-metals)
