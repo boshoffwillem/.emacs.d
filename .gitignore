@@ -29,3 +29,9 @@ server/
 .mc-lists.el
 
 smex-items
+
+# Org stuff
+OrgFiles/
+
+# Ido stuff
+ido.last

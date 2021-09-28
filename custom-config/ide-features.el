@@ -17,8 +17,8 @@
          ("C-M-g" . #'projectile-grep))
   :custom
   ;;(projectile-completion-system 'ido)
-  (projectile-completion-system 'ivy)
-  ;;(projectile-completion-system 'helm)
+  ;;(projectile-completion-system 'ivy)
+  (projectile-completion-system 'helm)
   (projectile-indexing-method 'alien)
   (projectile-sort-order 'recently-active)
   (projectile-enable-caching t)
@@ -146,5 +146,8 @@
   (lsp-mode . dap-mode)
   (lsp-mode . dap-ui-mode)
   )
+
+;; ===================================== REST functionality
+(use-package restclient)
 
 (provide 'ide-features)
