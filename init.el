@@ -25,9 +25,9 @@
 (require 'ide-features)
 
 ;; ====================================== Completion framework
-;;(require 'completion-framework-ido)
+(require 'completion-framework-ido)
 ;;(require 'completion-framework-ivy)
-(require 'completion-framework-helm)
+;;(require 'completion-framework-helm)
 
 ;; ====================================== Org config
 (require 'org-config)

@@ -16,9 +16,9 @@
          ("C-c p" . #'projectile-command-map)
          ("C-M-g" . #'projectile-grep))
   :custom
-  ;;(projectile-completion-system 'ido)
+  (projectile-completion-system 'ido)
   ;;(projectile-completion-system 'ivy)
-  (projectile-completion-system 'helm)
+  ;;(projectile-completion-system 'helm)
   (projectile-indexing-method 'alien)
   (projectile-sort-order 'recently-active)
   (projectile-enable-caching t)
