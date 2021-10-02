@@ -10,11 +10,12 @@
 
 ;; ===================================== Project functionality
 (use-package projectile
-  :diminish
-  :bind (("C-c k" . #'projectile-kill-buffers)
-         ("C-c M" . #'projectile-compile-project)
-         ("C-c p" . #'projectile-command-map)
-         ("C-M-g" . #'projectile-grep))
+  :bind
+  (
+   (:map global-map)
+   ("C-c p" . projectile-command-map)
+   ("C-c f" . projectile-ripgrep)
+   )
   :custom
   ;;(projectile-completion-system 'ido)
   ;;(projectile-completion-system 'ivy)
@@ -47,18 +48,10 @@
 (use-package treemacs-projectile
   :after treemacs projectile)
 
-;; ===================================== Project wide searching using ripgrep
-(use-package deadgrep
-  :bind (("C-c F" . #'deadgrep)))
-
-;; ===================================== Search and replace with regular expressions
-(use-package visual-regexp
-  :bind (("C-c M-f" . #'vr/replace)))
-
 ;; ===================================== Basic text completion suggestions
 (use-package company
   :diminish
-  :bind (("C-." . #'company-capf))
+  :bind (("C-SPC" . #'company-capf))
   :bind (:map company-active-map
          ("C-n" . #'company-select-next)
          ("C-p" . #'company-select-previous))
@@ -134,18 +127,6 @@
 
 
 (use-package yasnippet-snippets)
-
-;; ===================================== Debugging functionality
-;; Use the Debug Adapter Protocol for running tests and debugging
-(use-package posframe
-;; Posframe is a pop-up tool that must be manually installed for dap-mode
-)
-
-(use-package dap-mode
-  :hook
-  (lsp-mode . dap-mode)
-  (lsp-mode . dap-ui-mode)
-  )
 
 ;; ===================================== REST functionality
 (use-package restclient)

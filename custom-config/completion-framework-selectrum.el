@@ -9,6 +9,17 @@
 
 (use-package selectrum-prescient
   :config
-  (selectrum-prescient-mode +1))
+  (selectrum-prescient-mode +1)
+  ;;:custom
+  ;;(setq selectrum-prescient-enable-filtering nil)
+  )
+
+;; ===================================== Better completion
+(use-package orderless
+  :config
+  (setq completion-styles '(orderless)))
+
+;; ===================================== More info on completions
+(use-package consult)
 
 (provide 'completion-framework-selectrum)

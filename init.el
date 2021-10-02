@@ -18,6 +18,9 @@
 ;; ====================================== Improve built-in help
 (require 'better-help)
 
+;; ====================================== Better searching
+(require 'better-searching)
+
 ;; ====================================== Shell configuration
 (require 'shell-config)
 
