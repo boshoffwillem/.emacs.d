@@ -1,4 +1,33 @@
+;;; lsp.el --- Configuration file for LSP mode -*- lexical-binding: t -*-
+
+;; Author: Willem Boshoff <boshoffwillem@protonmail.com>
+;; URL: https://github.com/boshoffwillem/.emacs.d
+
+;; This file is free software: you can redistribute it and/or modify it
+;; under the terms of the GNU General Public License as published by the
+;; Free Software Foundation, either version 3 of the License, or (at
+;; your option) any later version.
+;;
+;; This file is distributed in the hope that it will be useful, but
+;; WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+;; General Public License for more details.
+;;
+;; You should have received a copy of the GNU General Public License
+;; along with this file.  If not, see <http://www.gnu.org/licenses/>.
+
+;;; Commentary:
+
+;; This file sets up the configuration for LSP mode,
+;; which provides IDE functionality when programming.
+
+;;; Code:
+
+(defun wb/lsp-setup ()
+  )
+
 (use-package lsp-mode
+  :commands (lsp lsp-deferred)
   :init
   (setq lsp-keymap-prefix "C-c l")
   (setq gc-cons-threshold (* 100 1024 1024)) ;; 100mb
@@ -7,25 +36,38 @@
   ;;(setq lsp-csharp-server-install-dir "~/code/omnisharp-roslyn/artifacts/publish/OmniSharp.Http.Driver/win7-x64/")
   :config
   (add-to-list 'lsp-language-id-configuration '(".*\\.el$" . "emacs-lisp"))
+  (lsp-enable-which-key-integration t)
   :hook
   (
-   (prog-mode . lsp)
-   (lsp-mode . lsp-enable-which-key-integration))
+   (lsp-mode . wb/lsp-setup)
+   )
   :bind
   (
    ("M-RET" . lsp-execute-code-action)
    )
-  :commands lsp)
+  )
+
+(defun wb/lsp-ui-setup ()
+  (setq lsp-ui-doc-position 'bottom
+        lsp-ui-sideline-show-code-actions nil
+        lsp-ui-sideline-show-diagnostics nil)
+  )
 
 (use-package lsp-ui
-  :commands lsp-ui-mode)
+  :hook
+  (lsp-mode . lsp-ui-mode)
+  (lsp-ui-mode . wb/lsp-ui-setup)
+  )
 
 (use-package lsp-treemacs
-  :commands lsp-treemacs-errors-list)
+  :after lsp
+  )
 
 ;; optionally if you want to use debugger
-(use-package dap-mode)
-;; (use-package dap-LANGUAGE) to load the dap adapter for your language
+(use-package dap-mode
+  :config
+  ;; Enabling only some features
+  (setq dap-auto-configure-features '(sessions locals controls tooltip)))
 
 ;; ===================================== Debugging functionality
 ;; Use the Debug Adapter Protocol for running tests and debugging
@@ -101,3 +143,5 @@
 ;; (use-package lsp-metals)
 
 (provide 'lsp)
+
+;;; lsp.el ends here

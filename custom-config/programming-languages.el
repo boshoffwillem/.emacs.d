@@ -1,3 +1,29 @@
+;;; programming-languages.el --- Configuration file for various programming languages -*- lexical-binding: t -*-
+
+;; Author: Willem Boshoff <boshoffwillem@protonmail.com>
+;; URL: https://github.com/boshoffwillem/.emacs.d
+
+;; This file is free software: you can redistribute it and/or modify it
+;; under the terms of the GNU General Public License as published by the
+;; Free Software Foundation, either version 3 of the License, or (at
+;; your option) any later version.
+;;
+;; This file is distributed in the hope that it will be useful, but
+;; WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+;; General Public License for more details.
+;;
+;; You should have received a copy of the GNU General Public License
+;; along with this file.  If not, see <http://www.gnu.org/licenses/>.
+
+;;; Commentary:
+
+;; This file sets up the configuration for various programming languages,
+;; which provides syntax support for them.
+
+;;; Code:
+
+;; ===================================== .Net languages
 (use-package dotnet
   :config
   (add-hook 'csharp-mode-hook 'dotnet-mode)
@@ -5,11 +31,18 @@
   (add-hook 'fsharp-mode-hook 'dotnet-mode)
   )
 
+(defun wb/csharp-setup ()
+  (setq projectile-project-test-cmd "dotnet test"))
+
 (use-package csharp-mode
   :mode(
         ("\\.cs$" . csharp-mode)
         ("\\.xaml$" . csharp-mode)
-        ))
+        )
+  :hook
+  (csharp-mode . wb/csharp-setup)
+  (csharp-mode . lsp-deferred)
+  )
 (use-package csproj-mode)
 
 (use-package sln-mode
@@ -18,24 +51,47 @@
 (use-package fsharp-mode
   :mode(
         ("\\.fs$" . fsharp-mode)
-        ))
+        )
+  :hook
+  (fsharp-mode . lsp-deferred))
 
 (use-package sharper
 :bind
-  ("C-c n" . sharper-main-transient))
+("C-c n" . sharper-main-transient))
 
-(use-package typescript-mode)
+;;(require 'dap-netcore)
 
-(setq-default js-indent-level 2)
+;; =====================================
+
+(use-package typescript-mode
+  :hook
+  (typescript-mode . lsp-deferred))
+
+(use-package js2-mode
+  :mode "\\.jsx?\\'"
+  :config
+  ;; Use js2-mode for Node scripts
+  (add-to-list 'magic-mode-alist '("#!/usr/bin/env node" . js2-mode))
+
+  (setq js-indent-level 2)
+  (setq-default tab-width 2)
+  ;; Don't use built-in syntax checking
+  (setq js2-mode-show-strict-warnings nil)
+  :hook
+  (j2s-mode . lsp-deferred)
+  )
 
 (use-package yaml-mode
   :mode
   ("\\.yml$" . yaml-mode)
   ("\\.yaml$" . yaml-mode)
+  :hook
+  (yaml-mode . lsp-deferred)
   )
 
 (use-package docker
-  :bind ("C-c d" . docker))
+  :bind ("C-c d" . docker)
+  )
 
 (use-package dockerfile-mode)
 
@@ -53,28 +109,25 @@
          ("\\.md$" . markdown-mode)
          ("\\.markdown$" . markdown-mode)
          )
-  :init (setq markdown-command "multimarkdown"))
+  :init (setq markdown-command "multimarkdown")
+  )
 
 (use-package mhtml-mode
   :mode (
          ("\\.html$" . mhtml-mode)
-         ))
+         )
+  :hook
+  (mhtml-mode . lsp-deferred)
+  )
 
 (use-package css-mode
   :mode (
          ("\\.css$" . css-mode)
          ("\\.scss$" . css-mode)
-         ))
-
-(use-package js
-  :mode (
-         ("\\.js$" . js-mode)
-         ))
-
-(use-package typescript-mode
-  :mode (
-         ("\\.ts$" . typescript-mode)
-         ))
+         )
+  :hook
+  (css-mode . lsp-deferred)
+  )
 
 (use-package json-mode
   :mode (
@@ -109,7 +162,10 @@
 ;; Enable scala-mode for highlighting, indentation and motion commands
 (use-package scala-mode
   :interpreter
-  ("scala" . scala-mode))
+  ("scala" . scala-mode)
+  :hook
+  (scala-mode . lsp-deferred)
+  )
 
 ;; Enable sbt mode for executing sbt commands
 (use-package sbt-mode

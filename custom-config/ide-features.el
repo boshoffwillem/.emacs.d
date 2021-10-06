@@ -1,3 +1,28 @@
+;;; ide-features.el --- Configuration file for providing various IDE features -*- lexical-binding: t -*-
+
+;; Author: Willem Boshoff <boshoffwillem@protonmail.com>
+;; URL: https://github.com/boshoffwillem/.emacs.d
+
+;; This file is free software: you can redistribute it and/or modify it
+;; under the terms of the GNU General Public License as published by the
+;; Free Software Foundation, either version 3 of the License, or (at
+;; your option) any later version.
+;;
+;; This file is distributed in the hope that it will be useful, but
+;; WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+;; General Public License for more details.
+;;
+;; You should have received a copy of the GNU General Public License
+;; along with this file.  If not, see <http://www.gnu.org/licenses/>.
+
+;;; Commentary:
+
+;; This file sets up the configuration of various packages that will
+;; provide and IDE experience when developing.
+
+;;; Code:
+
 ;; ===================================== Git functionality
 (use-package magit
   :diminish magit-auto-revert-mode
@@ -14,18 +39,14 @@
   (
    (:map global-map)
    ("C-c p" . projectile-command-map)
-   ("C-c f" . projectile-ripgrep)
    )
   :custom
-  ;;(projectile-completion-system 'ido)
-  ;;(projectile-completion-system 'ivy)
-  ;;(projectile-completion-system 'helm)
-  (projectile-indexing-method 'alien)
-  (projectile-sort-order 'recently-active)
-  (projectile-enable-caching t)
-  (projectile-file-exists-remote-cache-expire nil)
-  (projectile-require-project-root t)
-  (projectile-project-search-path '("~/code/" "~/RiderProjects/" ("~/.emacs.d" . 1) ("~/source" . 1))) ;; The ("" . 1) specifies the search depth
+  (setq projectile-indexing-method 'alien
+        projectile-sort-order 'recently-active
+        projectile-enable-caching t
+        projectile-file-exists-remote-cache-expire nil
+        projectile-require-project-root t
+        projectile-project-search-path '("~/code/" "~/RiderProjects/" ("~/.emacs.d" . 1) ("~/source" . 1))) ;; The ("" . 1) specifies the search depth
   :config (projectile-mode))
 
 (use-package treemacs
@@ -50,7 +71,6 @@
 
 ;; ===================================== Basic text completion suggestions
 (use-package company
-  :diminish
   :bind (("C-SPC" . #'company-capf))
   :bind (:map company-active-map
          ("C-n" . #'company-select-next)
@@ -62,15 +82,18 @@
   (company-tooltip-limit 20 "The more the merrier.")
   (company-tooltip-idle-delay 0.4 "Faster!")
   (company-async-timeout 20 "Some requests can take a long time. That's fine.")
-  (company-idle-delay 0.5 "Default is way too low.")
+  (company-idle-delay 0.0 "Default is way too low.")
   :config
-  (setq lsp-completion-provider :capf)
   (setq company-minimum-prefix-length 1)
   ;; Use the numbers 0-9 to select company completion candidates
   (let ((map company-active-map))
     (mapc (lambda (x) (define-key map (format "%d" x)
                         `(lambda () (interactive) (company-complete-number ,x))))
           (number-sequence 0 9))))
+
+(use-package company-prescient
+  :config
+  (company-prescient-mode +1))
 
 ;; ===================================== Syntax analyzer
 (use-package flycheck
@@ -132,3 +155,5 @@
 (use-package restclient)
 
 (provide 'ide-features)
+
+;;; ide-features.el ends here

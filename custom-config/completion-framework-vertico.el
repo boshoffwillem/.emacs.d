@@ -1,4 +1,4 @@
-;;; completion-framework-selectrum.el --- Configuration file for Selectrum completion framework -*- lexical-binding: t -*-
+;;; completion-framework-vertico.el --- Configuration file for Vertico completion framework -*- lexical-binding: t -*-
 
 ;; Author: Willem Boshoff <boshoffwillem@protonmail.com>
 ;; URL: https://github.com/boshoffwillem/.emacs.d
@@ -18,27 +18,22 @@
 
 ;;; Commentary:
 
-;; This file sets up the configuration for Selectrum.
-;; Selectrum is a completion framework providing completion suggestions.
+;; This file sets up the configuration for Vertico.
+;; Vertico is a completion framework providing completion suggestions.
 
 ;;; Code:
 
-(use-package selectrum
-  :config
-  (selectrum-mode +1))
-
-;; ===================================== Better filtering and sorting
-(require 'completion-framework-helper-prescient)
-
-(use-package selectrum-prescient
-  :config
-  (selectrum-prescient-mode +1)
-  ;;:custom
-  ;;(setq selectrum-prescient-enable-filtering nil)
-  )
+(use-package vertico
+  :init
+  (vertico-mode)
+  :custom
+  (setq vertico-cycle t))
 
 ;; ===================================== Better completion
 (require 'completion-framework-helper-orderless)
+
+;; ===================================== Save completion history
+(require 'completion-framework-helper-savehist)
 
 ;; ===================================== Add extra information to completions
 (require 'completion-framework-helper-marginalia)
@@ -46,6 +41,6 @@
 ;; ===================================== Addtional completion commands and functionality
 (require 'completion-framework-helper-consult)
 
-(provide 'completion-framework-selectrum)
+(provide 'completion-framework-vertico)
 
-;;; completion-framework-selectrum ends here
+;;; completion-framework-vertico ends here
