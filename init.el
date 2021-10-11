@@ -384,13 +384,6 @@
 (use-package treemacs-magit)
 (use-package treemacs-projectile)
 
-;; Syntax checking for programming languages.
-(use-package flymake
-  :straight (flymake
-             :type git
-             :host github
-             :repo "flymake/emacs-flymake"))
-
 ;; Language server functionality for programming languages.
 
 (use-package eglot)
