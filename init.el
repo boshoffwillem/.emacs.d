@@ -49,13 +49,38 @@
 ;; I want VIM keybindings.
 ;; So before we do anything further (because it will involve potentially changing key bindings),
 ;; let's set up VIM keybindings (evil-mode).
-(use-package evil
-  :config
-  (evil-mode 1)
-  :custom
-  (setq evil-want-C-u-scroll t)
-  (setq evil-want-C-w-in-emacs-state t)
-  (setq evil-search-module 'evil-search))
+;; (use-package evil
+;;   :init
+;;   (setq evil-want-keybinding nil)
+;;   (setq evil-want-C-u-scroll t)
+;;   (setq evil-want-C-w-in-emacs-state t)
+;;   (setq evil-search-module 'evil-search)
+;;   :config
+;;   (evil-mode 1))
+
+;; (use-package evil-collection
+;;   :after
+;;   evil
+;;   :config
+;;   (evil-collection-init)
+;;   )
+
+
+;; ;; Let's add some advanced keybinding support.
+;; (use-package general
+;;   :config
+;;   (general-create-definer wb/leader-keys
+;;     :keymaps '(normal insert visual emacs)
+;;     :prefix "SPC"
+;;     :global-prefix "C-SPC"
+;;     )
+;;   (wb/leader-keys
+;;     "b" '(switch-to-buffer :which-key "buffer-switch")
+;;     "B" '(consult-buffer :which-key "consult-buffer-switch")
+;;     "f" '(find-file :which-key "find-file")
+;;     "l" '(lsp-command-map :which-key "lsp")
+;;     "p" '(projectile-command-map :which-key "projectile"))
+;;   )
 
 ;; ============================================================================================
 
@@ -127,8 +152,7 @@
 (require 'hl-line)
 (add-hook 'prog-mode-hook #'hl-line-mode)
 (add-hook 'text-mode-hook #'hl-line-mode)
-(set-face-attribute 'hl-line nil :background "434C5E")
-
+(set-face-attribute 'hl-line nil :background "#434C5E")
 
 (scroll-bar-mode -1) ;; Disable visible scrollbar.
 (tooltip-mode -1) ;; Disable tooltips.
@@ -183,6 +207,13 @@
 (use-package vertico
   :init
   (vertico-mode)
+  :bind
+  (
+   :map vertico-map
+        ;;("C-j" . vertico-next)
+        ;;("C-k" . vertico-previous)
+        ;;("C-l" . vertico-insert)
+   )
   :custom
   (setq vertico-cycle t))
 
@@ -206,12 +237,44 @@
   :init
   (marginalia-mode))
 
+(use-package ripgrep)
+
+;; ===================================== Project wide searching using ripgrep
+(use-package deadgrep
+  :bind (("C-c F" . #'deadgrep)))
+
+;; ===================================== Search and replace with regular expressions
+(use-package visual-regexp
+  :bind (("C-c H" . #'vr/replace)))
+
+(defun wb/consult-get-project-root ()
+  (when (fboundp 'projectile-project-root)
+    (projectile-project-root)))
+
 ;; Addtional completion commands and functionality.
 (use-package consult
+  :config
+  ;;(evil-global-set-key 'normal "/" 'consult-line)
+  ;;(evil-global-set-key 'normal "?" 'consult-line)
   :bind
   ("C-s" . consult-line)
   ("C-c f" . consult-ripgrep)
-  ("C-c b" . consult-buffer))
+  ("C-c b" . consult-buffer)
+  :custom
+  (consult-project-root-function #'wb/consult-get-project-root))
+
+;; Better documentation and help information
+(use-package helpful
+  :bind
+  ([remap describe-function] . helpful-function)
+  ([remap describe-symbol] . helpful-symbol)
+  ([remap describe-variable] . helpful-variable)
+  ([remap describe-command] . helpful-command)
+  ([remap describe-key] . helpful-key))
+
+(use-package which-key
+  :config
+  (which-key-mode))
 
 ;; ============================================================================================
 
@@ -231,8 +294,9 @@
           doom-themes-treemacs-theme "doom-atom")
     (load-theme chosen-theme)))
 
-(set-frame-parameter (selected-frame) 'alpha '(85 . 50))
-(add-to-list 'default-frame-alist '(alpha . (85 . 50)))
+(set-frame-parameter (selected-frame) 'alpha '(90 . 60))
+(add-to-list 'default-frame-alist '(alpha . (90 . 60)))
+(set-face-attribute 'hl-line nil :background "#434C5E")
 
 ;; Better icons.
 (use-package all-the-icons)
@@ -261,6 +325,10 @@
   (set-face-attribute 'show-paren-match-expression nil :background "#8BE9FD")
   (show-paren-mode 1))
 
+;; Make brackets pairs different colors.
+(use-package rainbow-delimiters
+  :hook ((prog-mode . rainbow-delimiters-mode)))
+
 ;; Give me a cool start page
 (use-package dashboard
   :init
@@ -277,7 +345,102 @@
 
 ;; ============================================================================================
 
-;; Add support for various programming languages.
+;; Add IDE features.
 
-(use-package dockerfile-mode)
+;; Version control.
+(use-package magit
+  :bind
+  (
+   :map magit-mode-map
+        ;;("C-j" . magit-next-line)
+        ;;("C-k" . magit-previous-line)
+        )
+  )
+
+;; Project functionality
+(use-package projectile
+  :config
+  (setq projectile-project-search-path '("~/RiderProjects/" "~/source/" ("~/code" . 1)))
+  (projectile-register-project-type 'dotnet '("*.sln" "*.csproj")
+                                    :project-file "*.csproj"
+                                    :compile "dotnet build"
+                                    :test "dotnet test"
+                                    :run "dotnet run"
+                                    :package "dotnet publish")
+  (setq projectile-indexing-method 'native)
+  (setq projectile-sort-order 'recently-active)
+  (setq projectile-enable-caching t)
+  (projectile-mode +1)
+  :bind
+  (
+   :map projectile-mode-map
+        ("C-c p" . projectile-command-map)
+   )
+  )
+
+;; View file structure of project
+(use-package treemacs)
+(use-package treemacs-all-the-icons)
+(use-package treemacs-icons-dired)
+(use-package treemacs-magit)
+(use-package treemacs-projectile)
+
+;; Syntax checking for programming languages.
+(use-package flymake
+  :straight (flymake
+             :type git
+             :host github
+             :repo "flymake/emacs-flymake"))
+
+;; Language server functionality for programming languages.
+
+(use-package eglot)
+
+;; (use-package lsp-mode
+;;   :init
+;;   (setq lsp-keymap-prefix "C-c l")
+;;   :bind
+;;   (
+;;    ("<f12>" . lsp-find-definition)
+;;    )
+;;   )
+
+;;(use-package lsp-ui)
+
+;;(use-package lsp-treemacs)
+
+;; Debugging functionality
+;;(use-package dap-mode)
+
+;; Better AST for programming languages
+(use-package tree-sitter
+  :config
+  (global-tree-sitter-mode)
+  )
+(use-package tree-sitter-langs)
+
+;; Add support for various programming languages.
+(use-package dockerfile-mode
+  ;;:hook
+  ;;(dockerfile-mode . lsp)
+  )
+
+(use-package yaml-mode
+  ;;:hook
+  ;;(yaml-mode . lsp)
+  )
+
+(defun wb/csharp-mode-config ()
+  (electric-pair-mode 1)
+  (electric-pair-local-mode 1)
+  )
+
+(use-package csharp-mode
+  :config
+  (add-to-list 'eglot-server-programs '(csharp-mode . ("omnisharp")))
+  :hook
+  (csharp-mode . wb/csharp-mode-config)
+  ;;(csharp-mode . lsp)
+  )
+
 ;; ============================================================================================
