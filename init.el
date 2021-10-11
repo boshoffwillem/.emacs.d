@@ -65,7 +65,6 @@
 ;;   (evil-collection-init)
 ;;   )
 
-
 ;; ;; Let's add some advanced keybinding support.
 ;; (use-package general
 ;;   :config
