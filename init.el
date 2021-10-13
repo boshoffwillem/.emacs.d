@@ -83,6 +83,9 @@
 
 ;; ============================================================================================
 
+;; Turn off native compilation fluff
+(setq comp-async-report-warnings-errors nil)
+
 ;; Change the default behaviour of emacs.
 ;; Like bell sounds, menu bars, etc.
 
@@ -126,12 +129,6 @@
 ;; Delete selected text instead of inserting.
 (setq delete-selection-mode t)
 
-;; Never mix tabs and spaces. Never use tabs, period.
-;; We need the setq-default here because this becomes
-;; a buffer-local variable when set.
-(setq-default indent-tabs-mode nil)
-(setq-default tab-width 4)
-
 ;; Accept 'y' in lieu of 'yes'.
 (defalias 'yes-or-no-p 'y-or-n-p)
 
@@ -147,11 +144,6 @@
 ;; Display line numbers
 (global-display-line-numbers-mode t)
 (column-number-mode)
-
-(require 'hl-line)
-(add-hook 'prog-mode-hook #'hl-line-mode)
-(add-hook 'text-mode-hook #'hl-line-mode)
-(set-face-attribute 'hl-line nil :background "#434C5E")
 
 (scroll-bar-mode -1) ;; Disable visible scrollbar.
 (tooltip-mode -1) ;; Disable tooltips.
@@ -198,6 +190,32 @@
 
 ;; Emacs has problems with very long lines. so-long detects them and takes appropriate action. Good for minified code and whatnot.
 (global-so-long-mode)
+
+(defun open-init-file ()
+  "Open this very file."
+  (interactive)
+  (find-file "~/.emacs.d/init.el"))
+
+(bind-key "C-c e" #'open-init-file)
+
+;; Prevent emacs from opening dired selections in new buffers
+(defun dired-up-directory-same-buffer ()
+  "Go up in the same buffer."
+  (find-alternate-file ".."))
+
+(defun my-dired-mode-hook ()
+  (put 'dired-find-alternate-file 'disabled nil) ; Disables the warning.
+  (define-key dired-mode-map (kbd "RET") 'dired-find-alternate-file)
+  (define-key dired-mode-map (kbd "^") 'dired-up-directory-same-buffer))
+
+(add-hook 'dired-mode-hook #'my-dired-mode-hook)
+
+(setq dired-use-ls-dired nil)
+
+(use-package saveplace
+  :config
+  (setq-default save-place t)
+  (setq save-place-file (expand-file-name ".places" user-emacs-directory)))
 
 ;; ============================================================================================
 
@@ -256,11 +274,18 @@
   ;;(evil-global-set-key 'normal "/" 'consult-line)
   ;;(evil-global-set-key 'normal "?" 'consult-line)
   :bind
-  ("C-s" . consult-line)
-  ("C-c f" . consult-ripgrep)
-  ("C-c b" . consult-buffer)
+  (
+   ("C-s" . consult-line)
+   ("C-c s" . consult-imenu)
+   ("C-c f" . consult-ripgrep)
+   ("C-c b" . consult-buffer)
+   ("C-r" . consult-mark)
+   :map minibuffer-local-map
+   ("C-r" . consult-history)
+   )
   :custom
-  (consult-project-root-function #'wb/consult-get-project-root))
+  (consult-project-root-function #'wb/consult-get-project-root)
+  )
 
 ;; Better documentation and help information
 (use-package helpful
@@ -281,7 +306,7 @@
 ;; Better theme.
 (use-package doom-themes
   :config
-  (let ((chosen-theme 'doom-dracula))
+  (let ((chosen-theme 'doom-one-light))
     (doom-themes-visual-bell-config)
     (doom-themes-treemacs-config)
     (doom-themes-org-config)
@@ -293,9 +318,10 @@
           doom-themes-treemacs-theme "doom-atom")
     (load-theme chosen-theme)))
 
-(set-frame-parameter (selected-frame) 'alpha '(90 . 60))
-(add-to-list 'default-frame-alist '(alpha . (90 . 60)))
-(set-face-attribute 'hl-line nil :background "#434C5E")
+;; (require 'hl-line)
+;; (add-hook 'prog-mode-hook #'hl-line-mode)
+;; (add-hook 'text-mode-hook #'hl-line-mode)
+;; (set-face-attribute 'hl-line nil :background "#E5E5E6")
 
 ;; Better icons.
 (use-package all-the-icons)
@@ -346,6 +372,34 @@
 
 ;; Add IDE features.
 
+;; Automatically indent when press RET.
+(global-set-key (kbd "RET") 'newline-and-indent)
+
+;; Activate whitespace-mode to view all whitespace characters.
+(global-set-key (kbd "C-c w") 'whitespace-mode)
+
+;; Show unncessary whitespace that can mess up your diff.
+(add-hook 'prog-mode-hook (lambda () (interactive) (setq show-trailing-whitespace 1)))
+
+(use-package ws-butler
+  :hook
+  (prog-mode . ws-butler-mode)
+  )
+
+;; Use space to indent by default.
+(setq-default indent-tabs-mode nil)
+
+;; Set appearance of a tab that is represented by 4 spaces.
+(setq-default tab-width 4)
+
+(electric-indent-mode +1)
+
+;; Cleanup indentation on blank lines created by automatic indentation.
+(use-package clean-aindent
+  :hook
+  (prog-mode . clean-aindent-mode)
+  )
+
 ;; Version control.
 (use-package magit
   :bind
@@ -384,25 +438,63 @@
 (use-package treemacs-magit)
 (use-package treemacs-projectile)
 
+;; Text completion
+(use-package company
+  :config
+  (setq company-show-quick-access t)
+  (global-company-mode)
+  :bind
+  ("C-." . company-complete)
+  )
+
+;; Syntax checking.
+(use-package flycheck
+  :init
+  (global-flycheck-mode)
+  )
+
 ;; Language server functionality for programming languages.
 
-(use-package eglot)
+(use-package lsp-mode
+  :init
+  (setq lsp-keymap-prefix "C-c l")
+  :config
+  (setq lsp-eldoc-render-all t
+        lsp-diagnostic-clean-after-change t
+        lsp-modeline-code-actions-segments '(count icon name)
+        lsp-lens-place-position 'above-line
+        lsp-semantic-tokens-enable t
+        lsp-semantic-tokens-honor-refresh-requests t)
+  :bind
+  (
+   ("M-RET" . lsp-execute-code-action)
+   )
+  :hook
+  (lsp-mode . lsp-lens-mode)
+  )
 
-;; (use-package lsp-mode
-;;   :init
-;;   (setq lsp-keymap-prefix "C-c l")
-;;   :bind
-;;   (
-;;    ("<f12>" . lsp-find-definition)
-;;    )
-;;   )
+(use-package lsp-ui
+  :config
+  (setq lsp-ui-sideline-show-diagnostics nil
+        lsp-ui-sideline-show-code-actions nil
+        lsp-ui-doc-position 'bottom
+        lsp-ui-doc-use-webkit t)
+  (define-key lsp-ui-mode-map [remap xref-find-definitions] #'lsp-ui-peek-find-definitions)
+  (define-key lsp-ui-mode-map [remap xref-find-references] #'lsp-ui-peek-find-references)
+  )
 
-;;(use-package lsp-ui)
-
-;;(use-package lsp-treemacs)
+(use-package lsp-treemacs)
 
 ;; Debugging functionality
-;;(use-package dap-mode)
+(use-package dap-mode
+  :hook
+  (lsp-mode . dap-mode)
+  (lsp-mode . dap-ui-mode)
+  )
+
+(use-package posframe
+  ;; Posframe is a pop-up tool that must be manually installed for dap-mode
+  )
 
 ;; Better AST for programming languages
 (use-package tree-sitter
@@ -413,13 +505,13 @@
 
 ;; Add support for various programming languages.
 (use-package dockerfile-mode
-  ;;:hook
-  ;;(dockerfile-mode . lsp)
+  :hook
+  (dockerfile-mode . lsp)
   )
 
 (use-package yaml-mode
-  ;;:hook
-  ;;(yaml-mode . lsp)
+  :hook
+  (yaml-mode . lsp)
   )
 
 (defun wb/csharp-mode-config ()
@@ -428,11 +520,44 @@
   )
 
 (use-package csharp-mode
-  :config
-  (add-to-list 'eglot-server-programs '(csharp-mode . ("omnisharp")))
   :hook
   (csharp-mode . wb/csharp-mode-config)
-  ;;(csharp-mode . lsp)
+  (csharp-mode . lsp)
   )
 
+(use-package csproj-mode)
+
+(use-package protobuf-mode
+  :mode
+  ("\\.proto\\'" . protobuf-mode)
+  )
+
+(use-package scala-mode
+  :interpreter
+  ("scala" . scala-mode)
+  :hook
+  (scala-mode . lsp)
+  )
+
+;; Enable sbt mode for executing sbt commands
+(use-package sbt-mode
+  :commands sbt-start sbt-command
+  :config
+  ;; WORKAROUND: https://github.com/ensime/emacs-sbt-mode/issues/31
+  ;; allows using SPACE when in the minibuffer
+  (substitute-key-definition
+   'minibuffer-complete-word
+   'self-insert-command
+   minibuffer-local-completion-map)
+  ;; sbt-supershell kills sbt-mode:  https://github.com/hvesalai/emacs-sbt-mode/issues/152
+  (setq sbt:program-options '("-Dsbt.supershell=false"))
+  )
+
+(use-package lsp-metals)
+
+;; Programming language code snippets.
+(use-package yasnippet
+  :config
+  (yas-global-mode 1)
+  )
 ;; ============================================================================================
