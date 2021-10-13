@@ -287,6 +287,24 @@
   (consult-project-root-function #'wb/consult-get-project-root)
   )
 
+(use-package embark
+  :bind
+  (
+   ("C-." . embark-act)
+   ("C-;" . embark-dwim)
+   ("C-h B" . embark-bindings)
+   )
+  :init
+  (setq prefix-help-command #'embark-prefix-help-command)
+  )
+
+(use-package embark-consult
+  :after (embark consult)
+  :demand t
+  :hook
+  (embark-collect-mode . consult-preview-at-point-mode)
+  )
+
 ;; Better documentation and help information
 (use-package helpful
   :bind
@@ -318,10 +336,10 @@
           doom-themes-treemacs-theme "doom-atom")
     (load-theme chosen-theme)))
 
-;; (require 'hl-line)
-;; (add-hook 'prog-mode-hook #'hl-line-mode)
-;; (add-hook 'text-mode-hook #'hl-line-mode)
-;; (set-face-attribute 'hl-line nil :background "#E5E5E6")
+(require 'hl-line)
+(add-hook 'prog-mode-hook #'hl-line-mode)
+(add-hook 'text-mode-hook #'hl-line-mode)
+(set-face-attribute 'hl-line nil :background "#E5E5E6")
 
 ;; Better icons.
 (use-package all-the-icons)
