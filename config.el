@@ -60,3 +60,13 @@
   )
 
 (use-package hydra)
+
+(org-babel-load-file
+ (expand-file-name
+  "base-settings.org"
+  user-emacs-directory))
+
+(org-babel-load-file
+ (expand-file-name
+  "appearance.org"
+  user-emacs-directory))

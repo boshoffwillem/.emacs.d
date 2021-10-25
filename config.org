@@ -86,4 +86,16 @@
 
 * Better Base Emacs Defaults
   #+begin_src emacs-lisp
+    (org-babel-load-file
+     (expand-file-name
+      "base-settings.org"
+      user-emacs-directory))
+  #+end_src
+
+* Make Emacs Look Better
+  #+begin_src emacs-lisp
+    (org-babel-load-file
+     (expand-file-name
+      "appearance.org"
+      user-emacs-directory))
   #+end_src
