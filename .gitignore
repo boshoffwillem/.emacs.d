@@ -38,3 +38,7 @@ ido.last
 
 # Prescient stuff
 var/
+
+eln-cache/
+
+network-security.data

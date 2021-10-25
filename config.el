@@ -25,5 +25,38 @@
 
 (org-babel-load-file
  (expand-file-name
-  "config.org"
+  "package-management.org"
   user-emacs-directory))
+
+(use-package evil
+  :init
+  (setq evil-want-keybinding nil)
+  (setq evil-want-C-u-scroll t)
+  (setq evil-want-C-w-in-emacs-state t)
+  (setq evil-search-module 'evil-search)
+  (setq evil-vsplit-window-right t)
+  (setq evil-split-window-below t)
+  :config
+  (evil-mode 1))
+
+(use-package evil-collection
+  :after
+  evil
+  :config
+  (evil-collection-init)
+  )
+
+(use-package general
+  :config
+  (general-create-definer wb/leader-keys
+    :keymaps '(normal insert visual emacs)
+    :prefix "SPC"
+    :global-prefix "C-SPC"
+    )
+  (wb/leader-keys
+    "b" '(switch-to-buffer :which-key "buffer-switch")
+    "f" '(find-file :which-key "find-file")
+    "g" '(keyboard-quit :which-key "quit"))
+  )
+
+(use-package hydra)
