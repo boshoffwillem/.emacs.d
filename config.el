@@ -23,10 +23,25 @@
 
 ;;; Code:
 
-(org-babel-load-file
- (expand-file-name
-  "package-management.org"
-  user-emacs-directory))
+(setq package-enable-at-startup nil)
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 5))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+(straight-use-package 'use-package)
+(cl-dolist (mode '(emacs-lisp-mode lisp-interaction-mode))
+  (font-lock-add-keywords
+   mode
+   '(("(\\<\\(straight-use-package\\)\\>" 1 font-lock-keyword-face))))
+(setq straight-use-package-by-default 1)
 
 (use-package evil
   :init
@@ -56,20 +71,182 @@
   (wb/leader-keys
     "b" '(switch-to-buffer :which-key "buffer-switch")
     "f" '(find-file :which-key "find-file")
-    "g" '(keyboard-quit :which-key "quit"))
+    )
   )
 
 (use-package hydra)
 
-(org-babel-load-file
- (expand-file-name
-  "base-settings.org"
-  user-emacs-directory))
+;; Turn off native compilation fluff
+(setq comp-async-report-warnings-errors nil)
 
-(org-babel-load-file
- (expand-file-name
-  "appearance.org"
-  user-emacs-directory))
+;; Improve garbage collection performance.
+(setq gc-cons-threshold (* 100 1024 1024)) ;; 100mb
+
+;; Improve processing of sub-processes that generates large chunk.
+(setq read-process-output-max (* 1024 1024)) ;; 1mb
+
+;; I don't want the default startup fluff
+(setq inhibit-startup-screen t)
+(setq inhibit-startup-message t)
+
+;; No need to remind me what a scratch buffer is.
+(setq initial-scratch-message nil)
+
+;; Never ding at me, ever.
+(setq ring-bell-function 'ignore)
+
+;; Prompts should go in the minibuffer, not in a GUI.
+(setq use-dialog-box nil)
+
+;; No need to prompt for the read command _every_ time.
+(setq compilation-read-command nil)
+
+;; Always scroll.
+(setq compilation-scroll-output t)
+
+;; Keyboard scroll one line at a time.
+(setq scroll-step 1)
+
+;; My source directory.
+(setq default-directory "~/code/")
+
+;; Set default bookmarks directory.
+(setq bookmark-default-file "~/emacs-files/bookmarks")
+
+;; Don't warn me about large files.
+(setq large-file-warning-threshold nil)
+
+;; Delete selected text instead of inserting.
+(setq delete-selection-mode t)
+
+;; Accept 'y' in lieu of 'yes'.
+(defalias 'yes-or-no-p 'y-or-n-p)
+
+;; Configure file encodings
+(set-charset-priority 'unicode)
+(setq locale-coding-system 'utf-8)
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+(set-selection-coding-system 'utf-8)
+(prefer-coding-system 'utf-8)
+(setq default-process-coding-system '(utf-8-unix . utf-8-unix))
+
+;; Display line numbers
+(global-display-line-numbers-mode t)
+(column-number-mode)
+
+(scroll-bar-mode -1) ;; Disable visible scrollbar.
+(tooltip-mode -1) ;; Disable tooltips.
+(tool-bar-mode -1) ;; Disable the toolbar.
+(set-fringe-mode 30) ;; Give some breathing room.
+(menu-bar-mode -1) ;; Disable the menu bar.
+(global-auto-revert-mode 1)
+
+(setq make-backup-files nil
+      auto-save-default nil
+      create-lockfiles nil)
+
+(setq custom-file null-device)
+(setq custom-safe-themes t)
+
+;; By default, the list of recent files gets cluttered up with tfhe contents of downloaded packages.
+;; It comes with Emacs, so there’s no use-package call required.
+(require 'recentf)
+(add-to-list 'recentf-exclude "\\elpa")
+
+(if ( version< "27.0" emacs-version ) ; )
+    (set-fontset-font "fontset-default" 'unicode "Apple Color Emoji" nil 'prepend)
+  (warn "This Emacs version is too old to properly support emoji."))
+
+(add-hook 'before-save-hook #'delete-trailing-whitespace)
+(setq require-final-newline t)
+
+;; Emacs instances started outside the terminal do not pick up ssh-agent information unless we use
+;; keychain-environment. Note to self: if you keep having to enter your keychain password on macOS,
+;; make sure this is in .ssh/config:
+
+;; Host *
+;;  UseKeychain yes
+
+(use-package keychain-environment
+  :config
+  (keychain-refresh-environment))
+
+(setq enable-local-variables :all)
+
+(setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
+(setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
+(setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
+
+;; Emacs has problems with very long lines. so-long detects them and takes appropriate action. Good for minified code and whatnot.
+(global-so-long-mode)
+
+;; Better fonts.
+;; Font
+(set-face-attribute 'default nil :font "FiraCode Nerd Font 10" :weight 'regular)
+;; Set the fixed pitch face
+(set-face-attribute 'fixed-pitch nil :font "FiraCode Nerd Font 10" :weight 'regular)
+;; Set the variable pitch face
+(set-face-attribute 'variable-pitch nil :font "Cantarell 11" :weight 'regular)
+
+;;(setq-default line-spacing 0.10)
+
+(add-to-list 'default-frame-alist '(font . "FiraCode Nerd Font 10"))
+
+(use-package doom-themes
+  :config
+  (let ((chosen-theme 'doom-gruvbox))
+    (doom-themes-visual-bell-config)
+    (doom-themes-treemacs-config)
+    (doom-themes-org-config)
+    (setq doom-challenger-deep-brighter-comments t
+          doom-challenger-deep-brighter-modeline t
+          doom-dark+-blue-modeline nil
+          doom-themes-enable-bold t
+          doom-themes-enable-italic t
+          doom-themes-treemacs-theme "doom-atom")
+    (load-theme chosen-theme)))
+
+(require 'hl-line)
+(add-hook 'prog-mode-hook #'hl-line-mode)
+(add-hook 'text-mode-hook #'hl-line-mode)
+;;(set-face-attribute 'hl-line nil :background "#1E2127") ;; Dark
+;;(set-face-attribute 'hl-line nil :background "#F9F9F9") ;; Light
+
+(use-package all-the-icons)
+
+(use-package all-the-icons-dired
+  :after all-the-icons
+  :hook (dired-mode . all-the-icons-dired-mode))
+
+(add-to-list 'default-frame-alist '(fullscreen . maximized))
+
+(use-package doom-modeline
+  :config (doom-modeline-mode))
+
+;; Give me a cool start page
+(use-package dashboard
+  :init
+  (progn
+    (setq dashboard-items '((recents . 5)
+                            (projects . 5)
+                            (bookmarks . 5)
+                            (agenda . 5)))
+    (setq dashboard-set-file-icons t)
+    (setq dashboard-set-heading-icons t)
+    )
+  :config
+  (dashboard-setup-startup-hook))
+
+;; Highlight matching brackets.
+(use-package paren
+  :config
+  (set-face-attribute 'show-paren-match-expression nil :background "#8BE9FD")
+  (show-paren-mode 1))
+
+;; Make brackets pairs different colors.
+(use-package rainbow-delimiters
+  :hook ((prog-mode . rainbow-delimiters-mode)))
 
 (use-package vertico
   :init
@@ -88,8 +265,8 @@
 (use-package orderless
   :init
   (setq completion-styles '(orderless)
-	completion-category-defaults nil
-	completion-category-overrides '((file (styles partial-completion)))))
+        completion-category-defaults nil
+        completion-category-overrides '((file (styles partial-completion)))))
 
 ;; Save completion history.
 (use-package savehist
@@ -166,6 +343,7 @@
 
 (use-package which-key
   :config
+  (which-key-setup-minibuffer)
   (which-key-mode))
 
 (defun open-init-file ()
@@ -332,11 +510,20 @@
   :custom
   (treemacs-is-never-other-window t)
   )
-(use-package treemacs-all-the-icons)
-(use-package treemacs-icons-dired)
-(use-package treemacs-magit)
-(use-package treemacs-projectile)
-(use-package treemacs-evil)
+(use-package treemacs-all-the-icons
+  :after treemacs)
+
+(use-package treemacs-icons-dired
+  :after treemacs)
+
+(use-package treemacs-magit
+  :after treemacs)
+
+(use-package treemacs-projectile
+  :after treemacs)
+
+(use-package treemacs-evil
+  :after treemacs)
 
 (use-package magit
   :bind
@@ -351,10 +538,19 @@
   :config
   (setq company-show-quick-access t
         company-idle-delay 0
+        company-tooltip-limit 20
+        company-tooltip-idle-delay 0.4
+        company-show-numbers t
+        company-dabbrev-downcase nil
         company-minimum-prefix-length 1
         company-selection-wrap-around t)
   (company-tng-configure-default)
   (add-hook 'after-init-hook 'global-company-mode)
+  ;; Use the numbers 0-9 to select company completion candidates
+  (let ((map company-active-map))
+    (mapc (lambda (x) (define-key map (format "%d" x)
+                        `(lambda () (interactive) (company-complete-number ,x))))
+          (number-sequence 0 9)))
   :bind
   ("C-." . company-complete)
   )
@@ -376,45 +572,83 @@
 
 ;; Syntax checking.
 (use-package flycheck
-  :init
+  :custom
+  (flycheck-emacs-lisp-initialize-packages t)
+  (flycheck-display-errors-delay 0.1)
+  :config
   (global-flycheck-mode)
+  (flycheck-set-indication-mode 'left-margin)
+  (add-to-list 'flycheck-checkers 'proselint)
   )
 
-;; (use-package flyspell
-;;   :config
-;;   (setenv "LANG" "en_US.UTF-8")
-;;   (setq ispell-program-name "c:/hunspell/bin/hunspell.exe")
-;;   (setq ispell-dictionary "en_US")
-;;   (flyspell-mode 1))
+(use-package flycheck-inline
+  :disabled
+  :config (global-flycheck-inline-mode))
 
-;; Better AST for programming languages
 (use-package tree-sitter
   :config
   (global-tree-sitter-mode)
-  )
+  (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode))
+
 (use-package tree-sitter-langs)
 
-(use-package dockerfile-mode
-  )
+(use-package dockerfile-mode)
 
 (use-package docker-compose-mode)
 
 (use-package docker
+  :bind
+  ("C-c d" . docker)
   )
 
 (use-package yaml-mode
   :mode
-  ("\\.yaml\\.yml\\'" . yaml-mode)
+  ("\\.yml$" . yaml-mode)
+  ("\\.yaml$" . yaml-mode)
   )
 
 (use-package csharp-mode
+  :mode
+  (
+   ("\\.cs$". csharp-mode)
+   ("\\.xaml$" . csharp-mode)
+   )
   )
 
 (use-package csproj-mode)
 
-(use-package protobuf-mode
-  :mode
-  ("\\.proto\\'" . protobuf-mode)
+(use-package dotnet
+  :hook
+  (csharp-mode . dotnet-mode)
+  (fsharp-mode . dotnet-mode)
+  )
+
+(use-package sln-mode
+  :mode "\\.sln$")
+
+(use-package fsharp-mode
+  :mode(
+        ("\\.fs$" . fsharp-mode)
+        )
+  )
+
+(use-package sharper
+  :bind
+  ("C-c n" . sharper-main-transient))
+
+(use-package toml-mode)
+
+(use-package protobuf-mode)
+
+(use-package markdown-mode
+  :commands (markdown-mode gfm-mode)
+  :mode (
+         ("README$" . gfm-mode)
+         ("\\.md$" . gfm-mode)
+         ("\\.md$" . markdown-mode)
+         ("\\.markdown$" . markdown-mode)
+         )
+  :init (setq markdown-command "multimarkdown")
   )
 
 (use-package scala-mode
@@ -435,8 +669,6 @@
   ;; sbt-supershell kills sbt-mode:  https://github.com/hvesalai/emacs-sbt-mode/issues/152
   (setq sbt:program-options '("-Dsbt.supershell=false"))
   )
-
-;;(use-package lsp-metals)
 
 ;; Programming language code snippets.
 (use-package yasnippet
@@ -496,6 +728,7 @@
   (wb/lsp-setup)
   :hook
   (csharp-mode . lsp-deferred)
+  (yaml-mode .lsp-deferred)
   (lsp-deferred-mode . lsp-modeline-diagnostics-mode)
   (lsp-deferred-mode . lsp-modeline-code-actions-mode)
   (lsp-deferred-mode . lsp-lens-mode)
@@ -526,7 +759,20 @@
 
 (use-package dap-mode)
 
+(use-package posframe
+  ;; Posframe is a pop-up tool that must be manually installed for dap-mode
+  )
+
 (use-package consult-lsp)
 
 ;; For Scala
 (use-package lsp-metals)
+
+(use-package restclient)
+
+(use-package company-restclient
+  :config
+  (add-to-list 'company-backends 'company-restclient)
+  )
+
+;;; init.el ends here
