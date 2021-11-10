@@ -68,10 +68,6 @@
     :prefix "SPC"
     :global-prefix "C-SPC"
     )
-  (wb/leader-keys
-    "b" '(switch-to-buffer :which-key "buffer-switch")
-    "f" '(find-file :which-key "find-file")
-    )
   )
 
 (use-package hydra)
@@ -290,13 +286,6 @@
   :config
   (evil-global-set-key 'normal "/" 'consult-line)
   (evil-global-set-key 'normal "?" 'consult-line)
-  (wb/leader-keys
-    "c" '(:ignore t :which-key "consult")
-    "cb" '(consult-buffer :which-key "consult-buffer")
-    "ci" '(consult-imenu :which-key "consult-imenu")
-    "cm" '(consult-mark :which-key "consult-mark")
-    "cr" '(consult-ripgrep :which-key "consult-ripgrep")
-    )
   :bind
   (
    :map minibuffer-local-map
@@ -306,12 +295,6 @@
   (consult-project-root-function #'wb/consult-get-project-root)
   )
 
-(defhydra hydra-embark (:timeout 4)
-  "embark commands."
-  ("a" embark-act "embark-act")
-  ("d" embark-dwim "embark-dwim")
-  )
-
 (use-package embark
   :bind
   (
@@ -319,10 +302,6 @@
    )
   :init
   (setq prefix-help-command #'embark-prefix-help-command)
-  :config
-  (wb/leader-keys
-    "e" '(hydra-embark/body :which-key "embark")
-    )
   )
 
 (use-package embark-consult
@@ -349,7 +328,7 @@
 (defun open-init-file ()
   "Open this very file."
   (interactive)
-  (find-file "~/.emacs.d/init.el"))
+  (find-file "~/.emacs.d/config.org"))
 
 (bind-key "C-c e" #'open-init-file)
 (wb/leader-keys
@@ -450,26 +429,6 @@
 ;; ===================================== Search and replace with regular expressions
 (use-package visual-regexp)
 
-(defhydra hydra-searching (:timeout 4)
-  "searching commands."
-  ("c" consult-ripgrep "consult-ripgrep")
-  ("d" deadgrep "deadgrep")
-  ("p" projectile-ripgrep "projectile-ripgrep")
-  ("v" vr/replace "visual-regexp replace")
-  )
-
-(wb/leader-keys
-  "s" '(hydra-searching/body :which-key "searching")
-  )
-
-(defhydra hydra-projectile (:timeout 4)
-  "projectile commands."
-  ("b" projectile-switch-to-buffer "switch-buffer")
-  ("f" projectile-find-file "find-file")
-  ("p" projectile-switch-project "switch-project")
-  ("k" projectile-kill-buffers "close-project")
-  )
-
 (use-package projectile
   :config
   (setq projectile-project-search-path '("~/RiderProjects/" "~/source/" ("~/code" . 1)))
@@ -482,9 +441,6 @@
   (setq projectile-indexing-method 'native)
   (setq projectile-sort-order 'recently-active)
   (setq projectile-enable-caching t)
-  (wb/leader-keys
-    "p" '(hydra-projectile/body :which-key "projectile")
-    )
   (projectile-mode +1)
   :bind
   (
@@ -516,9 +472,6 @@
 (use-package treemacs-icons-dired
   :after treemacs)
 
-(use-package treemacs-magit
-  :after treemacs)
-
 (use-package treemacs-projectile
   :after treemacs)
 
@@ -533,6 +486,9 @@
    ("C-k" . magit-previous-line)
    )
   )
+
+(use-package treemacs-magit
+  :after treemacs)
 
 (use-package company
   :config
@@ -603,15 +559,31 @@
 
 (use-package yaml-mode
   :mode
-  ("\\.yml$" . yaml-mode)
-  ("\\.yaml$" . yaml-mode)
+  ("\\.yml\\'" . yaml-mode)
+  ("\\.yaml\\'" . yaml-mode)
   )
+(use-package toml-mode)
+
+(use-package markdown-mode
+  :commands (markdown-mode gfm-mode)
+  :mode (
+         ("README$" . gfm-mode)
+         ("\\.md\\'" . gfm-mode)
+         ("\\.markdown\\'" . markdown-mode)
+         )
+  :init (setq markdown-command "multimarkdown")
+  )
+
+(use-package markdown-toc
+  :after markdown-mode)
 
 (use-package csharp-mode
   :mode
   (
-   ("\\.cs$". csharp-mode)
-   ("\\.xaml$" . csharp-mode)
+   ("\\.cs\\'". csharp-mode)
+   ("\\.cshtml\\'". csharp-mode)
+   ("\\.xaml\\'" . csharp-mode)
+   ("\\.razor\\'" . csharp-mode)
    )
   )
 
@@ -624,11 +596,11 @@
   )
 
 (use-package sln-mode
-  :mode "\\.sln$")
+  :mode "\\.sln\\'")
 
 (use-package fsharp-mode
   :mode(
-        ("\\.fs$" . fsharp-mode)
+        ("\\.fs\\'" . fsharp-mode)
         )
   )
 
@@ -636,19 +608,67 @@
   :bind
   ("C-c n" . sharper-main-transient))
 
-(use-package toml-mode)
+(use-package web-mode
+  :config
+  (setq web-mode-markup-indent-offset 2
+        web-mode-css-indent-offset 2
+        web-mode-code-indent-offset 2
+        web-mode-enable-auto-pairing t
+        web-mode-enable-css-colorization t
+        web-mode-enable-current-element-highlight t
+        web-mode-enable-current-column-highlight t)
+  :mode
+  ("\\.html?\\'"
+   "\\.js\\'"
+   "\\.php\\'")
+  )
 
-(use-package protobuf-mode)
+(use-package css-mode
+  :mode "\\.css\\'"
+  :config
+  (setq css-indent-level 2
+        css-indent-offset 2))
 
-(use-package markdown-mode
-  :commands (markdown-mode gfm-mode)
-  :mode (
-         ("README$" . gfm-mode)
-         ("\\.md$" . gfm-mode)
-         ("\\.md$" . markdown-mode)
-         ("\\.markdown$" . markdown-mode)
-         )
-  :init (setq markdown-command "multimarkdown")
+(use-package prettier-js
+  :delight " Pr")
+
+(use-package js2-mode
+  :mode "\\.js\\'"
+  :config
+  (setq js-indent-level 2)
+
+  ;;(add-hook 'js2-mode-hook #'prettier-js-mode)
+  (add-hook 'js2-mode-hook #'js2-imenu-extras-mode)
+  (add-hook 'js2-mode-hook #'add-node-modules-path))
+
+(use-package add-node-modules-path
+  :straight (add-node-modules-path
+             :type git :flavor melpa :host github :repo "codesuki/add-node-modules-path"))
+
+(use-package xref-js2
+  :after js2-mode
+  :mode (("\\.js\\'" . js2-mode)))
+
+(use-package typescript-mode
+  :config
+  (add-hook 'python-mode-hook #'lsp)
+  (setq js-indent-level 2))
+
+(use-package json-mode
+  :delight " J"
+  :mode "\\.json\\'"
+  :config
+  (add-hook 'json-mode-hook
+            (lambda ()
+              (make-local-variable 'js-indent-level)
+              (setq js-indent-level 2))))
+
+(use-package vue-mode
+  :mode "\\.vue\\'"
+  :hook
+  ((vue-mode . prettier-js-mode))
+  :config
+  (setq prettier-js-args '("--parser vue"))
   )
 
 (use-package scala-mode
@@ -673,30 +693,13 @@
 ;; Programming language code snippets.
 (use-package yasnippet
   :config
-  (wb/leader-keys
-    "y" '(yas-hydra/body :which-key "yasippets")
-    )
   (yas-global-mode 1)
   )
 
 (use-package yasnippet-snippets
   :after yasnippet)
 
-(defhydra yas-hydra (:timeout 4)
-  "yasnippet commands."
-  ("i" yas-insert-snippet "insert-snippet")
-  ("n" yas-new-snippet "new-snippet")
-  )
-
 (use-package iedit)
-
-(defhydra hydra-lsp (:timeout 4)
-  "lsp commands."
-  ("a" lsp-execute-code-action "code actions")
-  ("dd" lsp-find-definition "find-definition")
-  ("ii" lsp-find-implementation "find-implementation")
-  ("rr" lsp-find-references "find-references")
-  )
 
 (defun wb/lsp-setup()
   (setq lsp-idle-delay 0.500
@@ -716,9 +719,6 @@
         lsp-lens-enable t
         lsp-semantic-tokens-enable t
         lsp-dired-enable t)
-  (wb/leader-keys
-    "l" '(hydra-lsp/body :which-key "lsp")
-    )
   )
 
 (use-package lsp-mode
@@ -726,15 +726,25 @@
   (setq lsp-keymap-prefix "C-c l")
   :config
   (wb/lsp-setup)
+  ;; vue
+  (setq lsp-vetur-format-default-formatter-css "none"
+        lsp-vetur-format-default-formatter-html "none"
+        lsp-vetur-format-default-formatter-js "none"
+        lsp-vetur-validation-template nil)
   :hook
   (csharp-mode . lsp-deferred)
+  (dockerfile-mode . lsp-deferred)
   (yaml-mode .lsp-deferred)
+  (vue-mode .lsp-deferred)
+  (web-mode .lsp-deferred)
   (lsp-deferred-mode . lsp-modeline-diagnostics-mode)
   (lsp-deferred-mode . lsp-modeline-code-actions-mode)
   (lsp-deferred-mode . lsp-lens-mode)
   (lsp-deferred-mode . lsp-semantic-tokens-mode)
   (lsp-deferred-mode . lsp-dired-mode)
   (lsp-deferred-mode . lsp-enable-which-key-integration)
+  (before-save . lsp-format-buffer)
+  (before-save . lsp-organize-imports)
   :commands (lsp lsp-deferred)
   )
 
@@ -773,6 +783,49 @@
 (use-package company-restclient
   :config
   (add-to-list 'company-backends 'company-restclient)
+  )
+
+(defhydra hydra-global-file-actions (:timeout 2)
+  "global file actions."
+  ("f" find-file "find-global-file")
+  ("k" kill-buffer "close-file")
+  ("r" consult-buffer "recent-global-files")
+  )
+(defhydra hydra-lsp-actions (:timeout 2)
+  "lsp actions."
+  ("ca" lsp-execute-code-action "code actions")
+  ("dd" lsp-find-definition "find-definition")
+  ("dp" lsp-peek-find-definition "peek-definition")
+  ("ii" lsp-find-implementation "find-implementation")
+  ("ip" lsp-peek-find-implementation "peek-implementation")
+  ("rr" lsp-rename "rename")
+  ("uu" lsp-find-references "find-references")
+  ("up" lsp-peek-find-references "peek-references")
+  )
+(defhydra hydra-project-file-actions (:timeout 2)
+  "project file actions."
+  ("f" projectile-find-file "find-project-file")
+  ("k" projectile-kill-buffers "close-project")
+  ("p" projectile-switch-project "switch-project")
+  ("r" projectile-switch-to-buffer "recent-project-files")
+  )
+(defhydra hydra-searching-actions (:timeout 2)
+  "searching actions."
+  ("s" consult-line "file-search")
+  ("g" consult-ripgrep "global-search")
+  ("r" vr/replace "visual-regexp replace")
+  )
+(defhydra hydra-code-snippets (:timeout 4)
+  "yasnippet commands."
+  ("i" yas-insert-snippet "insert-snippet")
+  ("n" yas-new-snippet "new-snippet")
+  )
+(wb/leader-keys
+  "f" '(hydra-global-file-actions/body :which-key "global-file-actions")
+  "l" '(hydra-lsp-actions/body :which-key "lsp-actions")
+  "p" '(hydra-project-file-actions/body :which-key "project-file-actions")
+  "s" '(hydra-searching-actions/body :which-key "searching-actions")
+  "y" '(hydra-code-snippets/body :which-key "code-snippets")
   )
 
 ;;; init.el ends here
