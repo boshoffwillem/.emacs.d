@@ -690,6 +690,17 @@
   (setq sbt:program-options '("-Dsbt.supershell=false"))
   )
 
+(use-package cider)
+
+(use-package clojure-mode
+  :config
+  (setq clojure-indent-style 'align-arguments)
+  )
+
+(use-package inf-clojure)
+
+(use-package rust-mode)
+
 ;; Programming language code snippets.
 (use-package yasnippet
   :config
@@ -737,6 +748,10 @@
   (yaml-mode .lsp-deferred)
   (vue-mode .lsp-deferred)
   (web-mode .lsp-deferred)
+  (rust-mode .lsp-deferred)
+  (clojure-mode .lsp-deferred)
+  (clojurescript-mode .lsp-deferred)
+  (clojurec-mode .lsp-deferred)
   (lsp-deferred-mode . lsp-modeline-diagnostics-mode)
   (lsp-deferred-mode . lsp-modeline-code-actions-mode)
   (lsp-deferred-mode . lsp-lens-mode)
