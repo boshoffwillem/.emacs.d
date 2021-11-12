@@ -647,6 +647,12 @@
       :disabled
       :config (global-flycheck-inline-mode))
 
+    (use-package flycheck-grammarly
+      :after flycheck
+      :config
+      (setq flycheck-grammarly-check-time 0.5)
+      )
+
     (use-package tree-sitter
       :config
       (global-tree-sitter-mode)
