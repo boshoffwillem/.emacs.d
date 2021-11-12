@@ -11,6 +11,7 @@ fonts/
 transient/
 straight/
 url/
+history
 
 # Projectile stuff
 projectile-bookmarks.eld

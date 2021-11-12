@@ -191,13 +191,14 @@
 
 (use-package doom-themes
   :config
-  (let ((chosen-theme 'doom-gruvbox))
+  (let ((chosen-theme 'doom-one))
     (doom-themes-visual-bell-config)
     (doom-themes-treemacs-config)
     (doom-themes-org-config)
     (setq doom-challenger-deep-brighter-comments t
           doom-challenger-deep-brighter-modeline t
-          doom-dark+-blue-modeline nil
+          doom-dark+-blue-modeline t
+          doom-dark+-padded-modeline t
           doom-themes-enable-bold t
           doom-themes-enable-italic t
           doom-themes-treemacs-theme "doom-atom")
@@ -509,6 +510,43 @@
           (number-sequence 0 9)))
   :bind
   ("C-." . company-complete)
+  (:map company-active-map
+        ("C-j" . company-select-next)
+        ("C-k" . company-select-previous)
+        ("<tab>" . tab-indent-or-complete)
+        ("TAB" . tab-indent-or-complete)
+        )
+  )
+
+(defun company-yasnippet-or-completion ()
+  (interactive)
+  (or (do-yas-expand)
+      (company-complete-common))
+  )
+
+(defun check-expansion ()
+  (save-excursion
+    (if (looking-at "\\_>") t
+      (backward-char 1)
+      (if (looking-at "\\.") t
+        (backward-char 1)
+        (if (looking-at "::") t nil))))
+  )
+
+(defun do-yas-expand ()
+  (let ((yas/fallback-behaviour 'return-nil))
+    (yas/expand))
+  )
+
+(defun tab-indent-or-complete ()
+  (interactive)
+  (if (minibufferp)
+      (minibuffer-complete)
+    (if (or (not yas/minor-mode)
+            (null (do-yas-expand)))
+        (if (check-expansion)
+            (company-complete-common)
+          (indent-for-tab-command))))
   )
 
 (use-package company-quickhelp
@@ -701,9 +739,26 @@
 
 (use-package rust-mode)
 
+     (use-package racer
+
+)
+
+     (use-package cargo
+       :after rust-mode
+       :hook
+       (rust-mode . cargo-minor-mode)
+       )
+
+     (use-package rustic
+       :after rust-mode
+       )
+
+    (use-package flycheck-rust)
+
 ;; Programming language code snippets.
 (use-package yasnippet
   :config
+  (yas-reload-all)
   (yas-global-mode 1)
   )
 
@@ -745,13 +800,13 @@
   :hook
   (csharp-mode . lsp-deferred)
   (dockerfile-mode . lsp-deferred)
-  (yaml-mode .lsp-deferred)
-  (vue-mode .lsp-deferred)
-  (web-mode .lsp-deferred)
-  (rust-mode .lsp-deferred)
-  (clojure-mode .lsp-deferred)
-  (clojurescript-mode .lsp-deferred)
-  (clojurec-mode .lsp-deferred)
+  (yaml-mode . lsp-deferred)
+  (vue-mode . lsp-deferred)
+  (web-mode . lsp-deferred)
+  (rust-mode . lsp-deferred)
+  (clojure-mode . lsp-deferred)
+  (clojurescript-mode . lsp-deferred)
+  (clojurec-mode . lsp-deferred)
   (lsp-deferred-mode . lsp-modeline-diagnostics-mode)
   (lsp-deferred-mode . lsp-modeline-code-actions-mode)
   (lsp-deferred-mode . lsp-lens-mode)
