@@ -191,7 +191,7 @@
 
 (use-package doom-themes
   :config
-  (let ((chosen-theme 'doom-one))
+  (let ((chosen-theme 'doom-gruvbox))
     (doom-themes-visual-bell-config)
     (doom-themes-treemacs-config)
     (doom-themes-org-config)
@@ -432,7 +432,7 @@
 
 (use-package projectile
   :config
-  (setq projectile-project-search-path '("~/RiderProjects/" "~/source/" ("~/code" . 1)))
+  (setq projectile-project-search-path '("~/source/" ("~/code" . 1)))
   (projectile-register-project-type 'dotnet '("*.sln" "*.csproj")
                                     :project-file "*.csproj"
                                     :compile "dotnet build"
@@ -578,6 +578,12 @@
 (use-package flycheck-inline
   :disabled
   :config (global-flycheck-inline-mode))
+
+(use-package flycheck-grammarly
+  :after flycheck
+  :config
+  (setq flycheck-grammarly-check-time 0.5)
+  )
 
 (use-package tree-sitter
   :config
@@ -739,21 +745,27 @@
 
 (use-package rust-mode)
 
-     (use-package racer
+(use-package racer
+  :after rust-mode
+  :hook
+  (rust-mode . racer-mode)
+  )
 
-)
+(use-package cargo
+  :after rust-mode
+  :hook
+  (rust-mode . cargo-minor-mode)
+  )
 
-     (use-package cargo
-       :after rust-mode
-       :hook
-       (rust-mode . cargo-minor-mode)
-       )
+(use-package rustic
+  :after rust-mode
+  )
 
-     (use-package rustic
-       :after rust-mode
-       )
-
-    (use-package flycheck-rust)
+(use-package flycheck-rust
+  :after flycheck
+  :hook
+  (flycheck-mode . flycheck-rust-setup)
+  )
 
 ;; Programming language code snippets.
 (use-package yasnippet

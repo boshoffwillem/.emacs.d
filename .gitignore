@@ -43,3 +43,7 @@ var/
 eln-cache/
 
 network-security.data
+
+request/
+
+history

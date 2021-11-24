@@ -226,7 +226,7 @@
    #+begin_src emacs-lisp
      (use-package doom-themes
        :config
-       (let ((chosen-theme 'doom-one))
+       (let ((chosen-theme 'doom-gruvbox))
          (doom-themes-visual-bell-config)
          (doom-themes-treemacs-config)
          (doom-themes-org-config)
@@ -494,7 +494,7 @@
   #+begin_src emacs-lisp
     (use-package projectile
       :config
-      (setq projectile-project-search-path '("~/RiderProjects/" "~/source/" ("~/code" . 1)))
+      (setq projectile-project-search-path '("~/source/" ("~/code" . 1)))
       (projectile-register-project-type 'dotnet '("*.sln" "*.csproj")
                                         :project-file "*.csproj"
                                         :compile "dotnet build"
