@@ -52,7 +52,8 @@
   (setq evil-vsplit-window-right t)
   (setq evil-split-window-below t)
   :config
-  (evil-mode 1))
+  (evil-mode 1)
+  )
 
 (use-package evil-collection
   :after
@@ -66,7 +67,7 @@
   (general-create-definer wb/leader-keys
     :keymaps '(normal insert visual emacs)
     :prefix "SPC"
-    :global-prefix "C-SPC"
+    :global-prefix "M-SPC"
     )
   )
 
@@ -179,15 +180,15 @@
 
 ;; Better fonts.
 ;; Font
-(set-face-attribute 'default nil :font "FiraCode Nerd Font 10" :weight 'regular)
+(set-face-attribute 'default nil :font "FantasqueSansMono Nerd Font 11" :weight 'regular)
 ;; Set the fixed pitch face
-(set-face-attribute 'fixed-pitch nil :font "FiraCode Nerd Font 10" :weight 'regular)
+(set-face-attribute 'fixed-pitch nil :font "FantasqueSansMono Nerd Font 11" :weight 'regular)
 ;; Set the variable pitch face
 (set-face-attribute 'variable-pitch nil :font "Cantarell 11" :weight 'regular)
 
 ;;(setq-default line-spacing 0.10)
 
-(add-to-list 'default-frame-alist '(font . "FiraCode Nerd Font 10"))
+(add-to-list 'default-frame-alist '(font . "FantasqueSansMono Nerd Font 11"))
 
 (use-package doom-themes
   :config
@@ -197,8 +198,6 @@
     (doom-themes-org-config)
     (setq doom-challenger-deep-brighter-comments t
           doom-challenger-deep-brighter-modeline t
-          doom-dark+-blue-modeline t
-          doom-dark+-padded-modeline t
           doom-themes-enable-bold t
           doom-themes-enable-italic t
           doom-themes-treemacs-theme "doom-atom")
@@ -400,7 +399,7 @@
 ;; Activate whitespace-mode to view all whitespace characters.
 (global-set-key (kbd "C-c w") 'whitespace-mode)
 
-;; Show unncessary whitespace that can mess up your diff.
+;; Show unnecessary whitespace that can mess up your diff.
 (add-hook 'prog-mode-hook (lambda () (interactive) (setq show-trailing-whitespace 1)))
 
 (use-package ws-butler
@@ -432,7 +431,7 @@
 
 (use-package projectile
   :config
-  (setq projectile-project-search-path '("~/source/" ("~/code" . 1)))
+  (setq projectile-project-search-path '("~/code" ("~/source" . 1)))
   (projectile-register-project-type 'dotnet '("*.sln" "*.csproj")
                                     :project-file "*.csproj"
                                     :compile "dotnet build"
@@ -592,6 +591,8 @@
 
 (use-package tree-sitter-langs)
 
+
+
 (use-package dockerfile-mode)
 
 (use-package docker-compose-mode)
@@ -652,69 +653,6 @@
   :bind
   ("C-c n" . sharper-main-transient))
 
-(use-package web-mode
-  :config
-  (setq web-mode-markup-indent-offset 2
-        web-mode-css-indent-offset 2
-        web-mode-code-indent-offset 2
-        web-mode-enable-auto-pairing t
-        web-mode-enable-css-colorization t
-        web-mode-enable-current-element-highlight t
-        web-mode-enable-current-column-highlight t)
-  :mode
-  ("\\.html?\\'"
-   "\\.js\\'"
-   "\\.php\\'")
-  )
-
-(use-package css-mode
-  :mode "\\.css\\'"
-  :config
-  (setq css-indent-level 2
-        css-indent-offset 2))
-
-(use-package prettier-js
-  :delight " Pr")
-
-(use-package js2-mode
-  :mode "\\.js\\'"
-  :config
-  (setq js-indent-level 2)
-
-  ;;(add-hook 'js2-mode-hook #'prettier-js-mode)
-  (add-hook 'js2-mode-hook #'js2-imenu-extras-mode)
-  (add-hook 'js2-mode-hook #'add-node-modules-path))
-
-(use-package add-node-modules-path
-  :straight (add-node-modules-path
-             :type git :flavor melpa :host github :repo "codesuki/add-node-modules-path"))
-
-(use-package xref-js2
-  :after js2-mode
-  :mode (("\\.js\\'" . js2-mode)))
-
-(use-package typescript-mode
-  :config
-  (add-hook 'python-mode-hook #'lsp)
-  (setq js-indent-level 2))
-
-(use-package json-mode
-  :delight " J"
-  :mode "\\.json\\'"
-  :config
-  (add-hook 'json-mode-hook
-            (lambda ()
-              (make-local-variable 'js-indent-level)
-              (setq js-indent-level 2))))
-
-(use-package vue-mode
-  :mode "\\.vue\\'"
-  :hook
-  ((vue-mode . prettier-js-mode))
-  :config
-  (setq prettier-js-args '("--parser vue"))
-  )
-
 (use-package scala-mode
   :interpreter
   ("scala" . scala-mode)
@@ -733,15 +671,6 @@
   ;; sbt-supershell kills sbt-mode:  https://github.com/hvesalai/emacs-sbt-mode/issues/152
   (setq sbt:program-options '("-Dsbt.supershell=false"))
   )
-
-(use-package cider)
-
-(use-package clojure-mode
-  :config
-  (setq clojure-indent-style 'align-arguments)
-  )
-
-(use-package inf-clojure)
 
 (use-package rust-mode)
 
