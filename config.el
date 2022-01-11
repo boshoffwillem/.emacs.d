@@ -180,19 +180,21 @@
 
 ;; Better fonts.
 ;; Font
-(set-face-attribute 'default nil :font "FantasqueSansMono Nerd Font 11" :weight 'regular)
+(set-face-attribute 'default nil :font "FantasqueSansMono Nerd Font 10" :weight 'regular)
 ;; Set the fixed pitch face
-(set-face-attribute 'fixed-pitch nil :font "FantasqueSansMono Nerd Font 11" :weight 'regular)
+(set-face-attribute 'fixed-pitch nil :font "FantasqueSansMono Nerd Font 10" :weight 'regular)
 ;; Set the variable pitch face
 (set-face-attribute 'variable-pitch nil :font "Cantarell 11" :weight 'regular)
 
 ;;(setq-default line-spacing 0.10)
 
-(add-to-list 'default-frame-alist '(font . "FantasqueSansMono Nerd Font 11"))
+(add-to-list 'default-frame-alist '(font . "FantasqueSansMono Nerd Font 10"))
 
 (use-package doom-themes
   :config
   (let ((chosen-theme 'doom-gruvbox))
+  ;;(let ((chosen-theme 'doom-tomorrow-day))
+  ;;(let ((chosen-theme 'doom-solarized-dark))
     (doom-themes-visual-bell-config)
     (doom-themes-treemacs-config)
     (doom-themes-org-config)
@@ -201,7 +203,13 @@
           doom-themes-enable-bold t
           doom-themes-enable-italic t
           doom-themes-treemacs-theme "doom-atom")
-    (load-theme chosen-theme)))
+    (load-theme chosen-theme)
+    ))
+
+(use-package panda-theme
+  :config
+  ;;(load-theme 'panda t)
+  )
 
 (require 'hl-line)
 (add-hook 'prog-mode-hook #'hl-line-mode)
@@ -591,7 +599,35 @@
 
 (use-package tree-sitter-langs)
 
+(defun efs/configure-eshell ()
+  ;; Save command history when commands are entered
+  (add-hook 'eshell-pre-command-hook 'eshell-save-some-history)
+  ;; Truncate buffer for performance
+  (add-to-list 'eshell-output-filter-functions 'eshell-truncate-buffer)
+  (setq eshell-history-size         10000
+        eshell-buffer-maximum-lines 10000
+        eshell-hist-ignoredups t
+        eshell-scroll-to-bottom-on-input t))
 
+(use-package eshell-git-prompt
+  :after eshell)
+
+(use-package eshell
+  :hook (eshell-first-time-mode . efs/configure-eshell)
+  :config
+  (with-eval-after-load 'esh-opt
+    (setq eshell-destroy-buffer-when-process-dies t)
+    (setq eshell-visual-commands '("htop" "vim" "nvim")))
+  (eshell-git-prompt-use-theme 'powerline))
+
+(use-package dash)
+
+(use-package s)
+
+(use-package origami
+  :config
+  (global-origami-mode)
+  )
 
 (use-package dockerfile-mode)
 
@@ -603,31 +639,33 @@
   )
 
 (use-package yaml-mode
-  :mode
-  ("\\.yml\\'" . yaml-mode)
-  ("\\.yaml\\'" . yaml-mode)
-  )
-(use-package toml-mode)
+       :mode
+       ("\\.yml\\'" . yaml-mode)
+       ("\\.yaml\\'" . yaml-mode)
+       )
+     (use-package toml-mode)
 
-(use-package markdown-mode
-  :commands (markdown-mode gfm-mode)
-  :mode (
-         ("README$" . gfm-mode)
-         ("\\.md\\'" . gfm-mode)
-         ("\\.markdown\\'" . markdown-mode)
-         )
-  :init (setq markdown-command "multimarkdown")
-  )
+     (use-package markdown-mode
+       :commands (markdown-mode gfm-mode)
+       :mode (
+              ("README$" . gfm-mode)
+              ("\\.md\\'" . gfm-mode)
+              ("\\.markdown\\'" . markdown-mode)
+              )
+       :init (setq markdown-command "multimarkdown")
+       )
 
-(use-package markdown-toc
-  :after markdown-mode)
+     (use-package markdown-toc
+       :after markdown-mode)
+
+(setq nxml-slash-auto-complete-flag t)
 
 (use-package csharp-mode
   :mode
   (
    ("\\.cs\\'". csharp-mode)
    ("\\.cshtml\\'". csharp-mode)
-   ("\\.xaml\\'" . csharp-mode)
+   ("\\.xaml\\'" . nxml-mode)
    ("\\.razor\\'" . csharp-mode)
    )
   )
@@ -796,13 +834,13 @@
   (add-to-list 'company-backends 'company-restclient)
   )
 
-(defhydra hydra-global-file-actions (:timeout 2)
+(defhydra hydra-global-file-actions (:timeout 1)
   "global file actions."
   ("f" find-file "find-global-file")
   ("k" kill-buffer "close-file")
   ("r" consult-buffer "recent-global-files")
   )
-(defhydra hydra-lsp-actions (:timeout 2)
+(defhydra hydra-lsp-actions (:timeout 1)
   "lsp actions."
   ("ca" lsp-execute-code-action "code actions")
   ("dd" lsp-find-definition "find-definition")
@@ -813,30 +851,40 @@
   ("uu" lsp-find-references "find-references")
   ("up" lsp-peek-find-references "peek-references")
   )
-(defhydra hydra-project-file-actions (:timeout 2)
+(defhydra hydra-origami-actions (:timeout 1)
+  "global file actions."
+  ("-" origami-close-node "close-node")
+  ("=" origami-open-node "open-node")
+  ("o" origami-toggle-node "toggle-node")
+  )
+(defhydra hydra-project-file-actions (:timeout 1)
   "project file actions."
   ("f" projectile-find-file "find-project-file")
   ("k" projectile-kill-buffers "close-project")
   ("p" projectile-switch-project "switch-project")
   ("r" projectile-switch-to-buffer "recent-project-files")
   )
-(defhydra hydra-searching-actions (:timeout 2)
+(defhydra hydra-searching-actions (:timeout 1)
   "searching actions."
   ("s" consult-line "file-search")
   ("g" consult-ripgrep "global-search")
   ("r" vr/replace "visual-regexp replace")
   )
-(defhydra hydra-code-snippets (:timeout 4)
+(defhydra hydra-code-snippets (:timeout 1)
   "yasnippet commands."
   ("i" yas-insert-snippet "insert-snippet")
   ("n" yas-new-snippet "new-snippet")
   )
 (wb/leader-keys
+  "b" '(consult-buffer :which-key "buffer-switch")
   "f" '(hydra-global-file-actions/body :which-key "global-file-actions")
   "l" '(hydra-lsp-actions/body :which-key "lsp-actions")
+  "o" '(hydra-origami-actions/body :which-key "origami-actions")
   "p" '(hydra-project-file-actions/body :which-key "project-file-actions")
   "s" '(hydra-searching-actions/body :which-key "searching-actions")
   "y" '(hydra-code-snippets/body :which-key "code-snippets")
+  "-" '(origami-close-node :which-key "close-node")
+  "=" '(origami-open-node :which-key "open-node")
   )
 
 ;;; init.el ends here

@@ -223,11 +223,13 @@
    #+end_src
 
 ** Better Theme
-   
+
    #+begin_src emacs-lisp
      (use-package doom-themes
        :config
        (let ((chosen-theme 'doom-gruvbox))
+       ;;(let ((chosen-theme 'doom-tomorrow-day))
+       ;;(let ((chosen-theme 'doom-solarized-dark))
          (doom-themes-visual-bell-config)
          (doom-themes-treemacs-config)
          (doom-themes-org-config)
@@ -236,7 +238,13 @@
                doom-themes-enable-bold t
                doom-themes-enable-italic t
                doom-themes-treemacs-theme "doom-atom")
-         (load-theme chosen-theme)))
+         (load-theme chosen-theme)
+         ))
+
+     (use-package panda-theme
+       :config
+       ;;(load-theme 'panda t)
+       )
    #+end_src
 
 ** Highlight the currently selected line
@@ -684,17 +692,8 @@
          (setq eshell-destroy-buffer-when-process-dies t)
          (setq eshell-visual-commands '("htop" "vim" "nvim")))
        (eshell-git-prompt-use-theme 'powerline))
-
-     (use-package xterm-color)
-     (add-hook 'eshell-before-prompt-hook
-               (lambda ()
-                 (setq xterm-color-preserve-properties t)))
-
-     (add-to-list 'eshell-preoutput-filter-functions 'xterm-color-filter)
-     (setq eshell-output-filter-functions (remove 'eshell-handle-ansi-color eshell-output-filter-functions))
-     (setenv "TERM" "xterm-256color")
    #+end_src
-   
+
 ** Code folding
 
    #+begin_src emacs-lisp
@@ -707,7 +706,7 @@
        (global-origami-mode)
        )
    #+end_src
-   
+
 ** Containers and Orchestrators
 
    #+begin_src emacs-lisp
