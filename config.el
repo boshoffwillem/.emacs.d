@@ -438,7 +438,6 @@
   (setq projectile-sort-order 'recently-active)
   (setq projectile-enable-caching t)
   (projectile-mode +1)
-  (evil-define-key 'normal 'global (kbd "<leader>p") 'projectile-command-map)
   )
 
 ;; View file structure of project
@@ -709,11 +708,6 @@
 (use-package lsp-mode
   :init
   (setq lsp-keymap-prefix "C-c l")
-  (evil-define-key 'normal 'global (kbd "<leader>la") 'lsp-execute-code-action)
-  (evil-define-key 'normal 'global (kbd "<leader>ld") 'lsp-find-definition)
-  (evil-define-key 'normal 'global (kbd "<leader>lh") 'lsp-describe-thing-at-point)
-  (evil-define-key 'normal 'global (kbd "<leader>li") 'lsp-find-implementation)
-  (evil-define-key 'normal 'global (kbd "<leader>lu") 'lsp-find-references)
   :config
   (wb/lsp-setup)
   (lsp-enable-which-key-integration t)
@@ -779,5 +773,31 @@
   :config
   (add-to-list 'company-backends 'company-restclient)
   )
+
+(evil-define-key 'normal 'global (kbd "<leader>ff") 'find-file)
+(evil-define-key 'normal 'global (kbd "<leader>bb") 'consult-buffer)
+(evil-define-key 'normal 'global (kbd "<leader>fr") 'consult-recent-file)
+(evil-define-key 'normal 'global (kbd "<leader>sf") 'consult-line) ;; Search in current buffer
+(evil-define-key 'normal 'global (kbd "<leader>sa") 'consult-line-multi) ;; Search across all buffers
+
+(evil-define-key 'normal 'global (kbd "<leader>la") 'lsp-execute-code-action)
+(evil-define-key 'normal 'global (kbd "<leader>ld") 'lsp-find-definition)
+(evil-define-key 'normal 'global (kbd "<leader>lh") 'lsp-describe-thing-at-point)
+(evil-define-key 'normal 'global (kbd "<leader>li") 'lsp-find-implementation)
+(evil-define-key 'normal 'global (kbd "<leader>ss") 'consult-lsp-file-symbols)
+(evil-define-key 'normal 'global (kbd "<leader>lu") 'lsp-find-references)
+
+(evil-define-key 'normal 'global (kbd "<leader>p") 'projectile-command-map)
+(evil-define-key 'normal 'global (kbd "<leader>bp") 'consult-project-buffer)
+
+(evil-define-key 'normal 'global (kbd "<leader>0") 'treemacs-select-window)
+(evil-define-key 'normal 'global (kbd "<leader>1") 'winum-select-window-1)
+(evil-define-key 'normal 'global (kbd "<leader>2") 'winum-select-window-2)
+(evil-define-key 'normal 'global (kbd "<leader>3") 'winum-select-window-3)
+(evil-define-key 'normal 'global (kbd "<leader>4") 'winum-select-window-4)
+(evil-define-key 'normal 'global (kbd "<leader>5") 'winum-select-window-5)
+(evil-define-key 'normal 'global (kbd "<leader>6") 'winum-select-window-6)
+(evil-define-key 'normal 'global (kbd "<leader>7") 'winum-select-window-7)
+(evil-define-key 'normal 'global (kbd "<leader>8") 'winum-select-window-8)
 
 ;;; init.el ends here
