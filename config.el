@@ -24,119 +24,120 @@
 ;;; Code:
 
 (scroll-bar-mode -1) ;; Disable visible scrollbar.
- (tooltip-mode -1) ;; Disable tooltips.
- (tool-bar-mode -1) ;; Disable the toolbar.
- (set-fringe-mode 30) ;; Give some breathing room.
- (menu-bar-mode -1) ;; Disable the menu bar.
- (global-auto-revert-mode 1)
- (setq inhibit-startup-screen t)
- (setq inhibit-startup-buffer-menu t)
- (setq native-comp-async-report-warnings-errors 'silent) ; emacs28 with native compilation
- (setq initial-scratch-message nil)
- (setq large-file-warning-threshold nil)
- (setq delete-selection-mode t)
- (global-display-line-numbers-mode 1)
- (column-number-mode)
- (setq display-line-numbers-type 'relative)
- (setq make-backup-files nil
-       auto-save-default nil
-       create-lockfiles nil)
- (setq custom-safe-themes t)
- (setq custom-file null-device)
- (setq use-short-answers t)
+(tooltip-mode -1) ;; Disable tooltips.
+(tool-bar-mode -1) ;; Disable the toolbar.
+(set-fringe-mode 30) ;; Give some breathing room.
+(menu-bar-mode -1) ;; Disable the menu bar.
+(global-auto-revert-mode 1)
+(setq inhibit-startup-screen t)
+(setq inhibit-startup-buffer-menu t)
+(setq native-comp-async-report-warnings-errors 'silent) ; emacs28 with native compilation
+(setq initial-scratch-message nil)
+(setq large-file-warning-threshold nil)
+(setq delete-selection-mode t)
+(global-display-line-numbers-mode 1)
+(column-number-mode)
+(setq display-line-numbers-type 'relative)
+(setq make-backup-files nil
+      auto-save-default nil
+      create-lockfiles nil)
+(setq custom-safe-themes t)
+(setq custom-file null-device)
+(setq use-short-answers t)
 
- ;; Turn off native compilation fluff
- (setq comp-async-report-warnings-errors nil)
+;; Turn off native compilation fluff
+(setq comp-async-report-warnings-errors nil)
 
- ;; Improve garbage collection performance.
- (setq gc-cons-threshold 100000000)
+;; Improve garbage collection performance.
+(setq gc-cons-threshold 100000000)
 
- ;; Improve processing of sub-processes that generates large chunk.
- (setq read-process-output-max (* 2048 2048))
+;; Improve processing of sub-processes that generates large chunk.
+(setq read-process-output-max (* 2048 2048))
 
- ;; I don't want the default startup fluff
- (setq inhibit-startup-screen t)
- (setq inhibit-startup-message t)
+;; I don't want the default startup fluff
+(setq inhibit-startup-screen t)
+(setq inhibit-startup-message t)
 
- ;; No need to remind me what a scratch buffer is.
- (setq initial-scratch-message nil)
+;; No need to remind me what a scratch buffer is.
+(setq initial-scratch-message nil)
 
- ;; Never ding at me, ever.
- (setq ring-bell-function 'ignore)
+;; Never ding at me, ever.
+(setq ring-bell-function 'ignore)
 
- ;; Prompts should go in the minibuffer, not in a GUI.
- (setq use-dialog-box nil)
+;; Prompts should go in the minibuffer, not in a GUI.
+(setq use-dialog-box nil)
 
- ;; No need to prompt for the read command _every_ time.
- (setq compilation-read-command nil)
+;; No need to prompt for the read command _every_ time.
+(setq compilation-read-command nil)
 
- ;; Always scroll.
- (setq compilation-scroll-output t)
+;; Always scroll.
+(setq compilation-scroll-output t)
 
- ;; Keyboard scroll one line at a time.
- (setq scroll-step 1)
+;; Keyboard scroll one line at a time.
+(setq scroll-step 1)
 
- ;; My source directory.
- (setq default-directory "~/code/")
+;; My source directory.
+(setq default-directory "~/code/")
 
- ;; Set default bookmarks directory.
- (setq bookmark-default-file "~/emacs-files/bookmarks")
+;; Set default bookmarks directory.
+(setq bookmark-default-file "~/emacs-files/bookmarks")
 
- ;; Don't warn me about large files.
- (setq large-file-warning-threshold nil)
+;; Don't warn me about large files.
+(setq large-file-warning-threshold nil)
 
- ;; Delete selected text instead of inserting.
- (setq delete-selection-mode t)
+;; Delete selected text instead of inserting.
+(setq delete-selection-mode t)
 
- ;; Accept 'y' in lieu of 'yes'.
- (defalias 'yes-or-no-p 'y-or-n-p)
+;; Accept 'y' in lieu of 'yes'.
+(defalias 'yes-or-no-p 'y-or-n-p)
 
- ;; Configure file encodings
- (set-charset-priority 'unicode)
- (setq locale-coding-system 'utf-8)
- (set-terminal-coding-system 'utf-8)
- (set-keyboard-coding-system 'utf-8)
- (set-selection-coding-system 'utf-8)
- (prefer-coding-system 'utf-8)
- (setq default-process-coding-system '(utf-8-unix . utf-8-unix))
+;; Configure file encodings
+(set-charset-priority 'unicode)
+(setq locale-coding-system 'utf-8)
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+(set-selection-coding-system 'utf-8)
+(prefer-coding-system 'utf-8)
+(setq default-process-coding-system '(utf-8-unix . utf-8-unix))
+(set-default-coding-systems 'utf-8)
 
- ;; By default, the list of recent files gets cluttered up with tfhe contents of downloaded packages.
- ;; It comes with Emacs, so there’s no use-package call required.
- (require 'recentf)
- (add-to-list 'recentf-exclude "\\elpa")
+;; By default, the list of recent files gets cluttered up with tfhe contents of downloaded packages.
+;; It comes with Emacs, so there’s no use-package call required.
+(require 'recentf)
+(add-to-list 'recentf-exclude "\\elpa")
 
- (if ( version< "27.0" emacs-version ) ; )
-     (set-fontset-font "fontset-default" 'unicode "Apple Color Emoji" nil 'prepend)
-   (warn "This Emacs version is too old to properly support emoji."))
+(if ( version< "27.0" emacs-version ) ; )
+    (set-fontset-font "fontset-default" 'unicode "Apple Color Emoji" nil 'prepend)
+  (warn "This Emacs version is too old to properly support emoji."))
 
- (add-hook 'before-save-hook #'delete-trailing-whitespace)
- (setq require-final-newline t)
- (setq enable-local-variables :all)
- (setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
- (setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
- (setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
+(add-hook 'before-save-hook #'delete-trailing-whitespace)
+(setq require-final-newline t)
+(setq enable-local-variables :all)
+(setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
+(setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
+(setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
 
- ;; Emacs has problems with very long lines. so-long detects them and takes appropriate action.
- ;; Good for minified code and whatnot.
- (global-so-long-mode)
+;; Emacs has problems with very long lines. so-long detects them and takes appropriate action.
+;; Good for minified code and whatnot.
+(global-so-long-mode)
 
 ;; Shortcut to open config
- (defun open-init-file ()
-   "Open this very file."
-   (interactive)
-   (find-file "~/.emacs.d/config.org"))
- (define-key global-map (kbd "C-c e") 'open-init-file)
+(defun open-init-file ()
+  "Open this very file."
+  (interactive)
+  (find-file "~/.emacs.d/config.org"))
+(define-key global-map (kbd "C-c e") 'open-init-file)
 
- ;; Prevent emacs from opening dired selections in new buffers
- (defun dired-up-directory-same-buffer ()
-   "Go up in the same buffer."
-   (find-alternate-file ".."))
- (defun my-dired-mode-hook ()
-   (put 'dired-find-alternate-file 'disabled nil) ; Disables the warning.
-   (define-key dired-mode-map (kbd "RET") 'dired-find-alternate-file)
-   (define-key dired-mode-map (kbd "^") 'dired-up-directory-same-buffer))
- (add-hook 'dired-mode-hook #'my-dired-mode-hook)
- (setq dired-use-ls-dired nil)
+;; Prevent emacs from opening dired selections in new buffers
+(defun dired-up-directory-same-buffer ()
+  "Go up in the same buffer."
+  (find-alternate-file ".."))
+(defun my-dired-mode-hook ()
+  (put 'dired-find-alternate-file 'disabled nil) ; Disables the warning.
+  (define-key dired-mode-map (kbd "RET") 'dired-find-alternate-file)
+  (define-key dired-mode-map (kbd "^") 'dired-up-directory-same-buffer))
+(add-hook 'dired-mode-hook #'my-dired-mode-hook)
+(setq dired-use-ls-dired nil)
 
 (setq package-enable-at-startup nil)
 (defvar bootstrap-version)
@@ -191,38 +192,31 @@
 ;;   )
 ;; (use-package hydra)
 
-;; Better fonts.
 ;; Font
 (set-face-attribute 'default nil :font "FantasqueSansMono Nerd Font 10" :weight 'regular)
 ;; Set the fixed pitch face
 (set-face-attribute 'fixed-pitch nil :font "FantasqueSansMono Nerd Font 10" :weight 'regular)
 ;; Set the variable pitch face
 (set-face-attribute 'variable-pitch nil :font "Cantarell 11" :weight 'regular)
-;;(setq-default line-spacing 0.10)
-(add-to-list 'default-frame-alist '(font . "FantasqueSansMono Nerd Font 10"))
 
 (use-package doom-themes
   :config
   (let (
-	(chosen-theme 'doom-gruvbox)
-	;;(chosen-theme 'doom-tomorrow-day)
-	;;(chosen-theme 'doom-solarized-dark)
-	)
+        (chosen-theme 'doom-gruvbox)
+        ;;(chosen-theme 'doom-tomorrow-day)
+        ;;(chosen-theme 'doom-solarized-dark)
+        )
     (doom-themes-visual-bell-config)
     (doom-themes-treemacs-config)
     (doom-themes-org-config)
     (setq doom-challenger-deep-brighter-comments t
-	  doom-challenger-deep-brighter-modeline t
-	  doom-themes-enable-bold t
-	  doom-themes-enable-italic t
-	  doom-themes-treemacs-theme "doom-atom")
+          doom-challenger-deep-brighter-modeline t
+          doom-themes-enable-bold t
+          doom-themes-enable-italic t
+          doom-themes-treemacs-theme "doom-atom")
     (load-theme chosen-theme)
     ))
-(use-package panda-theme
-  :config
-  ;;(load-theme 'panda t)
-  )
-(load-theme 'modus-vivendi t)
+;; (load-theme 'modus-vivendi t)
 
 (use-package all-the-icons)
 (use-package all-the-icons-dired
@@ -287,7 +281,9 @@
 (use-package orderless
   :config
   (setq completion-styles '(orderless)
-        read-buffer-completion-ignore-case t)
+        read-buffer-completion-ignore-case t
+        completion-category-defaults nil
+        completion-category-overrides '((file (styles . (partial-completion)))))
   )
 
 ;; Some steroids for Emacs
@@ -349,6 +345,87 @@
   (winum-mode)
   )
 
+;; TODO: Mode this to another section
+(setq-default fill-column 80)
+
+;; Turn on indentation and auto-fill mode for Org files
+(defun wb/org-mode-setup ()
+  (org-indent-mode)
+  (variable-pitch-mode 1)
+  (auto-fill-mode 0)
+  (visual-line-mode 1)
+  (setq evil-auto-indent nil)
+  (diminish org-indent-mode)
+  )
+
+(use-package org
+  :defer t
+  :hook (org-mode . wb/org-mode-setup)
+  :config
+  (setq org-ellipsis " ..."
+        org-hide-emphasis-markers t
+        org-src-fontify-natively t
+        org-fontify-quote-and-verse-blocks t
+        org-src-tab-acts-natively t
+        org-edit-src-content-indentation 2
+        org-hide-block-startup nil
+        org-src-preserve-indentation nil
+        org-startup-folded 'content
+        org-cycle-separator-lines 2)
+
+  (setq org-refile-targets '((nil :maxlevel . 1)
+                             (org-agenda-files :maxlevel . 1)))
+
+  (setq org-outline-path-complete-in-steps nil)
+  (setq org-refile-use-outline-path t)
+  (evil-define-key '(normal insert visual) org-mode-map (kbd "C-j") 'org-next-visible-heading)
+  (evil-define-key '(normal insert visual) org-mode-map (kbd "C-k") 'org-previous-visible-heading)
+  (evil-define-key '(normal insert visual) org-mode-map (kbd "M-j") 'org-metadown)
+  (evil-define-key '(normal insert visual) org-mode-map (kbd "M-k") 'org-metaup)
+  ;; Replace list hyphen with dot
+  ;; (font-lock-add-keywords 'org-mode
+  ;;                         '(("^ *\\([-]\\) "
+  ;;                             (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "")))))
+
+  ;; Increase the size of various headings
+  (set-face-attribute 'org-document-title nil :font "Cantarell" :weight 'bold :height 1.3)
+  (dolist (face '((org-level-1 . 1.2)
+                  (org-level-2 . 1.1)
+                  (org-level-3 . 1.05)
+                  (org-level-4 . 1.0)
+                  (org-level-5 . 1.1)
+                  (org-level-6 . 1.1)
+                  (org-level-7 . 1.1)
+                  (org-level-8 . 1.1)))
+    (set-face-attribute (car face) nil :font "Cantarell" :weight 'medium :height (cdr face)))
+
+  ;; Make sure org-indent face is available
+  (require 'org-indent)
+
+  ;; Ensure that anything that should be fixed-pitch in Org files appears that way
+  (set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
+  (set-face-attribute 'org-table nil  :inherit 'fixed-pitch)
+  (set-face-attribute 'org-formula nil  :inherit 'fixed-pitch)
+  (set-face-attribute 'org-code nil   :inherit '(shadow fixed-pitch))
+  (set-face-attribute 'org-indent nil :inherit '(org-hide fixed-pitch))
+  (set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
+  (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
+  (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
+  (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch)
+
+  ;; Get rid of the background on column views
+  (set-face-attribute 'org-column nil :background nil)
+  (set-face-attribute 'org-column-title nil :background nil)
+  )
+
+(use-package org-superstar
+  :after org
+  :hook (org-mode . org-superstar-mode)
+  :custom
+  (org-superstar-remove-leading-stars t)
+  (org-superstar-headline-bullets-list '("* "** "*** "**** "***** "****** "*******"))
+  )
+
 (use-package expand-region
   :bind
   ("C-=" . er/expand-region)
@@ -356,10 +433,10 @@
 
 (use-package multiple-cursors
   :bind (
-	 ("C-S-c s" . set-rectangular-region-anchor)
-	 ("C-S-c e" . #'mc/edit-lines)
-	 ("C-S-<mouse-1>" . mc/add-cursor-on-click)
-	 ))
+         ("C-S-c s" . set-rectangular-region-anchor)
+         ("C-S-c e" . #'mc/edit-lines)
+         ("C-S-<mouse-1>" . mc/add-cursor-on-click)
+         ))
 
 ;; Create shortcut for duplicating a line
 (defun duplicate-line()
@@ -375,49 +452,24 @@
 
 (bind-key "C-c /" #'comment-dwim)
 
-(defun wb/eol-then-newline ()
-  "Go to end of line, then newline-and-indent."
-  (interactive)
-  (move-end-of-line nil)
-  (newline-and-indent))
-
-(bind-key "C-RET" #'wb/eol-then-newline)
-
-(use-package ace-jump-mode
-  :bind
-  ("C-c SPC" . ace-jump-mode)
-  ("C-x SPC" . ace-jump-mode-pop-mark)
-  )
-
-;; Automatically indent when press RET.
-(global-set-key (kbd "RET") 'newline-and-indent)
-
-;; Activate whitespace-mode to view all whitespace characters.
-(global-set-key (kbd "C-c w") 'whitespace-mode)
-
-;; Show unnecessary whitespace that can mess up your diff.
-(add-hook 'prog-mode-hook (lambda () (interactive) (setq show-trailing-whitespace 1)))
-
-(use-package ws-butler
-  :hook
-  (prog-mode . ws-butler-mode)
-  )
+(use-package evil-nerd-commenter
+  :bind ("M-/" . evilnc-comment-or-uncomment-lines))
 
 ;; Use space to indent by default.
 (setq-default indent-tabs-mode nil)
 
 ;; Set appearance of a tab that is represented by 4 spaces.
 (setq-default tab-width 4)
+(setq-default evil-shift-width tab-width)
 
-(electric-indent-mode +1)
-
-;; Cleanup indentation on blank lines created by automatic indentation.
-(use-package clean-aindent
-  :hook
-  (prog-mode . clean-aindent-mode)
-  )
+;; Automatically clean whitespace
+(use-package ws-butler
+  :hook ((text-mode . ws-butler-mode)
+         (prog-mode . ws-butler-mode)))
 
 (use-package ripgrep)
+
+(use-package rg)
 
 ;; ===================================== Project wide searching using ripgrep
 (use-package deadgrep)
@@ -426,6 +478,8 @@
 (use-package visual-regexp)
 
 (use-package projectile
+  :bind-keymap
+  ("C-c p" . projectile-command-map)
   :config
   (setq projectile-project-search-path '("~/code" ("~/source" . 1)))
   (projectile-register-project-type 'dotnet '("*.sln" "*.csproj")
@@ -478,14 +532,85 @@
    )
   )
 
+(use-package magit-todos)
+
 (use-package treemacs-magit
   :after treemacs)
+
+(use-package git-gutter
+  :straight git-gutter-fringe
+  :diminish
+  :hook ((text-mode . git-gutter-mode)
+         (prog-mode . git-gutter-mode))
+  :config
+  (setq git-gutter:update-interval 2)
+  (require 'git-gutter-fringe)
+  (set-face-foreground 'git-gutter-fr:added "LightGreen")
+  (fringe-helper-define 'git-gutter-fr:added nil
+    "XXXXXXXXXX"
+    "XXXXXXXXXX"
+    "XXXXXXXXXX"
+    ".........."
+    ".........."
+    "XXXXXXXXXX"
+    "XXXXXXXXXX"
+    "XXXXXXXXXX"
+    ".........."
+    ".........."
+    "XXXXXXXXXX"
+    "XXXXXXXXXX"
+    "XXXXXXXXXX")
+
+  (set-face-foreground 'git-gutter-fr:modified "LightGoldenrod")
+  (fringe-helper-define 'git-gutter-fr:modified nil
+    "XXXXXXXXXX"
+    "XXXXXXXXXX"
+    "XXXXXXXXXX"
+    ".........."
+    ".........."
+    "XXXXXXXXXX"
+    "XXXXXXXXXX"
+    "XXXXXXXXXX"
+    ".........."
+    ".........."
+    "XXXXXXXXXX"
+    "XXXXXXXXXX"
+    "XXXXXXXXXX")
+
+  (set-face-foreground 'git-gutter-fr:deleted "LightCoral")
+  (fringe-helper-define 'git-gutter-fr:deleted nil
+    "XXXXXXXXXX"
+    "XXXXXXXXXX"
+    "XXXXXXXXXX"
+    ".........."
+    ".........."
+    "XXXXXXXXXX"
+    "XXXXXXXXXX"
+    "XXXXXXXXXX"
+    ".........."
+    ".........."
+    "XXXXXXXXXX"
+    "XXXXXXXXXX"
+    "XXXXXXXXXX")
+
+  ;; These characters are used in terminal mode
+  (setq git-gutter:modified-sign "M")
+  (setq git-gutter:added-sign "A")
+  (setq git-gutter:deleted-sign "D")
+  (set-face-foreground 'git-gutter:added "LightGreen")
+  (set-face-foreground 'git-gutter:modified "LightGoldenrod")
+  (set-face-foreground 'git-gutter:deleted "LightCoral"))
+
+(use-package smerge-mode)
+
+(use-package ediff)
 
 (use-package company
   :hook
   ((emacs-lisp-mode . (lambda ()
                         (setq-local company-backends '(company-elisp))))
    (prog-mode . company-mode)
+   (org-mode . company-mode)
    )
   :config
   (setq company-show-quick-access t
@@ -587,24 +712,24 @@
   )
 
 (use-package yaml-mode
-       :mode
-       ("\\.yml\\'" . yaml-mode)
-       ("\\.yaml\\'" . yaml-mode)
-       )
-     (use-package toml-mode)
+  :mode
+  ("\\.yml\\'" . yaml-mode)
+  ("\\.yaml\\'" . yaml-mode)
+  )
+(use-package toml-mode)
 
-     (use-package markdown-mode
-       :commands (markdown-mode gfm-mode)
-       :mode (
-              ("README$" . gfm-mode)
-              ("\\.md\\'" . gfm-mode)
-              ("\\.markdown\\'" . markdown-mode)
-              )
-       :init (setq markdown-command "multimarkdown")
-       )
+(use-package markdown-mode
+  :commands (markdown-mode gfm-mode)
+  :mode (
+         ("README$" . gfm-mode)
+         ("\\.md\\'" . gfm-mode)
+         ("\\.markdown\\'" . markdown-mode)
+         )
+  :init (setq markdown-command "multimarkdown")
+  )
 
-     (use-package markdown-toc
-       :after markdown-mode)
+(use-package markdown-toc
+  :after markdown-mode)
 
 (setq nxml-slash-auto-complete-flag t)
 
@@ -775,20 +900,23 @@
   )
 
 (evil-define-key 'normal 'global (kbd "<leader>ff") 'find-file)
-(evil-define-key 'normal 'global (kbd "<leader>bb") 'consult-buffer)
+(evil-define-key 'normal 'global (kbd "<leader>b") 'consult-buffer)
 (evil-define-key 'normal 'global (kbd "<leader>fr") 'consult-recent-file)
 (evil-define-key 'normal 'global (kbd "<leader>sf") 'consult-line) ;; Search in current buffer
 (evil-define-key 'normal 'global (kbd "<leader>sa") 'consult-line-multi) ;; Search across all buffers
 
 (evil-define-key 'normal 'global (kbd "<leader>la") 'lsp-execute-code-action)
 (evil-define-key 'normal 'global (kbd "<leader>ld") 'lsp-find-definition)
-(evil-define-key 'normal 'global (kbd "<leader>lh") 'lsp-describe-thing-at-point)
+(evil-define-key 'normal 'global (kbd "<leader>lh") 'lsp-ui-doc-show)
 (evil-define-key 'normal 'global (kbd "<leader>li") 'lsp-find-implementation)
-(evil-define-key 'normal 'global (kbd "<leader>ss") 'consult-lsp-file-symbols)
+(evil-define-key 'normal 'global (kbd "<leader>lsa") 'consult-lsp-symbols) ;; Search all symbols in workspace
+(evil-define-key 'normal 'global (kbd "<leader>lss") 'consult-lsp-file-symbols) ;; Search only symbols in file
 (evil-define-key 'normal 'global (kbd "<leader>lu") 'lsp-find-references)
 
-(evil-define-key 'normal 'global (kbd "<leader>p") 'projectile-command-map)
-(evil-define-key 'normal 'global (kbd "<leader>bp") 'consult-project-buffer)
+(evil-define-key 'normal 'global (kbd "<leader>gg") 'magit)
+
+(evil-define-key 'normal 'global (kbd "<leader>ps") 'rg) ;; Project-wide search
+(evil-define-key 'normal 'global (kbd "<leader>pb") 'consult-project-buffer) ;; Only buffers pertaining to project
 
 (evil-define-key 'normal 'global (kbd "<leader>0") 'treemacs-select-window)
 (evil-define-key 'normal 'global (kbd "<leader>1") 'winum-select-window-1)
