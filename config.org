@@ -6,11 +6,6 @@
 The first thing to do is to get a proper package manager.
 The best one I've seen is straight.
 
-#+begin_src c
-  if (oeuoeu == ("oehuotnehu"))
-      return;
-#+end_src
-
 #+begin_src emacs-lisp
   (setq package-enable-at-startup nil)
   (defvar bootstrap-version)
