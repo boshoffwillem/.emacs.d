@@ -1,25 +1,12 @@
 ;;; init.el --- Main configuration for emacs -*- lexical-binding: t -*-
-
 ;; Author: Willem Boshoff <boshoffwillem@protonmail.com>
 ;; URL: https://github.com/boshoffwillem/.emacs.d
 
-;; This file is free software: you can redistribute it and/or modify it
-;; under the terms of the GNU General Public License as published by the
-;; Free Software Foundation, either version 3 of the License, or (at
-;; your option) any later version.
-;;
-;; This file is distributed in the hope that it will be useful, but
-;; WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-;; General Public License for more details.
-;;
-;; You should have received a copy of the GNU General Public License
-;; along with this file.  If not, see <http://www.gnu.org/licenses/>.
-
 ;;; Commentary:
-
-;; This file is the main setup and entry point for
-;; Emacs configuration.
+;; This file is the main entry point for Emacs configuration.
+;; It simply references an org file that contains a detailed description
+;; of my setup, and gets compiled with `org-babel` into a file with only
+;; e-lisp code (a `config.el` file) that is substituted into this file.
 
 ;;; Code:
 
