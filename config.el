@@ -18,31 +18,37 @@
    '(("(\\<\\(straight-use-package\\)\\>" 1 font-lock-keyword-face))))
 (setq straight-use-package-by-default 1)
 
-;; Remove the emacs C-u binding, otherwise it
-;; overwrites the evil binding.
-(global-set-key (kbd "C-u") nil)
-;; Remove the emacs C-a binding, otherwise it
-;; overwrites the evil binding.
-(global-set-key (kbd "C-a") nil)
+(defun wb/evil-mode-setup ()
+  ;; Remove the emacs C-u binding, otherwise it
+  ;; overwrites the evil binding.
+  (global-set-key (kbd "C-u") nil)
+  ;; Remove the emacs C-a binding, otherwise it
+  ;; overwrites the evil binding.
+  (global-set-key (kbd "C-a") nil)
+)
+
 (use-package evil
-	     :init
-	     (setq evil-want-keybinding nil)
-	     (setq evil-want-C-u-scroll t)
-	     (setq evil-want-C-w-in-emacs-state t)
-	     (setq evil-search-module 'evil-search)
-	     (setq evil-vsplit-window-right t)
-	     (setq evil-split-window-below t)
-	     :config
-	     (evil-set-leader 'normal (kbd "<SPC>"))
-	     (evil-set-undo-system 'undo-redo)
-	     (evil-mode 1)
-	     )
+         :init
+         (setq evil-want-keybinding nil)
+         (setq evil-want-C-u-scroll t)
+         (setq evil-want-C-w-in-emacs-state t)
+         (setq evil-search-module 'evil-search)
+         (setq evil-vsplit-window-right t)
+         (setq evil-split-window-below t)
+         :config
+         (evil-set-leader 'normal (kbd "<SPC>"))
+         (evil-set-undo-system 'undo-redo)
+         (evil-mode 0)
+         :hook
+         (evil-mode . wb/evil-mode-setup)
+         )
+
 (use-package evil-collection
-	     :after
-	     evil
-	     :config
-	     (evil-collection-init)
-	     )
+         :after
+         evil
+         :config
+         (evil-collection-init)
+         )
 
 ;; Font
 (set-face-attribute 'default nil :font "FantasqueSansMono Nerd Font 10" :weight 'regular)
