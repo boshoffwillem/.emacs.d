@@ -38,7 +38,7 @@
          :config
          (evil-set-leader 'normal (kbd "<SPC>"))
          (evil-set-undo-system 'undo-redo)
-         (evil-mode 0)
+         (evil-mode 1)
          :hook
          (evil-mode . wb/evil-mode-setup)
          )
