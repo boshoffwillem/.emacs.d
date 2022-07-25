@@ -4,6 +4,11 @@
 
 ;;; Commentary:
 
+;; Automatically clean whitespace
+(use-package ws-butler
+  :hook ((text-mode . ws-butler-mode)
+         (prog-mode . ws-butler-mode)))
+
 ;;; Code:
 (use-package flycheck
   :defer t

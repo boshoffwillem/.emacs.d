@@ -52,6 +52,16 @@
 ;; Disable visual line mode (this causes issues with $ and a few other things in evil)
 (global-visual-line-mode -1)
 
+;; Use space to indent by default.
+(setq-default indent-tabs-mode nil)
+;; Set appearance of a tab that is represented by 4 spaces.
+(setq-default tab-width 4)
+
+(show-paren-mode t)
+(setq show-paren-delay 0)
+(setq show-paren-style 'parenthesis)
+(electric-pair-mode t)
+
 (setq default-directory "~/code/")
 (setq large-file-warning-threshold nil)
 ;; Set default bookmarks directory.
