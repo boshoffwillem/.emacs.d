@@ -1,27 +1,3 @@
-* Better Base Emacs Defaults
-
-#+begin_src emacs-lisp
-  (global-auto-revert-mode 1)
-  (setq custom-file null-device)
-  (setq use-short-answers t)
-
-  ;; No need to prompt for the read command _every_ time.
-  (setq compilation-read-command nil)
-
-  ;; Accept 'y' in lieu of 'yes'.
-  (defalias 'yes-or-no-p 'y-or-n-p)
-
-  ;; Configure file encodings
-  (set-charset-priority 'unicode)
-  (setq locale-coding-system 'utf-8)
-  (set-terminal-coding-system 'utf-8)
-  (set-keyboard-coding-system 'utf-8)
-  (set-selection-coding-system 'utf-8)
-  (prefer-coding-system 'utf-8)
-  (setq default-process-coding-system '(utf-8-unix . utf-8-unix))
-  (set-default-coding-systems 'utf-8)
-#+end_src
-
 ** Give Me A Cool Startup Screen
 
 #+begin_src emacs-lisp

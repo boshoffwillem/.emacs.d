@@ -12,6 +12,7 @@ transient/
 straight/
 url/
 history
+bin/
 
 # Projectile stuff
 projectile-bookmarks.eld
