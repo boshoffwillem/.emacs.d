@@ -48,5 +48,6 @@
 (require 'appearance)
 (require 'completion)
 (require 'ide)
+(require 'keybindings)
 
 ;;; init.el ends here

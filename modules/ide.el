@@ -120,6 +120,17 @@
   (yaml-mode . lsp-deferred))
   )
 
+(use-package yasnippet
+  :config
+  (yas-reload-all)
+  (add-hook 'prog-mode-hook 'yas-minor-mode)
+  (add-hook 'text-mode-hook 'yas-minor-mode)
+  (yas-global-mode 1)
+  )
+
+(use-package yasnippet-snippets
+  :after yasnippet)
+
 (provide 'ide)
 
 ;;; ide.el ends here
