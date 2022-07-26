@@ -15,6 +15,7 @@
         evil-want-fine-undo 'yes)
   :config
   (evil-set-leader 'normal (kbd "<SPC>"))
+  (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
   (evil-define-key 'normal org-mode-map
     (kbd "TAB") 'org-cycle
     ">" 'org-shiftmetaright
@@ -24,8 +25,8 @@
 
 (use-package evil-numbers
   :config
-  (define-key evil-normal-state-map (kbd "C-a") 'evil-numbers/inc-at-pt)
-  (define-key evil-normal-state-map (kbd "C-x") 'evil-numbers/dec-at-pt)
+  (define-key evil-normal-state-map (kbd "C-=") 'evil-numbers/inc-at-pt)
+  (define-key evil-normal-state-map (kbd "C--") 'evil-numbers/dec-at-pt)
   )
 
 (use-package evil-surround

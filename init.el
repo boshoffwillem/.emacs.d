@@ -47,6 +47,7 @@
 (require 'evil)
 (require 'appearance)
 (require 'completion)
+(require 'git)
 (require 'ide)
 (require 'keybindings)
 

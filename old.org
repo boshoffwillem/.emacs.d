@@ -3,51 +3,6 @@
 
 * Software development
 
-** Terminal Config
-
-Programmers basically live in the terminal, we might as well make it look cool.
-
-#+begin_src emacs-lisp
-  (defun efs/configure-eshell ()
-    ;; Save command history when commands are entered
-    (add-hook 'eshell-pre-command-hook 'eshell-save-some-history)
-    ;; Truncate buffer for performance
-    (add-to-list 'eshell-output-filter-functions 'eshell-truncate-buffer)
-    (setq eshell-history-size         10000
-	  eshell-buffer-maximum-lines 10000
-	  eshell-hist-ignoredups t
-	  eshell-scroll-to-bottom-on-input t))
-
-  (use-package eshell-git-prompt
-    :after eshell)
-
-  (use-package eshell
-    :hook (eshell-first-time-mode . efs/configure-eshell)
-    :config
-    (with-eval-after-load 'esh-opt
-      (setq eshell-destroy-buffer-when-process-dies t)
-      (setq eshell-visual-commands '("htop" "vim" "nvim")))
-    (eshell-git-prompt-use-theme 'powerline))
-#+end_src
-
-** Project navigation
-
-#+begin_src emacs-lisp
-  (use-package projectile
-    :bind-keymap
-    ("C-c p" . projectile-command-map)
-    :config
-    (setq projectile-project-search-path '("~/code" ("~/source" . 1)))
-    (setq projectile-indexing-method 'native)
-    (setq projectile-sort-order 'recently-active)
-    (setq projectile-enable-caching t)
-    (projectile-mode +1)
-    )
-
-  (use-package treemacs-projectile
-    :after treemacs)
-#+end_src
-
 ** Git Capabilities
 
 Magit is an interface that gives you a lot of git functionality
@@ -62,23 +17,6 @@ and control over your repositories
 
   (use-package treemacs-magit
     :after treemacs)
-#+end_src
-
-It is really helpful to some visual indication
-in a buffer of git changes to the file being worked on.
-
-#+begin_src emacs-lisp
-  (use-package git-gutter
-    :config
-    (global-git-gutter-mode +1)
-    (setq git-gutter:modified-sign "   "
-	  git-gutter:added-sign "   "
-	  git-gutter:deleted-sign "   "
-	  git-gutter:window-width 2)
-    (set-face-background 'git-gutter:modified "LightBlue") ;; background color
-    (set-face-background 'git-gutter:added "LightGreen")
-    (set-face-background 'git-gutter:deleted "LightCoral")
-    )
 #+end_src
 
 Merge conflicts are real
@@ -165,30 +103,11 @@ This provides some GUI functionality on top of LSP.
     )
 #+end_src
 
-** Debugging
-
-#+begin_src emacs-lisp
-  (use-package dap-mode)
-  ;; (use-package dap-LANGUAGE) to load the dap adapter for your language
-
-  (use-package posframe
-    ;; Posframe is a pop-up tool that must be manually installed for dap-mode
-    )
-#+end_src
-
 ** Other LSP integrations
 
 Lots of packages provides special/extended funtionality when LSP is available.
 
 #+begin_src emacs-lisp
-  (use-package lsp-treemacs
-    :init
-    (lsp-treemacs-sync-mode 1)
-    :commands (lsp-treemacs-errors-list)
-    )
-
-  (use-package consult-lsp)
-
   ;; For Scala
   (use-package lsp-metals)
 #+end_src

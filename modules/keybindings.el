@@ -6,6 +6,8 @@
 
 ;;; Code:
 
+(evil-define-key 'normal 'global (kbd "<leader>x") 'eval-last-sexp)
+
 (evil-define-key 'normal 'global (kbd "<leader>ff") 'find-file)
 (evil-define-key 'normal 'global (kbd "<leader>bb") 'consult-buffer)
 (evil-define-key 'normal 'global (kbd "<leader>bk") 'kill-buffer)
@@ -30,7 +32,8 @@
 (evil-define-key 'normal 'global (kbd "<leader>gj") 'git-gutter:next-hunk)
 (evil-define-key 'normal 'global (kbd "<leader>gk") 'git-gutter:previous-hunk)
 
-(evil-define-key 'normal 'global (kbd "<leader>pp") 'projectile-switch-project) ;; Project-wide search
+(evil-define-key 'normal 'global (kbd "<leader>pp") 'projectile-switch-project) ;; Switch to different project
+(evil-define-key 'normal 'global (kbd "<leader>pf") 'projectile-find-file) ;; Find file in project
 (evil-define-key 'normal 'global (kbd "<leader>ps") 'rg) ;; Project-wide search
 (evil-define-key 'normal 'global (kbd "<leader>pb") 'consult-project-buffer) ;; Only buffers pertaining to project
 

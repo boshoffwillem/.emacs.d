@@ -4,12 +4,37 @@
 
 ;;; Commentary:
 
+;;; Code:
+
+(use-package ripgrep)
+
+(use-package rg)
+
+;; ===================================== Project wide searching using ripgrep
+(use-package deadgrep)
+
+;; ===================================== Search and replace with regular expressions
+(use-package visual-regexp)
+
+(use-package projectile
+  :bind-keymap
+  ("C-c p" . projectile-command-map)
+  :config
+  (setq projectile-project-search-path '("~/code" ("~/source" . 1)))
+  (setq projectile-indexing-method 'native)
+  (setq projectile-sort-order 'recently-active)
+  (setq projectile-enable-caching t)
+  (projectile-mode +1)
+  )
+
+(use-package treemacs-projectile
+  :after treemacs)
+
 ;; Automatically clean whitespace
 (use-package ws-butler
   :hook ((text-mode . ws-butler-mode)
          (prog-mode . ws-butler-mode)))
 
-;;; Code:
 (use-package flycheck
   :defer t
   :custom
@@ -20,9 +45,9 @@
   (flycheck-set-indication-mode 'left-margin)
   )
 
-(use-package flycheck-inline
-  :hook
-  ((flycheck-mode . flycheck-inline-mode)))
+;; (use-package flycheck-inline
+;;   :hook
+;;   ((flycheck-mode . flycheck-inline-mode)))
 
 (use-package tree-sitter
   :config
@@ -68,14 +93,13 @@
 ;; LSP
 (defun wb/lsp-setup ()
   "Setup for LSP mode."
-  ;; (lsp-completion-provider :none)
-  (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
-        '(orderless))
+  ;; (setq lsp-completion-provider :none)
+  ;; (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
+  ;;       '(orderless))
   )
 
 (use-package lsp-mode
   :init
-  ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
   (setq lsp-keymap-prefix "C-c l")
   :hook
   ((lsp-mode . wb/lsp-setup)
@@ -84,11 +108,19 @@
 
 ;; optionally
 (use-package lsp-ui :commands lsp-ui-mode)
-(use-package lsp-treemacs :commands lsp-treemacs-errors-list)
+
+(use-package lsp-treemacs
+  :init
+  (lsp-treemacs-sync-mode 1)
+  :commands (lsp-treemacs-errors-list)
+  )
+
+(use-package consult-lsp)
 
 ;; optionally if you want to use debugger
 (use-package dap-mode)
 ;; (use-package dap-LANGUAGE) to load the dap adapter for your language
+(use-package posframe)
 
 ;; .cs files
 (defun wb/csharp-setup ()

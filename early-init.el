@@ -16,7 +16,7 @@
 (tool-bar-mode -1) ;; Disable the toolbar.
 (scroll-bar-mode -1) ;; Disable visible scrollbar.
 (tooltip-mode -1) ;; Disable tooltips.
-(set-fringe-mode 30) ;; Give some breathing room.
+(set-fringe-mode 20) ;; Give some breathing room.
 (set-default 'cursor-type 'bar)
 
 (setq inhibit-startup-screen t)

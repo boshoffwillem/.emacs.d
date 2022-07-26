@@ -11,6 +11,11 @@
   (vertico-mode)
   :config
   (setq vertico-cycle t)
+  :bind
+  (:map vertico-map
+        ("C-j" . vertico-next)
+        ("C-k" . vertico-previous)
+        )
   )
 
 ;; Persist history over Emacs restarts. Vertico sorts by history position.
@@ -94,41 +99,32 @@
   (which-key-setup-minibuffer)
   (which-key-mode))
 
-;; (use-package corfu
+;; (use-pakage corfu
 ;;   ;; Optional customizations
 ;;   :custom
-;;   (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
-;;   (corfu-auto-prefix 1)
-;;   (corfu-auto t)                 ;; Enable auto completion
-;;   (corfu-auto-delay 0.0)
-;;   ;; (corfu-separator ?\s)          ;; Orderless field separator
+;;   (setq corfu-cycle t)
+;;   (setq corfu-auto-prefix 1)
+;;   (setq corfu-auto t)
+;;   (setq corfu-auto-delay 0.0)
+;;   (setq corfu-separator ?\s)          ;; Orderless field separator
 ;;   ;; (corfu-quit-at-boundary nil)   ;; Never quit at completion boundary
 ;;   ;; (corfu-quit-no-match nil)      ;; Never quit, even if there is no match
-;;   ;; (corfu-preview-current nil)    ;; Disable current candidate preview
-;;   ;; (corfu-preselect-first nil)    ;; Disable candidate preselection
+;;   (setq corfu-preview-current t)
+;;   (setq corfu-preselect-first nil)
 ;;   ;; (corfu-on-exact-match nil)     ;; Configure handling of exact matches
-;;   (corfu-echo-documentation t)
-;;   (setq tab-always-indent 'complete)
-;;   ;; (corfu-scroll-margin 5)        ;; Use scroll margin
-
-;;   ;; Enable Corfu only for certain modes.
-;;   ;; :hook ((prog-mode . corfu-mode)
-;;   ;;        (shell-mode . corfu-mode)
-;;   ;;        (eshell-mode . corfu-mode))
-
-;;   ;; Recommended: Enable Corfu globally.
-;;   ;; This is recommended since Dabbrev can be used globally (M-/).
-;;   ;; See also `corfu-excluded-modes'.
-;;   :bind
-;;   ;; Another key binding can be used, such as S-SPC.
-;;   ;; (:map corfu-map ("M-SPC" . corfu-insert-separator))
-;;   (:map corfu-map
-;;         ("C-n" . corfu-next)
-;;         ("C-p" . corfu-previous)
-;;         ("C-g" . corfu-quit)
-;;         ("<escape>" . corfu-quit)
-;;         ("<return>" . corfu-insert)
-;;         )
+;;   (setq corfu-echo-documentation t)
+;;   (setq corfu-scroll-margin 5)
+;;   ;; :bind
+;;   ;; (:map corfu-map
+;;   ;;       ("C-j" . corfu-next)
+;;   ;;       ("C-n" . corfu-next)
+;;   ;;       ("C-k" . corfu-previous)
+;;   ;;       ("C-p" . corfu-previous)
+;;   ;;       ("C-g" . corfu-quit)
+;;   ;;       ("<escape>" . corfu-quit)
+;;   ;;       ("<return>" . corfu-insert)
+;;   ;;       ("C-l" . corfu-insert)
+;;   ;;       )
 ;;   :init
 ;;   (global-corfu-mode))
 
@@ -144,25 +140,25 @@
 ;; (use-package cape
 ;;   ;; Bind dedicated completion commands
 ;;   ;; Alternative prefix keys: C-c p, M-p, M-+, ...
-;;   :bind (("C-c p p" . completion-at-point) ;; capf
-;;          ("C-c p t" . complete-tag)        ;; etags
-;;          ("C-c p d" . cape-dabbrev)        ;; or dabbrev-completion
-;;          ("C-c p h" . cape-history)
-;;          ("C-c p f" . cape-file)
-;;          ("C-c p k" . cape-keyword)
-;;          ("C-c p s" . cape-symbol)
-;;          ("C-c p a" . cape-abbrev)
-;;          ("C-c p i" . cape-ispell)
-;;          ("C-c p l" . cape-line)
-;;          ("C-c p w" . cape-dict)
-;;          ("C-c p \\" . cape-tex)
-;;          ("C-c p _" . cape-tex)
-;;          ("C-c p ^" . cape-tex)
-;;          ("C-c p &" . cape-sgml)
-;;          ("C-c p r" . cape-rfc1345))
+;;   ;; :bind (("C-c p p" . completion-at-point) ;; capf
+;;   ;;        ("C-c p t" . complete-tag)        ;; etags
+;;   ;;        ("C-c p d" . cape-dabbrev)        ;; or dabbrev-completion
+;;   ;;        ("C-c p h" . cape-history)
+;;   ;;        ("C-c p f" . cape-file)
+;;   ;;        ("C-c p k" . cape-keyword)
+;;   ;;        ("C-c p s" . cape-symbol)
+;;   ;;        ("C-c p a" . cape-abbrev)
+;;   ;;        ("C-c p i" . cape-ispell)
+;;   ;;        ("C-c p l" . cape-line)
+;;   ;;        ("C-c p w" . cape-dict)
+;;   ;;        ("C-c p \\" . cape-tex)
+;;   ;;        ("C-c p _" . cape-tex)
+;;   ;;        ("C-c p ^" . cape-tex)
+;;   ;;        ("C-c p &" . cape-sgml)
+;;   ;;        ("C-c p r" . cape-rfc1345))
 ;;   :init
 ;;   ;; Add `completion-at-point-functions', used by `completion-at-point'.
-;;   (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+;;   ;; (add-to-list 'completion-at-point-functions #'cape-dabbrev)
 ;;   (add-to-list 'completion-at-point-functions #'cape-file)
 ;;   ;;(add-to-list 'completion-at-point-functions #'cape-history)
 ;;   ;;(add-to-list 'completion-at-point-functions #'cape-keyword)
@@ -176,12 +172,12 @@
 ;;   ;;(add-to-list 'completion-at-point-functions #'cape-line)
 ;; )
 
-;; ;; (straight-use-package
-;; ;;  '(corfu-terminal
-;; ;;    :type git
-;; ;;    :repo "https://codeberg.org/akib/emacs-corfu-terminal.git"))
-;; ;; (unless (display-graphic-p)
-;; ;;   (corfu-terminal-mode +1))
+;; (straight-use-package
+;;  '(corfu-terminal
+;;    :type git
+;;    :repo "https://codeberg.org/akib/emacs-corfu-terminal.git"))
+;; (unless (display-graphic-p)
+;;   (corfu-terminal-mode +1))
 
 ;; ;; (straight-use-package
 ;; ;;  '(corfu-doc-terminal
@@ -190,43 +186,60 @@
 ;; ;; (unless (display-graphic-p)
 ;; ;;   (corfu-doc-terminal-mode +1))
 
-(use-package kind-icon
-  :after corfu
-  :custom
-  (kind-icon-default-face 'corfu-default) ; to compute blended backgrounds correctly
-  :config
-  (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
+;; (use-package kind-icon
+;;   :after corfu
+;;   :custom
+;;   (kind-icon-default-face 'corfu-default) ; to compute blended backgrounds correctly
+;;   :config
+;;   (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
 
 (use-package company
   :hook
   ((emacs-lisp-mode . (lambda ()
-  		  (setq-local company-backends '(company-elisp))))
+  		                (setq-local company-backends '(company-elisp))))
    (prog-mode . company-mode)
    (org-mode . company-mode)
    )
   :config
   (setq company-show-quick-access t
-    company-idle-delay 0
-    company-tooltip-limit 20
-    company-tooltip-idle-delay 0.4
-    company-show-numbers t
-    company-dabbrev-downcase nil
-    company-minimum-prefix-length 1
-    company-selection-wrap-around t)
+        company-idle-delay 0
+        company-tooltip-limit 20
+        company-tooltip-idle-delay 0.4
+        company-show-numbers t
+        company-dabbrev-downcase nil
+        company-minimum-prefix-length 1
+        company-selection-wrap-around t)
   (company-tng-configure-default)
   ;; Use the numbers 0-9 to select company completion candidates
   (let ((map company-active-map))
     (mapc (lambda (x) (define-key map (format "%d" x)
-  		  `(lambda () (interactive) (company-complete-number ,x))))
-      (number-sequence 0 9)))
+  		                `(lambda () (interactive) (company-complete-number ,x))))
+          (number-sequence 0 9)))
+  (advice-add 'company-complete-common :before (lambda () (setq my-company-point (point))))
+  (advice-add 'company-complete-common :after (lambda ()
+  		  				                        (when (equal my-company-point (point))
+  			  			                          (yas-expand))))
   :bind
   (:map company-active-map
-    ("C-j" . company-select-next)
-    ("C-k" . company-select-previous)
-    ("<tab>" . tab-indent-or-complete)
-    ("TAB" . tab-indent-or-complete)
-    )
+        ("C-j" . company-select-next)
+        ("C-k" . company-select-previous)
+        ("C-l" . tab-indent-or-complete)
+        )
   )
+
+(use-package company-quickhelp
+  :after company
+  :config
+  (company-quickhelp-mode)
+  )
+
+(use-package helpful
+  :bind
+  ([remap describe-function] . helpful-function)
+  ([remap describe-symbol] . helpful-symbol)
+  ([remap describe-variable] . helpful-variable)
+  ([remap describe-command] . helpful-command)
+  ([remap describe-key] . helpful-key))
 
 (provide 'completion)
 
