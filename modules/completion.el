@@ -71,9 +71,16 @@
   )
 
 (use-package consult
-  )
+  :defer t
+  :bind
+  ([remap locate] . consult-locate)
+  ([remap man] . consult-man)
+  ([remap recentf-open-files] . consult-recent-file)
+  ([remap switch-to-buffer] . consult-buffer)
+  ([remap imenu] . consult-imenu))
 
 (use-package embark
+  :defer t
   :bind
   (
    ("C-h B" . embark-bindings)
@@ -84,7 +91,6 @@
 
 (use-package embark-consult
   :after (embark consult)
-  :demand t
   :hook
   (embark-collect-mode . consult-preview-at-point-mode)
   )

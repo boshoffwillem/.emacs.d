@@ -17,8 +17,8 @@
   :config
   (let (
         ;; (chosen-theme 'doom-dracula)
-        ;; (chosen-theme 'doom-gruvbox)
-        (chosen-theme 'doom-tomorrow-night)
+        (chosen-theme 'doom-gruvbox)
+        ;; (chosen-theme 'doom-tomorrow-night)
         )
     (doom-themes-visual-bell-config)
     (doom-themes-treemacs-config)
@@ -30,25 +30,20 @@
           doom-themes-treemacs-theme "doom-atom")
     (load-theme chosen-theme t)))
 
-;; (use-package minions
-;;   :hook (doom-modeline-mode . minions-mode))
+(use-package minions
+  :hook (doom-modeline-mode . minions-mode))
 
-;; (use-package doom-modeline
-;;   :hook (after-init . doom-modeline-init)
-;;   :custom-face
-;;   (mode-line ((t (:height 0.85))))
-;;   (mode-line-inactive ((t (:height 0.85))))
-;;   :custom
-;;   (doom-modeline-height 15)
-;;   (doom-modeline-bar-width 6)
-;;   (doom-modeline-lsp t)
-;;   (doom-modeline-github nil)
-;;   (doom-modeline-mu4e nil)
-;;   (doom-modeline-irc nil)
-;;   (doom-modeline-minor-modes t)
-;;   (doom-modeline-persp-name nil)
-;;   (doom-modeline-buffer-file-name-style 'truncate-except-project)
-;;   (doom-modeline-major-mode-icon nil))
+(use-package doom-modeline
+  :hook (after-init . doom-modeline-mode)
+  :custom-face
+  (mode-line ((t (:height 0.85))))
+  (mode-line-inactive ((t (:height 0.85))))
+  :custom
+  (doom-modeline-lsp t)
+  (doom-modeline-minor-modes t)
+  (doom-modeline-height 15)
+  (doom-modeline-bar-width 6)
+  )
 
 (use-package all-the-icons)
 (use-package all-the-icons-dired
