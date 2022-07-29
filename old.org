@@ -32,46 +32,11 @@ Merge conflicts are real
 LSP provides intellisense, code actions, refactoring, etc.
 
 #+begin_src emacs-lisp
-  (defun wb/lsp-setup()
-    (setq lsp-idle-delay 0.500
-	  lsp-log-io nil
-	  lsp-modeline-code-actions-segments '(count icon name)
-	  lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols)
-	  lsp-modeline-diagnostics-scope :workspace
-	  lsp-auto-execute-action nil
-	  lsp-diagnostic-clean-after-change t
-	  lsp-headerline-breadcrumb-enable-symbol-numbers nil
-	  lsp-lens-place-position 'above-line
-	  lsp-semantic-tokens-honor-refresh-requests t
-	  lsp-semantic-tokens-apply-modifiers nil
-	  lsp-modeline-diagnostics-enable t
-	  lsp-modeline-code-actions-enable t
-	  lsp-breadcrumb-enable t
-	  lsp-lens-enable t
-	  lsp-semantic-tokens-enable t
-	  lsp-dired-enable t)
-    )
-
   (use-package lsp-mode
-    :init
-    (setq lsp-keymap-prefix "C-c l")
-    :config
-    (wb/lsp-setup)
-    (lsp-enable-which-key-integration t)
     :custom
     (setq lsp-eldoc-render-all t)
     (setq lsp-rust-analyzer-server-display-inlay-hints t)
-    ;; vue
-    (setq lsp-vetur-format-default-formatter-css "none"
-	  lsp-vetur-format-default-formatter-html "none"
-	  lsp-vetur-format-default-formatter-js "none"
-	  lsp-vetur-validation-template nil)
     :hook
-    (csharp-mode . lsp-deferred)
-    (dockerfile-mode . lsp-deferred)
-    (go-mode . lsp-deferred)
-    (rustic-mode . lsp-deferred)
-    (yaml-mode . lsp-deferred)
     (lsp-deferred-mode . lsp-modeline-diagnostics-mode)
     (lsp-deferred-mode . lsp-modeline-code-actions-mode)
     (lsp-deferred-mode . lsp-lens-mode)

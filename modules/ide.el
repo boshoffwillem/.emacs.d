@@ -17,14 +17,20 @@
 (use-package visual-regexp)
 
 (use-package projectile
+  :diminish projectile-mode
   :bind-keymap
   ("C-c p" . projectile-command-map)
+  :init
+  (when (file-directory-p "~/code")
+    (setq projectile-project-search-path '("~/code")))
+  (setq projectile-switch-project-action #'projectile-dired)
   :config
-  (setq projectile-project-search-path '("~/code" ("~/source" . 1)))
-  (setq projectile-indexing-method 'native)
-  (setq projectile-sort-order 'recently-active)
-  (setq projectile-enable-caching t)
   (projectile-mode +1)
+  :custom
+  (setq projectile-enable-caching t)
+  (setq projectile-sort-order 'recently-active)
+  (setq projectile-indexing-method 'alien)
+  (projectile-completion-system 'auto)
   )
 
 (use-package treemacs-projectile
@@ -36,13 +42,12 @@
          (prog-mode . ws-butler-mode)))
 
 (use-package flycheck
-  :defer t
   :custom
-  (flycheck-emacs-lisp-initialize-packages t)
   (flycheck-display-errors-delay 0.1)
   :config
-  (global-flycheck-mode)
+  (setq flycheck-emacs-lisp-initialize-packages t)
   (flycheck-set-indication-mode 'left-margin)
+  (global-flycheck-mode)
   )
 
 ;; (use-package flycheck-inline
@@ -71,14 +76,13 @@
 
 (use-package origami
   :after evil
-  :defer 1
   :config (global-origami-mode)
   :init
   (define-key evil-normal-state-map (kbd "zo") 'evil-toggle-fold))
 
 (use-package ts-fold
   :defer t
-  :after (tree-sitter)
+  :after (tree-sitter origami)
   :commands (ts-fold-mode)
   :straight (ts-fold :host github
                      :repo "jcs090218/ts-fold")
@@ -101,6 +105,23 @@
   ;; (setq lsp-completion-provider :none)
   ;; (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
   ;;       '(orderless))
+  (setq lsp-idle-delay 0.500
+	    lsp-log-io nil
+	    lsp-modeline-code-actions-segments '(count icon name)
+	    lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols)
+	    lsp-modeline-diagnostics-scope :workspace
+	    lsp-auto-execute-action nil
+	    lsp-diagnostic-clean-after-change t
+	    lsp-headerline-breadcrumb-enable-symbol-numbers nil
+	    lsp-lens-place-position 'above-line
+	    lsp-semantic-tokens-honor-refresh-requests t
+	    lsp-semantic-tokens-apply-modifiers nil
+	    lsp-modeline-diagnostics-enable t
+	    lsp-modeline-code-actions-enable t
+	    lsp-breadcrumb-enable t
+	    lsp-lens-enable t
+	    lsp-semantic-tokens-enable t
+	    lsp-dired-enable t)
   )
 
 (use-package lsp-mode
@@ -108,6 +129,11 @@
   (setq lsp-keymap-prefix "C-c l")
   :hook
   ((lsp-mode . wb/lsp-setup)
+   (lsp-deferred-mode . lsp-modeline-diagnostics-mode)
+   (lsp-deferred-mode . lsp-modeline-code-actions-mode)
+   (lsp-deferred-mode . lsp-lens-mode)
+   (lsp-deferred-mode . lsp-semantic-tokens-mode)
+   (lsp-deferred-mode . lsp-dired-mode)
    (lsp-mode . lsp-enable-which-key-integration))
   :commands (lsp lsp-deferred))
 
@@ -121,6 +147,9 @@
   )
 
 (use-package consult-lsp)
+
+;; (use-package lsp-ivy
+;;   :commands lsp-ivy-workspace-symbol)
 
 ;; optionally if you want to use debugger
 (use-package dap-mode)
@@ -158,10 +187,12 @@
   )
 
 (use-package yasnippet
+  :diminish
   :config
   (yas-reload-all)
   (add-hook 'prog-mode-hook 'yas-minor-mode)
   (add-hook 'text-mode-hook 'yas-minor-mode)
+  (evil-define-key 'normal 'global (kbd "<leader>i") 'yas-insert-snippet)
   (yas-global-mode 1)
   )
 

@@ -12,6 +12,7 @@
         evil-want-C-d-scroll t
         evil-want-Y-yank-to-eol t
         evil-undo-system 'undo-redo
+        evil-want-keybinding nil
         evil-want-fine-undo 'yes)
   :config
   (evil-set-leader 'normal (kbd "<SPC>"))
@@ -22,6 +23,11 @@
     "<" 'org-shiftmetaleft)
   (evil-mode 1)
   )
+
+(use-package evil-collection
+  :after evil
+  :config
+  (evil-collection-init))
 
 (use-package evil-numbers
   :config

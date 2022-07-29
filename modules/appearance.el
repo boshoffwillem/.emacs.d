@@ -30,20 +30,20 @@
           doom-themes-treemacs-theme "doom-atom")
     (load-theme chosen-theme t)))
 
-(use-package minions
-  :hook (doom-modeline-mode . minions-mode))
+;; (use-package minions
+;;   :hook (doom-modeline-mode . minions-mode))
 
-(use-package doom-modeline
-  :hook (after-init . doom-modeline-mode)
-  :custom-face
-  (mode-line ((t (:height 0.85))))
-  (mode-line-inactive ((t (:height 0.85))))
-  :custom
-  (doom-modeline-lsp t)
-  (doom-modeline-minor-modes t)
-  (doom-modeline-height 15)
-  (doom-modeline-bar-width 6)
-  )
+;; (use-package doom-modeline
+;;   :hook (after-init . doom-modeline-mode)
+;;   :custom-face
+;;   (mode-line ((t (:height 0.85))))
+;;   (mode-line-inactive ((t (:height 0.85))))
+;;   :custom
+;;   (doom-modeline-lsp t)
+;;   (doom-modeline-minor-modes t)
+;;   (doom-modeline-height 15)
+;;   (doom-modeline-bar-width 6)
+;;   )
 
 (use-package all-the-icons)
 (use-package all-the-icons-dired
@@ -77,6 +77,7 @@
   :after treemacs)
 
 (use-package dashboard
+  :diminish
   :init
   (progn
     (setq dashboard-items '((recents . 5)
