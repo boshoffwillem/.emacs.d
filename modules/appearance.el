@@ -46,6 +46,7 @@
 ;;   )
 
 (use-package all-the-icons)
+
 (use-package all-the-icons-dired
   :after all-the-icons
   :hook (dired-mode . all-the-icons-dired-mode))
@@ -77,7 +78,7 @@
   :after treemacs)
 
 (use-package dashboard
-  :diminish
+  :after evil
   :init
   (progn
     (setq dashboard-items '((recents . 5)

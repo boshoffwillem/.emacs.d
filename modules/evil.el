@@ -15,7 +15,7 @@
         evil-want-keybinding nil
         evil-want-fine-undo 'yes)
   :config
-  (evil-set-leader 'normal (kbd "<SPC>"))
+  (evil-set-leader '(normal visual) (kbd "<SPC>"))
   (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
   (evil-define-key 'normal org-mode-map
     (kbd "TAB") 'org-cycle
@@ -30,16 +30,19 @@
   (evil-collection-init))
 
 (use-package evil-numbers
+  :after evil
   :config
   (define-key evil-normal-state-map (kbd "C-=") 'evil-numbers/inc-at-pt)
   (define-key evil-normal-state-map (kbd "C--") 'evil-numbers/dec-at-pt)
   )
 
 (use-package evil-surround
+  :after evil
   :config
   (global-evil-surround-mode 1))
 
 (use-package evil-commentary
+  :after evil
   :config
   (evil-commentary-mode))
 

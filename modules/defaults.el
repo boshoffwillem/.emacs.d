@@ -60,7 +60,7 @@
 (show-paren-mode t)
 (setq show-paren-delay 0)
 (setq show-paren-style 'parenthesis)
-(electric-pair-mode t)
+(electric-pair-mode nil)
 
 (setq default-directory "~/code/")
 (setq large-file-warning-threshold nil)

@@ -14,10 +14,14 @@
 (use-package deadgrep)
 
 ;; ===================================== Search and replace with regular expressions
-(use-package visual-regexp)
+(use-package visual-regexp
+  :config
+  (evil-define-key '(normal visual) 'global (kbd "<leader>sr") 'vr/replace)
+  (evil-define-key '(normal visual) 'global (kbd "<leader>sq") 'vr/query-replace)
+  (evil-define-key '(normal visual) 'global (kbd "<leader>sm") 'vr/mc-mark))
 
 (use-package projectile
-  :diminish projectile-mode
+  :defer t
   :bind-keymap
   ("C-c p" . projectile-command-map)
   :init
@@ -34,7 +38,7 @@
   )
 
 (use-package treemacs-projectile
-  :after treemacs)
+  :after (projectile))
 
 ;; Automatically clean whitespace
 (use-package ws-butler
@@ -67,6 +71,7 @@
   )
 
 (use-package tree-sitter-langs
+  :after tree-sitter
   )
 
 ;; (use-package tree-sitter-indent
@@ -81,7 +86,6 @@
   (define-key evil-normal-state-map (kbd "zo") 'evil-toggle-fold))
 
 (use-package ts-fold
-  :defer t
   :after (tree-sitter origami)
   :commands (ts-fold-mode)
   :straight (ts-fold :host github
@@ -152,9 +156,23 @@
 ;;   :commands lsp-ivy-workspace-symbol)
 
 ;; optionally if you want to use debugger
-(use-package dap-mode)
+(use-package dap-mode
+  :config
+  (require 'dap-cpptools))
 ;; (use-package dap-LANGUAGE) to load the dap adapter for your language
 (use-package posframe)
+
+;; .c and and .cpp files
+(defun wb/cc-setup ()
+  "Setup for c and c++ mode."
+  (setq-local tab-width 4))
+
+(use-package ccls
+  :hook (
+         ((c-mode . wb/cc-setup)
+          (c++-mode . wb/cc-setup)
+          (c-mode c++-mode objc-mode cuda-mode) .
+          (lambda () (require 'ccls) (lsp)))))
 
 ;; .cs files
 (defun wb/csharp-setup ()
@@ -187,7 +205,7 @@
   )
 
 (use-package yasnippet
-  :diminish
+  :defer t
   :config
   (yas-reload-all)
   (add-hook 'prog-mode-hook 'yas-minor-mode)
