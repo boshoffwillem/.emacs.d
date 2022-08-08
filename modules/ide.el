@@ -185,6 +185,57 @@
    (csharp-mode . lsp-deferred))
   )
 
+(defun setup-tide-mode ()
+  (interactive)
+  (tide-setup)
+  (flycheck-mode +1)
+  (setq flycheck-check-syntax-automatically '(save mode-enabled))
+  (eldoc-mode +1)
+  (tide-hl-identifier-mode +1)
+  ;; company is an optional dependency. You have to
+  ;; install it separately via package-install
+  ;; `M-x package-install [ret] company`
+  (company-mode +1))
+
+(use-package tide)
+
+;; aligns annotation to the right hand side
+(setq company-tooltip-align-annotations t)
+
+;; formats the buffer before saving
+(add-hook 'before-save-hook 'tide-format-before-save)
+
+(add-hook 'typescript-mode-hook #'setup-tide-mode)
+
+(defun wb/js-ts-setup ()
+  "Setup for js and ts mode."
+  (setq-local tab-width 2))
+
+(use-package typescript-mode
+  :mode "\\.ts\\'"
+  :hook ((typescript-mode . wb/js-ts-setup)
+         (typescript-mode . lsp-deferred)
+         )
+  :config
+  (setq typescript-indent-level 2))
+
+(use-package json-mode
+  :hook ((json-mode . wb/js-ts-setup)
+         (json-mode . lsp-deferred)))
+
+(use-package js2-mode
+  :mode "\\.jsx?\\'"
+  :config
+  (setq js-indent-level 2)
+  ;; Use js2-mode for Node scripts
+  ;; (add-to-list 'magic-mode-alist '("#!/usr/bin/env node" . js2-mode))
+
+  ;; Don't use built-in syntax checking
+  (setq js2-mode-show-strict-warnings nil)
+  :hook ((js2-mode. wb/js-ts-setup)
+         (js2-mode . lsp-deferred)
+         ))
+
 ;; .xml files
 (setq nxml-slash-auto-complete-flag t)
 (add-hook 'nxml-mode-hook

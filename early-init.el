@@ -27,10 +27,10 @@
 (setq initial-major-mode 'fundamental-mode)
 
 ;; Improve garbage collection performance.
-(setq gc-cons-threshold (* 10 2048 2048))
+(setq gc-cons-threshold (* 100 1024 1024))
 
 ;; Improve processing of sub-processes that generates large chunk.
-(setq read-process-output-max (* 2048 2048))
+(setq read-process-output-max (* 1024 1024))
 
 (load-theme 'deeper-blue t)
 

@@ -6,13 +6,6 @@
 
 ;;; Code:
 
-;; Font
-(set-face-attribute 'default nil :font "FantasqueSansMono Nerd Font 11" :weight 'regular)
-;; Set the fixed pitch face
-(set-face-attribute 'fixed-pitch nil :font "FantasqueSansMono Nerd Font 11" :weight 'regular)
-;; Set the variable pitch face
-(set-face-attribute 'variable-pitch nil :font "Cantarell 11" :weight 'regular)
-
 (use-package doom-themes
   :config
   (let (

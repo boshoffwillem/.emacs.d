@@ -85,6 +85,14 @@
     (setq use-short-answers t)
   (advice-add 'yes-or-no-p :override #'y-or-n-p))
 
+;; Font
+(set-face-attribute 'default nil :font "FantasqueSansMono Nerd Font 11" :weight 'regular)
+;; Set the fixed pitch face
+(set-face-attribute 'fixed-pitch nil :font "FantasqueSansMono Nerd Font 11" :weight 'regular)
+;; Set the variable pitch face
+(set-face-attribute 'variable-pitch nil :font "Cantarell 11" :weight 'regular)
+
+
 (provide 'defaults)
 
 ;;; defaults.el ends here
