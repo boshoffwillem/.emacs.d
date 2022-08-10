@@ -126,6 +126,7 @@
 	    lsp-lens-enable t
 	    lsp-semantic-tokens-enable t
 	    lsp-dired-enable t)
+  (yas-global-mode 1)
   )
 
 (use-package lsp-mode
@@ -185,27 +186,27 @@
    (csharp-mode . lsp-deferred))
   )
 
-(defun setup-tide-mode ()
-  (interactive)
-  (tide-setup)
-  (flycheck-mode +1)
-  (setq flycheck-check-syntax-automatically '(save mode-enabled))
-  (eldoc-mode +1)
-  (tide-hl-identifier-mode +1)
-  ;; company is an optional dependency. You have to
-  ;; install it separately via package-install
-  ;; `M-x package-install [ret] company`
-  (company-mode +1))
+;; (defun setup-tide-mode ()
+;;   (interactive)
+;;   (tide-setup)
+;;   (flycheck-mode +1)
+;;   (setq flycheck-check-syntax-automatically '(save mode-enabled))
+;;   (eldoc-mode +1)
+;;   (tide-hl-identifier-mode +1)
+;;   ;; company is an optional dependency. You have to
+;;   ;; install it separately via package-install
+;;   ;; `M-x package-install [ret] company`
+;;   (company-mode +1))
 
-(use-package tide)
+;; (use-package tide)
 
-;; aligns annotation to the right hand side
-(setq company-tooltip-align-annotations t)
+;; ;; aligns annotation to the right hand side
+;; (setq company-tooltip-align-annotations t)
 
-;; formats the buffer before saving
-(add-hook 'before-save-hook 'tide-format-before-save)
+;; ;; formats the buffer before saving
+;; (add-hook 'before-save-hook 'tide-format-before-save)
 
-(add-hook 'typescript-mode-hook #'setup-tide-mode)
+;; (add-hook 'typescript-mode-hook #'setup-tide-mode)
 
 (defun wb/js-ts-setup ()
   "Setup for js and ts mode."
@@ -236,6 +237,31 @@
          (js2-mode . lsp-deferred)
          ))
 
+(use-package web-mode
+  :config
+  (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.[agj]sp\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.as[cp]x\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.razor\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.cshtml\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+  (setq web-mode-engines-alist
+        '(("php"    . "\\.phtml\\'")
+          ("razor"    . "\\.cshtml\\'")
+          ("razor"    . "\\.razor\\'")
+          ("blade"  . "\\.blade\\."))
+        )
+  (setq web-mode-markup-indent-offset 2)
+  (setq web-mode-css-indent-offset 2)
+  (setq web-mode-code-indent-offset 2)
+  (setq web-mode-enable-css-colorization t)
+  (setq web-mode-enable-current-element-highlight t)
+  )
+
 ;; .xml files
 (setq nxml-slash-auto-complete-flag t)
 (add-hook 'nxml-mode-hook
@@ -262,7 +288,6 @@
   (add-hook 'prog-mode-hook 'yas-minor-mode)
   (add-hook 'text-mode-hook 'yas-minor-mode)
   (evil-define-key 'normal 'global (kbd "<leader>i") 'yas-insert-snippet)
-  (yas-global-mode 1)
   )
 
 (use-package yasnippet-snippets

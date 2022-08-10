@@ -6,22 +6,25 @@
 
 ;;; Code:
 
-(use-package doom-themes
-  :config
-  (let (
-        ;; (chosen-theme 'doom-dracula)
-        (chosen-theme 'doom-gruvbox)
-        ;; (chosen-theme 'doom-tomorrow-night)
-        )
-    (doom-themes-visual-bell-config)
-    (doom-themes-treemacs-config)
-    (doom-themes-org-config)
-    (setq doom-challenger-deep-brighter-comments t
-          doom-challenger-deep-brighter-modeline t
-          doom-themes-enable-bold t
-          doom-themes-enable-italic t
-          doom-themes-treemacs-theme "doom-atom")
-    (load-theme chosen-theme t)))
+(use-package gruvbox-theme)
+(load-theme 'gruvbox-dark-hard t)
+
+;; (use-package doom-themes
+;;   :config
+;;   (let (
+;;         ;; (chosen-theme 'doom-dracula)
+;;         (chosen-theme 'doom-gruvbox)
+;;         ;; (chosen-theme 'doom-tomorrow-night)
+;;         )
+;;     (doom-themes-visual-bell-config)
+;;     (doom-themes-treemacs-config)
+;;     (doom-themes-org-config)
+;;     (setq doom-challenger-deep-brighter-comments t
+;;           doom-challenger-deep-brighter-modeline t
+;;           doom-themes-enable-bold t
+;;           doom-themes-enable-italic t
+;;           doom-themes-treemacs-theme "doom-atom")
+;;     (load-theme chosen-theme t)))
 
 ;; (use-package minions
 ;;   :hook (doom-modeline-mode . minions-mode))

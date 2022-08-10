@@ -1,2 +1,3 @@
 ;;; -*- lisp-data -*-
-(("~/code/work/Psicle.Base.Worktrees/net6/"))
+(("~/code/work/Psicle.Base/")
+ ("~/code/work/Psicle.Base.Worktrees/net6/"))

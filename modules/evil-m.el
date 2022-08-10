@@ -46,6 +46,6 @@
   :config
   (evil-commentary-mode))
 
-(provide 'evil)
+(provide 'evil-m)
 
 ;;; evil.el ends here.

@@ -92,6 +92,7 @@
 ;; Set the variable pitch face
 (set-face-attribute 'variable-pitch nil :font "Cantarell 11" :weight 'regular)
 
+(setq shell-file-name "C:/tools/nushell/nu.exe")
 
 (provide 'defaults)
 

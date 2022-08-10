@@ -24,41 +24,32 @@
 
 (require 'defaults)
 
-(require 'package)
-(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
-(package-initialize)
-(package-refresh-contents)
+(setq package-enable-at-startup nil)
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 5))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+(straight-use-package 'use-package)
+(cl-dolist (mode '(emacs-lisp-mode lisp-interaction-mode))
+  (font-lock-add-keywords
+   mode
+   '(("(\\<\\(straight-use-package\\)\\>" 1 font-lock-keyword-face))))
+(setq straight-use-package-by-default 1)
 
-(setq package-selected-packages '(evil
-                                  company
-                                  flycheck
-                                  projectile
-                                  hydra
-                                  which-key
-                                  yasnippet
-                                  dashboard
-                                  treemacs
-                                  all-the-icons
-                                  all-the-icons-dired
-                                  treemacs-all-the-icons
-                                  treemacs-icons-dired
-                                  rainbow-delimiters
-                                  gruvbox-theme
-                                  helm
-                                  helm-xref
-                                  lsp-mode
-                                  lsp-treemacs
-                                  helm-lsp
-                                  dap-mode))
-
-(when (cl-find-if-not #'package-installed-p package-selected-packages)
-  (package-refresh-contents)
-  (mapc #'package-install package-selected-packages))
-
-(load-theme 'gruvbox-dark-hard t)
-
-;; Enable Evil
-(require 'evil)
-(evil-mode 1)
+(require 'evil-m)
+(require 'appearance)
+(require 'completion)
+(require 'completion-native)
+(require 'git)
+(require 'ide)
+(require 'keybindings)
 
 ;;; init.el ends here
