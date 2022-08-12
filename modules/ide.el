@@ -20,25 +20,25 @@
   (evil-define-key '(normal visual) 'global (kbd "<leader>sq") 'vr/query-replace)
   (evil-define-key '(normal visual) 'global (kbd "<leader>sm") 'vr/mc-mark))
 
-(use-package projectile
-  :defer t
-  :bind-keymap
-  ("C-c p" . projectile-command-map)
-  :init
-  (when (file-directory-p "~/code")
-    (setq projectile-project-search-path '("~/code")))
-  (setq projectile-switch-project-action #'projectile-dired)
-  :config
-  (projectile-mode +1)
-  :custom
-  (setq projectile-enable-caching t)
-  (setq projectile-sort-order 'recently-active)
-  (setq projectile-indexing-method 'alien)
-  (projectile-completion-system 'auto)
-  )
+;; (use-package projectile
+;;   :defer t
+;;   :bind-keymap
+;;   ("C-c p" . projectile-command-map)
+;;   :init
+;;   (when (file-directory-p "~/code")
+;;     (setq projectile-project-search-path '("~/code")))
+;;   (setq projectile-switch-project-action #'projectile-dired)
+;;   :config
+;;   (projectile-mode +1)
+;;   :custom
+;;   (setq projectile-enable-caching t)
+;;   (setq projectile-sort-order 'recently-active)
+;;   (setq projectile-indexing-method 'alien)
+;;   (projectile-completion-system 'auto)
+;;   )
 
-(use-package treemacs-projectile
-  :after (projectile))
+;; (use-package treemacs-projectile
+;;   :after (projectile))
 
 ;; Automatically clean whitespace
 (use-package ws-butler
@@ -85,23 +85,23 @@
   :init
   (define-key evil-normal-state-map (kbd "zo") 'evil-toggle-fold))
 
-(use-package ts-fold
-  :after (tree-sitter origami)
-  :commands (ts-fold-mode)
-  :straight (ts-fold :host github
-                     :repo "jcs090218/ts-fold")
-  :config
-  (defun meain/toggle-fold ()
-    (interactive)
-    (if (equal tree-sitter-mode nil)
-        (call-interactively 'evil-toggle-fold)
-      (call-interactively 'ts-fold-toggle)))
-  :init
-  (add-hook 'tree-sitter-after-on-hook
-            (lambda ()
-              (origami-mode -1)
-              (ts-fold-mode 1)
-              (define-key evil-normal-state-map (kbd "zo") 'meain/toggle-fold))))
+;; (use-package ts-fold
+;;   :after (tree-sitter origami)
+;;   :commands (ts-fold-mode)
+;;   :straight (ts-fold :host github
+;;                      :repo "jcs090218/ts-fold")
+;;   :config
+;;   (defun meain/toggle-fold ()
+;;     (interactive)
+;;     (if (equal tree-sitter-mode nil)
+;;         (call-interactively 'evil-toggle-fold)
+;;       (call-interactively 'ts-fold-toggle)))
+;;   :init
+;;   (add-hook 'tree-sitter-after-on-hook
+;;             (lambda ()
+;;               (origami-mode -1)
+;;               (ts-fold-mode 1)
+;;               (define-key evil-normal-state-map (kbd "zo") 'meain/toggle-fold))))
 
 ;; LSP
 (defun wb/lsp-setup ()
@@ -153,9 +153,6 @@
 
 (use-package consult-lsp)
 
-;; (use-package lsp-ivy
-;;   :commands lsp-ivy-workspace-symbol)
-
 ;; optionally if you want to use debugger
 (use-package dap-mode
   :config
@@ -183,7 +180,8 @@
 (use-package csharp-mode
   :hook
   ((csharp-mode . wb/csharp-setup)
-   (csharp-mode . lsp-deferred))
+   (csharp-mode . lsp-deferred)
+   )
   )
 
 ;; (defun setup-tide-mode ()
@@ -222,7 +220,9 @@
 
 (use-package json-mode
   :hook ((json-mode . wb/js-ts-setup)
-         (json-mode . lsp-deferred)))
+         (json-mode . lsp-deferred)
+         )
+  )
 
 (use-package js2-mode
   :mode "\\.jsx?\\'"
@@ -235,7 +235,12 @@
   (setq js2-mode-show-strict-warnings nil)
   :hook ((js2-mode. wb/js-ts-setup)
          (js2-mode . lsp-deferred)
-         ))
+         )
+  )
+
+(use-package terraform-mode
+  :hook
+  (terraform-mode . lsp-deferred))
 
 (use-package web-mode
   :config
@@ -278,7 +283,8 @@
 (use-package yaml-mode
   :hook
   ((yaml-mode . wb/yaml-setup)
-  (yaml-mode . lsp-deferred))
+  (yaml-mode . lsp-deferred)
+   )
   )
 
 (use-package yasnippet
