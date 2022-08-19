@@ -20,26 +20,6 @@
   (evil-define-key '(normal visual) 'global (kbd "<leader>sq") 'vr/query-replace)
   (evil-define-key '(normal visual) 'global (kbd "<leader>sm") 'vr/mc-mark))
 
-;; (use-package projectile
-;;   :defer t
-;;   :bind-keymap
-;;   ("C-c p" . projectile-command-map)
-;;   :init
-;;   (when (file-directory-p "~/code")
-;;     (setq projectile-project-search-path '("~/code")))
-;;   (setq projectile-switch-project-action #'projectile-dired)
-;;   :config
-;;   (projectile-mode +1)
-;;   :custom
-;;   (setq projectile-enable-caching t)
-;;   (setq projectile-sort-order 'recently-active)
-;;   (setq projectile-indexing-method 'alien)
-;;   (projectile-completion-system 'auto)
-;;   )
-
-;; (use-package treemacs-projectile
-;;   :after (projectile))
-
 ;; Automatically clean whitespace
 (use-package ws-butler
   :hook ((text-mode . ws-butler-mode)
@@ -53,10 +33,6 @@
   (flycheck-set-indication-mode 'left-margin)
   (global-flycheck-mode)
   )
-
-;; (use-package flycheck-inline
-;;   :hook
-;;   ((flycheck-mode . flycheck-inline-mode)))
 
 (use-package tree-sitter
   :config
@@ -106,9 +82,6 @@
 ;; LSP
 (defun wb/lsp-setup ()
   "Setup for LSP mode."
-  ;; (setq lsp-completion-provider :none)
-  ;; (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
-  ;;       '(orderless))
   (setq lsp-idle-delay 0.500
 	    lsp-log-io nil
 	    lsp-modeline-code-actions-segments '(count icon name)
@@ -184,27 +157,10 @@
    )
   )
 
-;; (defun setup-tide-mode ()
-;;   (interactive)
-;;   (tide-setup)
-;;   (flycheck-mode +1)
-;;   (setq flycheck-check-syntax-automatically '(save mode-enabled))
-;;   (eldoc-mode +1)
-;;   (tide-hl-identifier-mode +1)
-;;   ;; company is an optional dependency. You have to
-;;   ;; install it separately via package-install
-;;   ;; `M-x package-install [ret] company`
-;;   (company-mode +1))
-
-;; (use-package tide)
-
-;; ;; aligns annotation to the right hand side
-;; (setq company-tooltip-align-annotations t)
-
-;; ;; formats the buffer before saving
-;; (add-hook 'before-save-hook 'tide-format-before-save)
-
-;; (add-hook 'typescript-mode-hook #'setup-tide-mode)
+;; .editorconfig files
+(use-package editorconfig
+  :config
+  (editorconfig-mode 1))
 
 (defun wb/js-ts-setup ()
   "Setup for js and ts mode."
@@ -244,27 +200,14 @@
 
 (use-package web-mode
   :config
-  (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.[agj]sp\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.as[cp]x\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.razor\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.cshtml\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
-  (setq web-mode-engines-alist
-        '(("php"    . "\\.phtml\\'")
-          ("razor"    . "\\.cshtml\\'")
-          ("razor"    . "\\.razor\\'")
-          ("blade"  . "\\.blade\\."))
-        )
+  (add-to-list 'auto-mode-alist '("\\.html\\'" . web-mode))
   (setq web-mode-markup-indent-offset 2)
   (setq web-mode-css-indent-offset 2)
   (setq web-mode-code-indent-offset 2)
   (setq web-mode-enable-css-colorization t)
   (setq web-mode-enable-current-element-highlight t)
+  :hook
+  (web-mode . lsp-deferred)
   )
 
 ;; .xml files
@@ -291,8 +234,6 @@
   :defer t
   :config
   (yas-reload-all)
-  (add-hook 'prog-mode-hook 'yas-minor-mode)
-  (add-hook 'text-mode-hook 'yas-minor-mode)
   (evil-define-key 'normal 'global (kbd "<leader>i") 'yas-insert-snippet)
   )
 

@@ -7,7 +7,12 @@
 ;;; Code:
 
 (use-package gruvbox-theme)
-(load-theme 'gruvbox-dark-hard t)
+;; (load-theme 'gruvbox-dark-hard t)
+
+(use-package jetbrains-darcula-theme
+  :config
+  (load-theme 'jetbrains-darcula t)
+  )
 
 ;; (use-package doom-themes
 ;;   :config
@@ -73,8 +78,10 @@
 (use-package treemacs-evil
   :after treemacs)
 
+(use-package rainbow-delimiters
+  :hook ((prog-mode . rainbow-delimiters-mode)))
+
 (use-package dashboard
-  :after evil
   :init
   (progn
     (setq dashboard-items '((recents . 5)
@@ -84,11 +91,9 @@
     (setq dashboard-set-file-icons t)
     (setq dashboard-set-heading-icons t)
     )
-  :config
-  (dashboard-setup-startup-hook))
-
-(use-package rainbow-delimiters
-  :hook ((prog-mode . rainbow-delimiters-mode)))
+  :hook
+  (dashboard-setup-startup-hook)
+  )
 
 (provide 'appearance)
 

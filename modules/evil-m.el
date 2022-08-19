@@ -1,4 +1,4 @@
-;;; evil.el --- evil settings for emacs -*- lexical-binding: t -*-
+;;; evil-m.el --- evil settings for emacs -*- lexical-binding: t -*-
 ;; Author: Willem Boshoff <boshoffwillem@protonmail.com>
 ;; URL: https://github.com/boshoffwillem/.emacs.d
 
@@ -48,4 +48,4 @@
 
 (provide 'evil-m)
 
-;;; evil.el ends here.
+;;; evil-m.el ends here.
