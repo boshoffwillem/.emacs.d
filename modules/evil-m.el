@@ -22,6 +22,8 @@
     ">" 'org-shiftmetaright
     "<" 'org-shiftmetaleft)
   (evil-mode 1)
+  :custom
+  (setq-default evil-shift-width tab-width)
   )
 
 (use-package evil-collection

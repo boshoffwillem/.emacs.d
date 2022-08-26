@@ -14,74 +14,17 @@
   (load-theme 'jetbrains-darcula t)
   )
 
-;; (use-package doom-themes
-;;   :config
-;;   (let (
-;;         ;; (chosen-theme 'doom-dracula)
-;;         (chosen-theme 'doom-gruvbox)
-;;         ;; (chosen-theme 'doom-tomorrow-night)
-;;         )
-;;     (doom-themes-visual-bell-config)
-;;     (doom-themes-treemacs-config)
-;;     (doom-themes-org-config)
-;;     (setq doom-challenger-deep-brighter-comments t
-;;           doom-challenger-deep-brighter-modeline t
-;;           doom-themes-enable-bold t
-;;           doom-themes-enable-italic t
-;;           doom-themes-treemacs-theme "doom-atom")
-;;     (load-theme chosen-theme t)))
-
-;; (use-package minions
-;;   :hook (doom-modeline-mode . minions-mode))
-
-;; (use-package doom-modeline
-;;   :hook (after-init . doom-modeline-mode)
-;;   :custom-face
-;;   (mode-line ((t (:height 0.85))))
-;;   (mode-line-inactive ((t (:height 0.85))))
-;;   :custom
-;;   (doom-modeline-lsp t)
-;;   (doom-modeline-minor-modes t)
-;;   (doom-modeline-height 15)
-;;   (doom-modeline-bar-width 6)
-;;   )
-
 (use-package all-the-icons)
 
 (use-package all-the-icons-dired
   :after all-the-icons
   :hook (dired-mode . all-the-icons-dired-mode))
 
-(use-package treemacs
-  :bind
-  (:map global-map
-    ([f8] . treemacs)
-    ("C-<f8>" . treemacs-select-window))
-  :config
-  (treemacs-tag-follow-mode t)
-  (treemacs-follow-mode t)
-  (treemacs-project-follow-mode t)
-  (treemacs-fringe-indicator-mode 'always)
-  (treemacs-git-mode 'deferred)
-  (treemacs-filewatch-mode t)
-  (setq treemacs-space-between-root-nodes nil)
-  :custom
-  (treemacs-is-never-other-window t)
-  )
-
-(use-package treemacs-all-the-icons
-  :after treemacs)
-
-(use-package treemacs-icons-dired
-  :after treemacs)
-
-(use-package treemacs-evil
-  :after treemacs)
-
 (use-package rainbow-delimiters
   :hook ((prog-mode . rainbow-delimiters-mode)))
 
 (use-package dashboard
+  :after evil
   :init
   (progn
     (setq dashboard-items '((recents . 5)
@@ -91,9 +34,39 @@
     (setq dashboard-set-file-icons t)
     (setq dashboard-set-heading-icons t)
     )
-  :hook
+  :config
   (dashboard-setup-startup-hook)
   )
+
+(use-package ligature
+  :load-path "path-to-ligature-repo"
+  :config
+  ;; Enable the "www" ligature in every possible major mode
+  (ligature-set-ligatures 't '("www"))
+  ;; Enable traditional ligature support in eww-mode, if the
+  ;; `variable-pitch' face supports it
+  (ligature-set-ligatures 'eww-mode '("ff" "fi" "ffi"))
+  ;; Enable all Cascadia Code ligatures in programming modes
+  (ligature-set-ligatures 'prog-mode '("|||>" "<|||" "<==>" "<!--" "####" "~~>" "***" "||=" "||>"
+                                       ":::" "::=" "=:=" "===" "==>" "=!=" "=>>" "=<<" "=/=" "!=="
+                                       "!!." ">=>" ">>=" ">>>" ">>-" ">->" "->>" "-->" "---" "-<<"
+                                       "<~~" "<~>" "<*>" "<||" "<|>" "<$>" "<==" "<=>" "<=<" "<->"
+                                       "<--" "<-<" "<<=" "<<-" "<<<" "<+>" "</>" "###" "#_(" "..<"
+                                       "..." "+++" "/==" "///" "_|_" "www" "&&" "^=" "~~" "~@" "~="
+                                       "~>" "~-" "**" "*>" "*/" "||" "|}" "|]" "|=" "|>" "|-" "{|"
+                                       "[|" "]#" "::" ":=" ":>" ":<" "$>" "==" "=>" "!=" "!!" ">:"
+                                       ">=" ">>" ">-" "-~" "-|" "->" "--" "-<" "<~" "<*" "<|" "<:"
+                                       "<$" "<=" "<>" "<-" "<<" "<+" "</" "#{" "#[" "#:" "#=" "#!"
+                                       "##" "#(" "#?" "#_" "%%" ".=" ".-" ".." ".?" "+>" "++" "?:"
+                                       "?=" "?." "??" ";;" "/*" "/=" "/>" "//" "__" "~~" "(*" "*)"
+                                       "\\\\" "://"))
+  ;; Enables ligature checks globally in all buffers. You can also do it
+  ;; per mode with `ligature-mode'.
+  (global-ligature-mode t))
+
+(use-package unicode-fonts
+   :config
+    (unicode-fonts-setup))
 
 (provide 'appearance)
 

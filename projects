@@ -1,3 +1,7 @@
 ;;; -*- lisp-data -*-
-(("~/code/work/Psicle.Base/")
+(("~/code/work/TerraformTest/")
+ ("~/code/dsa/")
+ ("~/.emacs.d/")
+ ("~/code/algorithms/")
+ ("~/code/work/Psicle.Base/")
  ("~/code/work/Psicle.Base.Worktrees/net6/"))

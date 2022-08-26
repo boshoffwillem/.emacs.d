@@ -79,6 +79,19 @@
 ;;               (ts-fold-mode 1)
 ;;               (define-key evil-normal-state-map (kbd "zo") 'meain/toggle-fold))))
 
+(use-package projectile
+  :config
+  (projectile-global-mode)
+  (setq projectile-indexing-method 'alien
+        projectile-enable-caching t))
+
+;; (use-package helm-projectile
+;;   :after projectile
+;;   :config
+;;   (setq projectile-completion-system 'helm
+;;         projectile-switch-project-action 'helm-projectile)
+;;   (helm-projectile-on))
+
 ;; LSP
 (defun wb/lsp-setup ()
   "Setup for LSP mode."
@@ -91,13 +104,10 @@
 	    lsp-diagnostic-clean-after-change t
 	    lsp-headerline-breadcrumb-enable-symbol-numbers nil
 	    lsp-lens-place-position 'above-line
-	    lsp-semantic-tokens-honor-refresh-requests t
-	    lsp-semantic-tokens-apply-modifiers nil
 	    lsp-modeline-diagnostics-enable t
 	    lsp-modeline-code-actions-enable t
 	    lsp-breadcrumb-enable t
 	    lsp-lens-enable t
-	    lsp-semantic-tokens-enable t
 	    lsp-dired-enable t)
   (yas-global-mode 1)
   )
@@ -110,19 +120,12 @@
    (lsp-deferred-mode . lsp-modeline-diagnostics-mode)
    (lsp-deferred-mode . lsp-modeline-code-actions-mode)
    (lsp-deferred-mode . lsp-lens-mode)
-   (lsp-deferred-mode . lsp-semantic-tokens-mode)
    (lsp-deferred-mode . lsp-dired-mode)
    (lsp-mode . lsp-enable-which-key-integration))
   :commands (lsp lsp-deferred))
 
 ;; optionally
 (use-package lsp-ui :commands lsp-ui-mode)
-
-(use-package lsp-treemacs
-  :init
-  (lsp-treemacs-sync-mode 1)
-  :commands (lsp-treemacs-errors-list)
-  )
 
 (use-package consult-lsp)
 
@@ -132,6 +135,13 @@
   (require 'dap-cpptools))
 ;; (use-package dap-LANGUAGE) to load the dap adapter for your language
 (use-package posframe)
+
+(defun wb/prog-mode-setup ()
+  "Settings when programming."
+  (electric-pair-mode nil)
+  )
+
+(add-hook prog-mode-hook 'wb/prog-mode-setup)
 
 ;; .c and and .cpp files
 (defun wb/cc-setup ()
@@ -148,6 +158,7 @@
 ;; .cs files
 (defun wb/csharp-setup ()
   "Setup for csharp mode."
+  (setq lsp-csharp-omnisharp-roslyn-download-url "https://github.com/omnisharp/omnisharp-roslyn/releases/latest/download/omnisharp-win-x64-net6.0.zip")
   (setq-local tab-width 4))
 
 (use-package csharp-mode
@@ -194,9 +205,36 @@
          )
   )
 
+(defun wb/powershell-setup ()
+  "Setup for powershell mode."
+  (setq lsp-pwsh-dir "C:/tools/PowerShellEditorServices")
+  (setq-local tab-width 2))
+
+(use-package powershell
+  :hook
+  ((powershell-mode . wb/powershell-setup)
+  (powershell-mode . lsp-deferred)))
+
+(defun wb/rust-setup ()
+  "Setup for rust mode."
+  (setq-local tab-width 4))
+
+(use-package rust-mode
+  :hook
+  ((rust-mode . wb/rust-setup)
+  (rust-mode . lsp-deferred))
+  :config
+  (setq rust-format-on-save t))
+
+(defun wb/terraform-setup ()
+  "Setup for terraform mode."
+  (tree-sitter-require 'hcl)
+  (setq-local tab-width 2))
+
 (use-package terraform-mode
   :hook
-  (terraform-mode . lsp-deferred))
+  ((terraform-mode . wb/terraform-setup)
+  (terraform-mode . lsp-deferred)))
 
 (use-package web-mode
   :config
@@ -221,12 +259,14 @@
 (defun wb/yaml-setup ()
   "Setup for yaml mode."
   (setq-local tab-width 2)
+  (setq yaml-indent-offset 2)
+  (setq-local evil-shitf-width yaml-indent-offset)
   )
 
 (use-package yaml-mode
   :hook
-  ((yaml-mode . wb/yaml-setup)
-  (yaml-mode . lsp-deferred)
+  ((yaml-mode . lsp-deferred)
+   (yaml-mode . wb/yaml-setup)
    )
   )
 

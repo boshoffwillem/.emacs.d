@@ -17,7 +17,7 @@
 
 (evil-define-key 'normal 'lsp-mode (kbd "<leader>la") 'lsp-execute-code-action)
 (evil-define-key 'normal 'lsp-mode (kbd "gd") 'lsp-find-definition)
-(evil-define-key 'normal 'lsp-mode (kbd "K") 'lsp-ui-doc-show)
+(evil-define-key 'normal 'lsp-mode (kbd "K") 'lsp-describe-thing-at-point)
 (evil-define-key 'normal 'lsp-mode (kbd "gi") 'lsp-find-implementation)
 (evil-define-key 'normal 'lsp-mode (kbd "gr") 'lsp-find-references)
 (evil-define-key 'normal 'lsp-mode (kbd "<leader>lrr") 'lsp-rename)
