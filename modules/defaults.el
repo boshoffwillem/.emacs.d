@@ -55,7 +55,7 @@
 ;; Use space to indent by default.
 (setq-default indent-tabs-mode nil)
 ;; Set appearance of a tab that is represented by 4 spaces.
-(setq-default tab-width 4)
+(setq-default tab-width 2)
 
 (show-paren-mode t)
 (setq show-paren-delay 0)

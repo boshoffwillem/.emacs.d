@@ -22,6 +22,7 @@
     ">" 'org-shiftmetaright
     "<" 'org-shiftmetaleft)
   (evil-mode 1)
+  (electric-pair-mode nil)
   :custom
   (setq-default evil-shift-width tab-width)
   )

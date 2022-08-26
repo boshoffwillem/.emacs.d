@@ -22,8 +22,8 @@
 
 ;; Automatically clean whitespace
 (use-package ws-butler
-  :hook ((text-mode . ws-butler-mode)
-         (prog-mode . ws-butler-mode)))
+  :config
+  (ws-butler-mode 1))
 
 (use-package flycheck
   :custom
@@ -141,7 +141,7 @@
   (electric-pair-mode nil)
   )
 
-(add-hook prog-mode-hook 'wb/prog-mode-setup)
+;; (add-hook prog-mode-hook #'wb/prog-mode-setup)
 
 ;; .c and and .cpp files
 (defun wb/cc-setup ()
