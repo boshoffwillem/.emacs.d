@@ -52,7 +52,7 @@
 (use-package company
   :hook
   ((emacs-lisp-mode . (lambda ()
-  		                (setq-local company-backends '(company-elisp))))
+                        (setq-local company-backends '(company-elisp))))
    (prog-mode . company-mode)
    (org-mode . company-mode)
    )
@@ -69,12 +69,12 @@
   ;; Use the numbers 0-9 to select company completion candidates
   (let ((map company-active-map))
     (mapc (lambda (x) (define-key map (format "%d" x)
-  		                `(lambda () (interactive) (company-complete-number ,x))))
+                   `(lambda () (interactive) (company-complete-number ,x))))
           (number-sequence 0 9)))
   (advice-add 'company-complete-common :before (lambda () (setq my-company-point (point))))
   (advice-add 'company-complete-common :after (lambda ()
-  		  				                        (when (equal my-company-point (point))
-  			  			                          (yas-expand))))
+                                                (when (equal my-company-point (point))
+                                                  (yas-expand))))
   :bind
   (:map company-active-map
         ("C-j" . company-select-next)

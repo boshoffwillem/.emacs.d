@@ -7,7 +7,7 @@
 ;;; Code:
 
 (evil-define-key 'normal 'global (kbd "<leader>x") 'eval-last-sexp)
-(evil-define-key 'normal 'global (kbd "<leader>r") 'revert-buffer)
+(evil-define-key 'normal 'global (kbd "<leader>br") 'revert-buffer)
 
 (evil-define-key 'normal 'global (kbd "<leader>ff") 'find-file)
 (evil-define-key 'normal 'global (kbd "<leader>bb") 'switch-to-buffer)
