@@ -168,6 +168,17 @@
    )
   )
 
+;; .csproj files
+(defun wb/csproj-setup ()
+  "Setup for csproj mode."
+  (setq-local tab-width 2))
+
+(use-package csproj-mode
+  :hook
+  ((csproj-mode . wb/csproj-setup)
+   )
+  )
+
 ;; .editorconfig files
 (use-package editorconfig
   :config
@@ -229,6 +240,7 @@
 (defun wb/terraform-setup ()
   "Setup for terraform mode."
   (tree-sitter-require 'hcl)
+  (tree-sitter-mode)
   (setq-local tab-width 2))
 
 (use-package terraform-mode
@@ -261,6 +273,7 @@
   (setq-local tab-width 2)
   (setq yaml-indent-offset 2)
   (setq-local evil-shitf-width yaml-indent-offset)
+  (tree-sitter-mode)
   )
 
 (use-package yaml-mode
