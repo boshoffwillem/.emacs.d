@@ -9,9 +9,6 @@
 (evil-define-key 'normal 'global (kbd "<leader>x") 'eval-last-sexp)
 (evil-define-key 'normal 'global (kbd "<leader>br") 'revert-buffer)
 
-(evil-define-key 'normal 'global (kbd "<leader>ff") 'find-file)
-(evil-define-key 'normal 'global (kbd "<leader>bb") 'switch-to-buffer)
-(evil-define-key 'normal 'global (kbd "<leader>bk") 'kill-buffer)
 (evil-define-key 'normal 'global (kbd "<leader>fr") 'recentf-open-files)
 (evil-define-key 'normal 'global (kbd "/") 'isearch-forward) ;; Search in current buffer
 
