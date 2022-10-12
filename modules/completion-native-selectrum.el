@@ -9,6 +9,7 @@
 (use-package selectrum
   :bind
   (:map selectrum-minibuffer-map
+        ("C-l" . selectrum-insert-current-candidate)
         ("C-j" . selectrum-next-candidate)
         ("C-k" . selectrum-previous-candidate))
   :config
@@ -20,7 +21,8 @@
 
 (use-package prescient
   :config
-  (setq prescient-filter-method '(literal regexp initialism fuzzy))
+  (setq prescient-filter-method '(literal regexp initialism))
+  ;; (setq prescient-filter-method '(literal regexp initialism fuzzy))
   (prescient-persist-mode +1))
 
 (use-package company-prescient
