@@ -228,6 +228,7 @@
 
 (defun wb/rust-setup ()
   "Setup for rust mode."
+  (tree-sitter-mode)
   (setq-local tab-width 4))
 
 (use-package rust-mode
