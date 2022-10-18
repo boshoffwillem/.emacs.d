@@ -146,6 +146,7 @@
 ;; .c and and .cpp files
 (defun wb/cc-setup ()
   "Setup for c and c++ mode."
+  (tree-sitter-mode)
   (setq-local tab-width 4))
 
 (use-package ccls
@@ -159,6 +160,7 @@
 (defun wb/csharp-setup ()
   "Setup for csharp mode."
   (setq lsp-csharp-omnisharp-roslyn-download-url "https://github.com/omnisharp/omnisharp-roslyn/releases/latest/download/omnisharp-win-x64-net6.0.zip")
+  (tree-sitter-mode)
   (setq-local tab-width 4))
 
 (use-package csharp-mode
@@ -186,6 +188,7 @@
 
 (defun wb/js-ts-setup ()
   "Setup for js and ts mode."
+  (tree-sitter-mode)
   (setq-local tab-width 2))
 
 (use-package typescript-mode
@@ -219,6 +222,7 @@
 (defun wb/powershell-setup ()
   "Setup for powershell mode."
   (setq lsp-pwsh-dir "C:/tools/PowerShellEditorServices")
+  (tree-sitter-mode)
   (setq-local tab-width 2))
 
 (use-package powershell
