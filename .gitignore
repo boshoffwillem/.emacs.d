@@ -13,6 +13,7 @@ straight/
 url/
 history
 bin/
+projects
 
 # Projectile stuff
 projectile-bookmarks.eld
@@ -29,8 +30,6 @@ server/
 
 # Multicursor stuff
 .mc-lists.el
-
-smex-items
 
 # Org stuff
 OrgFiles/
