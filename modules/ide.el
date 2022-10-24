@@ -14,11 +14,7 @@
 (use-package deadgrep)
 
 ;; ===================================== Search and replace with regular expressions
-(use-package visual-regexp
-  :config
-  (evil-define-key '(normal visual) 'global (kbd "<leader>sr") 'vr/replace)
-  (evil-define-key '(normal visual) 'global (kbd "<leader>sq") 'vr/query-replace)
-  (evil-define-key '(normal visual) 'global (kbd "<leader>sm") 'vr/mc-mark))
+(use-package visual-regexp)
 
 ;; Automatically clean whitespace
 (use-package ws-butler
@@ -50,67 +46,34 @@
   :after tree-sitter
   )
 
-;; (use-package tree-sitter-indent
-;;   :hook
-;;   (tree-sitter-mode . tree-sitter-indent-mode)
-;;   )
-
 (use-package origami
-  :after evil
-  :config (global-origami-mode)
-  :init
-  (define-key evil-normal-state-map (kbd "zo") 'evil-toggle-fold))
-
-;; (use-package ts-fold
-;;   :after (tree-sitter origami)
-;;   :commands (ts-fold-mode)
-;;   :straight (ts-fold :host github
-;;                      :repo "jcs090218/ts-fold")
-;;   :config
-;;   (defun meain/toggle-fold ()
-;;     (interactive)
-;;     (if (equal tree-sitter-mode nil)
-;;         (call-interactively 'evil-toggle-fold)
-;;       (call-interactively 'ts-fold-toggle)))
-;;   :init
-;;   (add-hook 'tree-sitter-after-on-hook
-;;             (lambda ()
-;;               (origami-mode -1)
-;;               (ts-fold-mode 1)
-;;               (define-key evil-normal-state-map (kbd "zo") 'meain/toggle-fold))))
+  :config (global-origami-mode))
 
 (use-package projectile
   :config
   (projectile-global-mode)
+  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
   (setq projectile-indexing-method 'alien
         projectile-enable-caching t))
-
-;; (use-package helm-projectile
-;;   :after projectile
-;;   :config
-;;   (setq projectile-completion-system 'helm
-;;         projectile-switch-project-action 'helm-projectile)
-;;   (helm-projectile-on))
 
 ;; LSP
 (defun wb/lsp-setup ()
   "Setup for LSP mode."
   (setq lsp-idle-delay 0.500
-	    lsp-log-io nil
-	    lsp-modeline-code-actions-segments '(count icon name)
-	    lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols)
-	    lsp-modeline-diagnostics-scope :workspace
-	    lsp-auto-execute-action nil
-	    lsp-diagnostic-clean-after-change t
-	    lsp-headerline-breadcrumb-enable-symbol-numbers nil
-	    lsp-lens-place-position 'above-line
-	    lsp-modeline-diagnostics-enable t
-	    lsp-modeline-code-actions-enable t
-	    lsp-breadcrumb-enable t
-	    lsp-lens-enable t
-	    lsp-dired-enable t)
-  (yas-global-mode 1)
-  )
+        lsp-log-io nil
+        lsp-modeline-code-actions-segments '(count icon name)
+        lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols)
+        lsp-modeline-diagnostics-scope :workspace
+        lsp-auto-execute-action nil
+        lsp-diagnostic-clean-after-change t
+        lsp-headerline-breadcrumb-enable-symbol-numbers nil
+        lsp-lens-place-position 'above-line
+        lsp-modeline-diagnostics-enable t
+        lsp-modeline-code-actions-enable t
+        lsp-breadcrumb-enable t
+        lsp-lens-enable t
+        lsp-dired-enable t)
+  (yas-global-mode 1))
 
 (use-package lsp-mode
   :init
@@ -136,17 +99,11 @@
 ;; (use-package dap-LANGUAGE) to load the dap adapter for your language
 (use-package posframe)
 
-(defun wb/prog-mode-setup ()
-  "Settings when programming."
-  (electric-pair-mode nil)
-  )
-
-;; (add-hook prog-mode-hook #'wb/prog-mode-setup)
-
 ;; .c and and .cpp files
 (defun wb/cc-setup ()
   "Setup for c and c++ mode."
   (tree-sitter-mode)
+  (electric-pair-mode nil)
   (setq-local tab-width 4))
 
 (use-package ccls
@@ -161,6 +118,7 @@
   "Setup for csharp mode."
   (setq lsp-csharp-omnisharp-roslyn-download-url "https://github.com/omnisharp/omnisharp-roslyn/releases/latest/download/omnisharp-win-x64-net6.0.zip")
   (tree-sitter-mode)
+  (electric-pair-mode nil)
   (setq-local tab-width 4))
 
 (use-package csharp-mode
@@ -173,6 +131,7 @@
 ;; .csproj files
 (defun wb/csproj-setup ()
   "Setup for csproj mode."
+  (electric-pair-mode nil)
   (setq-local tab-width 2))
 
 (use-package csproj-mode
@@ -189,6 +148,7 @@
 (defun wb/js-ts-setup ()
   "Setup for js and ts mode."
   (tree-sitter-mode)
+  (electric-pair-mode nil)
   (setq-local tab-width 2))
 
 (use-package typescript-mode
@@ -223,6 +183,7 @@
   "Setup for powershell mode."
   (setq lsp-pwsh-dir "C:/tools/PowerShellEditorServices")
   (tree-sitter-mode)
+  (electric-pair-mode nil)
   (setq-local tab-width 2))
 
 (use-package powershell
@@ -233,6 +194,7 @@
 (defun wb/rust-setup ()
   "Setup for rust mode."
   (tree-sitter-mode)
+  (electric-pair-mode nil)
   (setq-local tab-width 4))
 
 (use-package rust-mode
@@ -246,6 +208,7 @@
   "Setup for terraform mode."
   (tree-sitter-require 'hcl)
   (tree-sitter-mode)
+  (electric-pair-mode nil)
   (setq-local tab-width 2))
 
 (use-package terraform-mode
@@ -267,6 +230,7 @@
 
 ;; .xml files
 (setq nxml-slash-auto-complete-flag t)
+(add-to-list 'auto-mode-alist '("\\.nuspec\\'" . nxml-mode))
 (add-hook 'nxml-mode-hook
           (lambda ()
             (setq-local tab-width 2)
@@ -277,7 +241,8 @@
   "Setup for yaml mode."
   (setq-local tab-width 2)
   (setq yaml-indent-offset 2)
-  (setq-local evil-shitf-width yaml-indent-offset)
+  (electric-pair-mode nil)
+  ;; (setq-local evil-shitf-width yaml-indent-offset)
   (tree-sitter-mode)
   )
 
@@ -292,7 +257,6 @@
   :defer t
   :config
   (yas-reload-all)
-  (evil-define-key 'normal 'global (kbd "<leader>i") 'yas-insert-snippet)
   )
 
 (use-package yasnippet-snippets

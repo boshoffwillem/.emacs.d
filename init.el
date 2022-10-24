@@ -44,7 +44,6 @@
    '(("(\\<\\(straight-use-package\\)\\>" 1 font-lock-keyword-face))))
 (setq straight-use-package-by-default 1)
 
-(require 'evil-m)
 (require 'appearance)
 (require 'completion)
 ;; (require 'completion-native-vertico)
@@ -52,6 +51,7 @@
 (require 'completion-native-helpers)
 (require 'git)
 (require 'ide)
-(require 'keybindings)
+(require 'editing)
+(require 'evil-m)
 
 ;;; init.el ends here
