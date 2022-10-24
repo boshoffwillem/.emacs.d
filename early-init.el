@@ -16,7 +16,7 @@
 (tool-bar-mode -1) ;; Disable the toolbar.
 (scroll-bar-mode -1) ;; Disable visible scrollbar.
 (tooltip-mode -1) ;; Disable tooltips.
-(set-fringe-mode 20) ;; Give some breathing room.
+(set-fringe-mode 0) ;; Give some breathing room.
 (set-default 'cursor-type 'bar)
 
 (setq inhibit-startup-screen t)
@@ -31,7 +31,5 @@
 
 ;; Improve processing of sub-processes that generates large chunk.
 (setq read-process-output-max (* 1024 1024))
-
-(load-theme 'deeper-blue t)
 
 ;;; early-init.el ends here

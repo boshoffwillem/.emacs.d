@@ -10,7 +10,8 @@
   ;; Global settings (defaults)
   (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
         doom-themes-enable-italic t) ; if nil, italics is universally disabled
-  (load-theme 'doom-gruvbox t)
+  ;; (load-theme 'doom-gruvbox t)
+  (load-theme 'doom-one-light t)
 
   ;; Enable flashing mode-line on errors
   (doom-themes-visual-bell-config)
@@ -27,7 +28,7 @@
 
 (use-package jetbrains-darcula-theme
   ;; :config
-  ;; (load-theme 'jetbrains-darcula nil)
+  ;; (load-theme 'jetbrains-darcula t)
   )
 
 (use-package all-the-icons)
@@ -40,7 +41,7 @@
   :hook ((prog-mode . rainbow-delimiters-mode)))
 
 (use-package dashboard
-  :after evil
+  ;; :after evil
   :init
   (progn
     (setq dashboard-items '((recents . 5)
