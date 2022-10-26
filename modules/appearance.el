@@ -31,6 +31,10 @@
   ;; (load-theme 'jetbrains-darcula t)
   )
 
+;; (use-package intellij-theme
+;;   :config
+;;   (load-theme 'intellij t))
+
 (use-package all-the-icons)
 
 (use-package all-the-icons-dired

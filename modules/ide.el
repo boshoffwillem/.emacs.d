@@ -104,6 +104,7 @@
   "Setup for c and c++ mode."
   (tree-sitter-mode)
   (electric-pair-mode nil)
+  (setq-local standard-indent 4)
   (setq-local tab-width 4))
 
 (use-package ccls
@@ -119,6 +120,7 @@
   (setq lsp-csharp-omnisharp-roslyn-download-url "https://github.com/omnisharp/omnisharp-roslyn/releases/latest/download/omnisharp-win-x64-net6.0.zip")
   (tree-sitter-mode)
   (electric-pair-mode nil)
+  (setq-local standard-indent 4)
   (setq-local tab-width 4))
 
 (use-package csharp-mode
@@ -132,6 +134,7 @@
 (defun wb/csproj-setup ()
   "Setup for csproj mode."
   (electric-pair-mode nil)
+  (setq-local standard-indent 2)
   (setq-local tab-width 2))
 
 (use-package csproj-mode
@@ -149,6 +152,7 @@
   "Setup for js and ts mode."
   (tree-sitter-mode)
   (electric-pair-mode nil)
+  (setq-local standard-indent 2)
   (setq-local tab-width 2))
 
 (use-package typescript-mode
@@ -184,6 +188,7 @@
   (setq lsp-pwsh-dir "C:/tools/PowerShellEditorServices")
   (tree-sitter-mode)
   (electric-pair-mode nil)
+  (setq-local standard-indent 2)
   (setq-local tab-width 2))
 
 (use-package powershell
@@ -195,6 +200,7 @@
   "Setup for rust mode."
   (tree-sitter-mode)
   (electric-pair-mode nil)
+  (setq-local standard-indent 4)
   (setq-local tab-width 4))
 
 (use-package rust-mode
@@ -209,6 +215,7 @@
   (tree-sitter-require 'hcl)
   (tree-sitter-mode)
   (electric-pair-mode nil)
+  (setq-local standard-indent 2)
   (setq-local tab-width 2))
 
 (use-package terraform-mode
@@ -234,12 +241,15 @@
 (add-hook 'nxml-mode-hook
           (lambda ()
             (setq-local tab-width 2)
+            (setq-local standard-indent 2)
             ))
+(add-hook 'nxml-mode-hook 'lsp-deferred)
 
 ;; .yml and .yaml files
 (defun wb/yaml-setup ()
   "Setup for yaml mode."
   (setq-local tab-width 2)
+  (setq-local standard-indent 2)
   (setq yaml-indent-offset 2)
   (electric-pair-mode nil)
   ;; (setq-local evil-shitf-width yaml-indent-offset)
