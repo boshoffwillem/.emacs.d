@@ -46,8 +46,8 @@
 
 (require 'appearance)
 (require 'completion)
-;; (require 'completion-native-vertico)
-(require 'completion-native-selectrum)
+(require 'completion-native-vertico)
+;; (require 'completion-native-selectrum)
 (require 'completion-native-helpers)
 (require 'git)
 (require 'ide)
