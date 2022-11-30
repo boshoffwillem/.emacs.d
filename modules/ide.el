@@ -10,16 +10,11 @@
 
 (use-package rg)
 
-;; ===================================== Project wide searching using ripgrep
+;; ==================================== Project wide searching using ripgrep
 (use-package deadgrep)
 
-;; ===================================== Search and replace with regular expressions
+;; ==================================== Search and replace with regular expressions
 (use-package visual-regexp)
-
-;; Automatically clean whitespace
-(use-package ws-butler
-  :config
-  (ws-butler-mode 1))
 
 (use-package flycheck
   :custom
@@ -29,32 +24,6 @@
   (flycheck-set-indication-mode 'left-margin)
   (global-flycheck-mode)
   )
-
-(use-package tree-sitter
-  :config
-  (require 'tree-sitter-langs)
-  ;; This makes every node a link to a section of code
-  (setq tree-sitter-debug-jump-buttons t
-        ;; and this highlights the entire sub tree in your code
-        tree-sitter-debug-highlight-jump-region t)
-  (global-tree-sitter-mode)
-  :hook
-  ((tree-sitter-mode . tree-sitter-hl-mode))
-  )
-
-(use-package tree-sitter-langs
-  :after tree-sitter
-  )
-
-(use-package origami
-  :config (global-origami-mode))
-
-(use-package projectile
-  :config
-  (projectile-global-mode)
-  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
-  (setq projectile-indexing-method 'alien
-        projectile-enable-caching t))
 
 ;; LSP
 (defun wb/lsp-setup ()
@@ -93,11 +62,11 @@
 (use-package consult-lsp)
 
 ;; optionally if you want to use debugger
-(use-package dap-mode
-  :config
-  (require 'dap-cpptools))
-;; (use-package dap-LANGUAGE) to load the dap adapter for your language
-(use-package posframe)
+;; (use-package dap-mode
+;;   :config
+;;   (require 'dap-cpptools))
+;; ;; (use-package dap-LANGUAGE) to load the dap adapter for your language
+;; (use-package posframe)
 
 ;; .c and and .cpp files
 (defun wb/cc-setup ()
@@ -143,10 +112,29 @@
    )
   )
 
+;; .sln files
+(defun wb/sln-setup ()
+  "Setup for sln mode."
+  (electric-pair-mode nil)
+  (setq-local standard-indent 2)
+  (setq-local tab-width 2))
+
+(use-package sln-mode
+  :hook
+  ((sln-mode . wb/sln-setup)
+   )
+  )
+
 ;; .editorconfig files
 (use-package editorconfig
   :config
   (editorconfig-mode 1))
+
+;; Gherkin files
+(use-package feature-mode)
+
+;; Markdown files
+(use-package markdown-mode)
 
 (defun wb/js-ts-setup ()
   "Setup for js and ts mode."
@@ -188,13 +176,13 @@
   (setq lsp-pwsh-dir "C:/tools/PowerShellEditorServices")
   (tree-sitter-mode)
   (electric-pair-mode nil)
-  (setq-local standard-indent 2)
-  (setq-local tab-width 2))
+  (setq-local tab-width 2)
+  (setq-local standard-indent 2))
 
 (use-package powershell
   :hook
-  ((powershell-mode . wb/powershell-setup)
-  (powershell-mode . lsp-deferred)))
+  ((powershell-mode . lsp-deferred)
+  (powershell-mode . wb/powershell-setup)))
 
 (defun wb/rust-setup ()
   "Setup for rust mode."
@@ -237,6 +225,8 @@
 
 ;; .xml files
 (setq nxml-slash-auto-complete-flag t)
+(setq nxml-child-indent 2)
+(setq nxml-attribute-indent 2)
 (add-to-list 'auto-mode-alist '("\\.nuspec\\'" . nxml-mode))
 (add-hook 'nxml-mode-hook
           (lambda ()
@@ -260,6 +250,22 @@
   :hook
   ((yaml-mode . lsp-deferred)
    (yaml-mode . wb/yaml-setup)
+   )
+  )
+
+;; .vue files
+(defun wb/vue-setup ()
+  "Setup for vue mode."
+  (setq-local tab-width 2)
+  (setq-local standard-indent 2)
+  (electric-pair-mode nil)
+  (tree-sitter-mode)
+  )
+
+(use-package vue-mode
+  :hook
+  ((vue-mode . lsp-deferred)
+   (vue-mode . wb/vue-setup)
    )
   )
 

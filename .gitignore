@@ -19,6 +19,9 @@ projects
 projectile-bookmarks.eld
 projectile.cache
 
+# Helm
+helm-adaptive-history
+
 # Magit
 server/
 .#*

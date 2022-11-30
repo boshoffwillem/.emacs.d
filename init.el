@@ -16,12 +16,6 @@
 ;; Add the modules folder to the load path
 (add-to-list 'load-path (expand-file-name "modules/" user-emacs-directory))
 
-;; Set default coding system (especially for Windows)
-(set-default-coding-systems 'utf-8)
-(setq visible-bell 1)  ; turn off beeps, make them flash!
-(setq large-file-warning-threshold 100000000) ;; change to ~100 MB
-(setq org-src-preserve-indentation t)
-
 (require 'defaults)
 
 (setq package-enable-at-startup nil)
@@ -44,12 +38,24 @@
    '(("(\\<\\(straight-use-package\\)\\>" 1 font-lock-keyword-face))))
 (setq straight-use-package-by-default 1)
 
+(use-package auto-package-update
+  :custom
+  (auto-package-update-interval 7)
+  (auto-package-update-delete-old-versions t)
+  (auto-package-update-prompt-before-update t)
+  (auto-package-update-show-preview t)
+
+  :config
+  (auto-package-update-maybe))
+
 (require 'appearance)
+(require 'workspace)
 (require 'completion)
-(require 'completion-native-vertico)
+(require 'completion-helm)
+;; (require 'completion-native-vertico)
 ;; (require 'completion-native-selectrum)
 (require 'completion-native-helpers)
-(require 'git)
+;; (require 'git)
 (require 'ide)
 (require 'editing)
 (require 'evil-m)
