@@ -19,9 +19,10 @@
 (use-package flycheck
   :custom
   (flycheck-display-errors-delay 0.1)
+  (flycheck-highlighting-mode 'lines)
   :config
   (setq flycheck-emacs-lisp-initialize-packages t)
-  (flycheck-set-indication-mode 'left-margin)
+  (flycheck-set-indication-mode nil)
   (global-flycheck-mode)
   )
 
@@ -56,10 +57,29 @@
    (lsp-mode . lsp-enable-which-key-integration))
   :commands (lsp lsp-deferred))
 
-;; optionally
-(use-package lsp-ui :commands lsp-ui-mode)
+;; helper boxes and other nice functionality (like javadoc for java)
+(defun lsp-ui-show-doc-helper ()
+  (interactive)
+  (if (lsp-ui-doc--visible-p)
+      (lsp-ui-doc-hide)
+      (lsp-ui-doc-show)))
 
-(use-package consult-lsp)
+(use-package lsp-ui
+  :after lsp-mode
+  :custom
+  (lsp-ui-sideline-show-code-actions t)
+  (lsp-ui-doc-position 'at-point)
+  :bind
+  ("C-k" . lsp-ui-show-doc-helper))
+
+;; Additional helpers using treemacs
+;; (symbols view, errors, dependencies for Java etc.)
+(use-package lsp-treemacs
+  :after lsp-mode
+  :config
+  (lsp-treemacs-sync-mode 1))
+
+;; (use-package consult-lsp)
 
 ;; optionally if you want to use debugger
 ;; (use-package dap-mode
@@ -173,8 +193,7 @@
 
 (defun wb/powershell-setup ()
   "Setup for powershell mode."
-  (setq lsp-pwsh-dir "C:/tools/PowerShellEditorServices")
-  (tree-sitter-mode)
+  ;; (setq lsp-pwsh-dir "C:/tools/PowerShellEditorServices")
   (electric-pair-mode nil)
   (setq-local tab-width 2)
   (setq-local standard-indent 2))

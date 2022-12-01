@@ -18,7 +18,7 @@
   (evil-set-leader '(normal visual) (kbd "<SPC>"))
   (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
   (evil-define-key 'normal 'global (kbd "<leader>x") 'eval-last-sexp)
-  (evil-define-key 'normal 'global (kbd "<leader>bb") 'consult-buffer)
+  (evil-define-key 'normal 'global (kbd "<leader>bb") 'switch-to-buffer)
   (evil-define-key 'normal 'global (kbd "<leader>br") 'revert-buffer)
   (evil-define-key 'normal 'global (kbd "<leader>fb") 'dired)
   (evil-define-key 'normal 'global (kbd "<leader>ff") 'find-file)

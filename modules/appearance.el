@@ -26,6 +26,10 @@
   ;; Corrects (and improves) org-mode's native fontification.
   (doom-themes-org-config))
 
+(use-package doom-modeline
+  :init
+  (doom-modeline-mode 1))
+
 (use-package gruvbox-theme)
 ;; (load-theme 'gruvbox-dark-hard t)
 

@@ -27,9 +27,13 @@
 
   :bind
   (("M-x" . helm-M-x)
-   ("C-x C-f" . helm-find-files)
-   ;; get the awesome buffer list instead of the standard stuff
-   ("C-x b" . helm-mini)))
+   ([remap find-file] . helm-find-files)
+   ([remap recentf-open-files] . helm-recentf)
+   ([remap switch-to-buffer] . helm-mini)
+   ([remap isearch-forward] . helm-occur)
+   :map helm-map
+   ("C-j" . helm-next-line)
+   ("C-k" . helm-previous-line)))
 
 (provide 'completion-helm)
 
