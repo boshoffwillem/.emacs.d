@@ -54,7 +54,8 @@
    (lsp-deferred-mode . lsp-modeline-code-actions-mode)
    (lsp-deferred-mode . lsp-lens-mode)
    (lsp-deferred-mode . lsp-dired-mode)
-   (lsp-mode . lsp-enable-which-key-integration))
+   (lsp-mode . lsp-enable-which-key-integration)
+   (lsp-mode . wb/common-lsp-setup))
   :commands (lsp lsp-deferred))
 
 ;; helper boxes and other nice functionality (like javadoc for java)
@@ -63,6 +64,11 @@
   (if (lsp-ui-doc--visible-p)
       (lsp-ui-doc-hide)
       (lsp-ui-doc-show)))
+
+(defun wb/common-lsp-setup()
+  "Settings common to any mode that use LSP."
+  (electric-pair-mode 0)
+  )
 
 (use-package lsp-ui
   :after lsp-mode
@@ -92,7 +98,6 @@
 (defun wb/cc-setup ()
   "Setup for c and c++ mode."
   (tree-sitter-mode)
-  (electric-pair-mode nil)
   (setq-local standard-indent 4)
   (setq-local tab-width 4))
 
@@ -108,7 +113,6 @@
   "Setup for csharp mode."
   (setq lsp-csharp-omnisharp-roslyn-download-url "https://github.com/omnisharp/omnisharp-roslyn/releases/latest/download/omnisharp-win-x64-net6.0.zip")
   (tree-sitter-mode)
-  (electric-pair-mode nil)
   (setq-local standard-indent 4)
   (setq-local tab-width 4))
 
@@ -122,7 +126,6 @@
 ;; .csproj files
 (defun wb/csproj-setup ()
   "Setup for csproj mode."
-  (electric-pair-mode nil)
   (setq-local standard-indent 2)
   (setq-local tab-width 2))
 
@@ -135,7 +138,6 @@
 ;; .sln files
 (defun wb/sln-setup ()
   "Setup for sln mode."
-  (electric-pair-mode nil)
   (setq-local standard-indent 2)
   (setq-local tab-width 2))
 
@@ -159,7 +161,6 @@
 (defun wb/js-ts-setup ()
   "Setup for js and ts mode."
   (tree-sitter-mode)
-  (electric-pair-mode nil)
   (setq-local standard-indent 2)
   (setq-local tab-width 2))
 
@@ -193,8 +194,6 @@
 
 (defun wb/powershell-setup ()
   "Setup for powershell mode."
-  ;; (setq lsp-pwsh-dir "C:/tools/PowerShellEditorServices")
-  (electric-pair-mode nil)
   (setq-local tab-width 2)
   (setq-local standard-indent 2))
 
@@ -206,7 +205,6 @@
 (defun wb/rust-setup ()
   "Setup for rust mode."
   (tree-sitter-mode)
-  (electric-pair-mode nil)
   (setq-local standard-indent 4)
   (setq-local tab-width 4))
 
@@ -221,7 +219,6 @@
   "Setup for terraform mode."
   (tree-sitter-require 'hcl)
   (tree-sitter-mode)
-  (electric-pair-mode nil)
   (setq-local standard-indent 2)
   (setq-local tab-width 2))
 
@@ -244,14 +241,10 @@
 
 ;; .xml files
 (setq nxml-slash-auto-complete-flag t)
-(setq nxml-child-indent 2)
-(setq nxml-attribute-indent 2)
+(setq nxml-child-indent 4)
+(setq nxml-attribute-indent 4)
 (add-to-list 'auto-mode-alist '("\\.nuspec\\'" . nxml-mode))
-(add-hook 'nxml-mode-hook
-          (lambda ()
-            (setq-local tab-width 2)
-            (setq-local standard-indent 2)
-            ))
+(add-to-list 'auto-mode-alist '("\\.xaml\\'" . nxml-mode))
 (add-hook 'nxml-mode-hook 'lsp-deferred)
 
 ;; .yml and .yaml files
@@ -260,8 +253,6 @@
   (setq-local tab-width 2)
   (setq-local standard-indent 2)
   (setq yaml-indent-offset 2)
-  (electric-pair-mode nil)
-  ;; (setq-local evil-shitf-width yaml-indent-offset)
   (tree-sitter-mode)
   )
 
@@ -277,7 +268,6 @@
   "Setup for vue mode."
   (setq-local tab-width 2)
   (setq-local standard-indent 2)
-  (electric-pair-mode nil)
   (tree-sitter-mode)
   )
 

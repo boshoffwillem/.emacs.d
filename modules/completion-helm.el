@@ -35,6 +35,9 @@
    ("C-j" . helm-next-line)
    ("C-k" . helm-previous-line)))
 
+(use-package helm-rg
+  :after (helm))
+
 (provide 'completion-helm)
 
 ;;; completion-helm.el ends here
