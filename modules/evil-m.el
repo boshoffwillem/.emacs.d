@@ -17,6 +17,10 @@
   :config
   (evil-set-leader '(normal visual) (kbd "<SPC>"))
   (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+  (evil-define-key '(normal visual) 'global (kbd "j") 'evil-backward-char)
+  (evil-define-key '(normal visual) 'global (kbd "k") 'evil-next-line)
+  (evil-define-key '(normal visual) 'global (kbd "l") 'evil-previous-line)
+  (evil-define-key '(normal visual) 'global (kbd ";") 'evil-forward-char)
   (evil-define-key 'normal 'global (kbd "<leader>x") 'eval-last-sexp)
   (evil-define-key 'normal 'global (kbd "<leader>bb") 'switch-to-buffer)
   (evil-define-key 'normal 'global (kbd "<leader>br") 'revert-buffer)
@@ -38,7 +42,7 @@
   (evil-define-key 'normal 'global (kbd "<leader>gk") 'git-gutter:previous-hunk)
   (evil-define-key 'normal 'global (kbd "<leader>pp") 'projectile-switch-project) ;; Switch to different project
   (evil-define-key 'normal 'global (kbd "<leader>pf") 'projectile-find-file) ;; Find file in project
-  (evil-define-key 'normal 'global (kbd "<leader>ps") 'rg) ;; Project-wide search
+  (evil-define-key 'normal 'global (kbd "<leader>p/") 'rg) ;; Project-wide search
   (evil-define-key '(normal visual) 'global (kbd "<leader>sr") 'vr/replace)
   (evil-define-key '(normal visual) 'global (kbd "<leader>sq") 'vr/query-replace)
   (evil-define-key '(normal visual) 'global (kbd "<leader>sm") 'vr/mc-mark)

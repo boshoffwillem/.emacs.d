@@ -43,22 +43,16 @@
   (auto-package-update-interval 7)
   (auto-package-update-delete-old-versions t)
   (auto-package-update-prompt-before-update t)
-  (auto-package-update-show-preview t)
-
-  :config
-  (auto-package-update-maybe))
+  (auto-package-update-show-preview t))
 
 (require 'appearance)
 (require 'workspace)
 (require 'completion)
 (require 'completion-company)
-(require 'completion-helm)
-;; (require 'completion-native-vertico)
-;; (require 'completion-native-selectrum)
-;; (require 'completion-native-helpers)
-;; (require 'git)
+(require 'completion-native)
+(require 'git)
 (require 'ide)
 (require 'editing)
-(require 'evil-m)
+;; (require 'evil-m)
 
 ;;; init.el ends here

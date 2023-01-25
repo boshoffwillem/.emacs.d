@@ -1,10 +1,26 @@
-;;; completion-native-helpers.el --- helpers for emacs native completions -*- lexical-binding: t -*-
+;;; completion-native.el --- native settings for emacs completions -*- lexical-binding: t -*-
 ;; Author: Willem Boshoff <boshoffwillem@protonmail.com>
 ;; URL: https://github.com/boshoffwillem/.emacs.d
 
 ;;; Commentary:
 
 ;;; Code:
+
+(use-package vertico
+  :init
+  (vertico-mode)
+  :config
+  (setq vertico-cycle t)
+  )
+
+(setq completion-ignore-case t)
+(setq read-file-name-completion-ignore-case t)
+
+(use-package orderless
+  :init
+  (setq completion-styles '(orderless)
+        completion-category-defaults nil
+        completion-category-overrides '((file (styles partial-completion)))))
 
 (use-package marginalia
   ;; Either bind `marginalia-cycle` globally or only in the minibuffer
@@ -38,6 +54,9 @@
   :hook
   (embark-collect-mode . consult-preview-at-point-mode)
   )
+
+(use-package consult-lsp
+  :after (consult lsp))
 
 ;; (use-package corfu
 ;;   :custom
@@ -76,6 +95,6 @@
 ;;   ;; and behaves as a pure `completion-at-point-function'.
 ;;   (advice-add 'pcomplete-completions-at-point :around #'cape-wrap-purify))
 
-(provide 'completion-native-helpers)
+(provide 'completion-native)
 
-;;; completion-native-helpers.el ends here
+;;; completion-native.el ends here

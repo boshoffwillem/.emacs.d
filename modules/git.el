@@ -18,6 +18,8 @@
   (set-face-background 'git-gutter:deleted "LightCoral")
   )
 
+(use-package magit)
+
 (provide 'git)
 
 ;;; git.el ends here.

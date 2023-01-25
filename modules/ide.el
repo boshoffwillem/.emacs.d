@@ -85,8 +85,6 @@
   :config
   (lsp-treemacs-sync-mode 1))
 
-;; (use-package consult-lsp)
-
 ;; optionally if you want to use debugger
 ;; (use-package dap-mode
 ;;   :config
@@ -105,8 +103,10 @@
   :hook (
          ((c-mode . wb/cc-setup)
           (c++-mode . wb/cc-setup)
-          (c-mode c++-mode objc-mode cuda-mode) .
-          (lambda () (require 'ccls) (lsp)))))
+          ;; (c-mode c++-mode objc-mode cuda-mode) .
+          ;; (lambda () (require 'ccls) (lsp)))
+         ))
+  )
 
 ;; .cs files
 (defun wb/csharp-setup ()
@@ -119,7 +119,7 @@
 (use-package csharp-mode
   :hook
   ((csharp-mode . wb/csharp-setup)
-   (csharp-mode . lsp-deferred)
+   ;; (csharp-mode . lsp-deferred)
    )
   )
 
@@ -167,14 +167,14 @@
 (use-package typescript-mode
   :mode "\\.ts\\'"
   :hook ((typescript-mode . wb/js-ts-setup)
-         (typescript-mode . lsp-deferred)
+         ;; (typescript-mode . lsp-deferred)
          )
   :config
   (setq typescript-indent-level 2))
 
 (use-package json-mode
   :hook ((json-mode . wb/js-ts-setup)
-         (json-mode . lsp-deferred)
+         ;; (json-mode . lsp-deferred)
          )
   )
 
@@ -188,7 +188,7 @@
   ;; Don't use built-in syntax checking
   (setq js2-mode-show-strict-warnings nil)
   :hook ((js2-mode. wb/js-ts-setup)
-         (js2-mode . lsp-deferred)
+         ;; (js2-mode . lsp-deferred)
          )
   )
 
@@ -199,8 +199,9 @@
 
 (use-package powershell
   :hook
-  ((powershell-mode . lsp-deferred)
-  (powershell-mode . wb/powershell-setup)))
+  (
+   ;; (powershell-mode . lsp-deferred)
+   (powershell-mode . wb/powershell-setup)))
 
 (defun wb/rust-setup ()
   "Setup for rust mode."
@@ -211,7 +212,8 @@
 (use-package rust-mode
   :hook
   ((rust-mode . wb/rust-setup)
-  (rust-mode . lsp-deferred))
+   ;; (rust-mode . lsp-deferred)
+   )
   :config
   (setq rust-format-on-save t))
 
@@ -225,7 +227,8 @@
 (use-package terraform-mode
   :hook
   ((terraform-mode . wb/terraform-setup)
-  (terraform-mode . lsp-deferred)))
+   ;; (terraform-mode . lsp-deferred)
+   ))
 
 (use-package web-mode
   :config
@@ -235,8 +238,8 @@
   (setq web-mode-code-indent-offset 2)
   (setq web-mode-enable-css-colorization t)
   (setq web-mode-enable-current-element-highlight t)
-  :hook
-  (web-mode . lsp-deferred)
+  ;; :hook
+  ;; (web-mode . lsp-deferred)
   )
 
 ;; .xml files
@@ -245,7 +248,7 @@
 (setq nxml-attribute-indent 4)
 (add-to-list 'auto-mode-alist '("\\.nuspec\\'" . nxml-mode))
 (add-to-list 'auto-mode-alist '("\\.xaml\\'" . nxml-mode))
-(add-hook 'nxml-mode-hook 'lsp-deferred)
+;; (add-hook 'nxml-mode-hook 'lsp-deferred)
 
 ;; .yml and .yaml files
 (defun wb/yaml-setup ()
@@ -258,23 +261,9 @@
 
 (use-package yaml-mode
   :hook
-  ((yaml-mode . lsp-deferred)
+  (
+   ;; (yaml-mode . lsp-deferred)
    (yaml-mode . wb/yaml-setup)
-   )
-  )
-
-;; .vue files
-(defun wb/vue-setup ()
-  "Setup for vue mode."
-  (setq-local tab-width 2)
-  (setq-local standard-indent 2)
-  (tree-sitter-mode)
-  )
-
-(use-package vue-mode
-  :hook
-  ((vue-mode . lsp-deferred)
-   (vue-mode . wb/vue-setup)
    )
   )
 
