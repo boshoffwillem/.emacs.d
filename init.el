@@ -53,6 +53,6 @@
 (require 'git)
 (require 'ide)
 (require 'editing)
-;; (require 'evil-m)
+(require 'evil-m)
 
 ;;; init.el ends here

@@ -7,12 +7,12 @@
 ;;; Code:
 
 (use-package company
-  :hook
-  ((emacs-lisp-mode . (lambda ()
-                        (setq-local company-backends '(company-elisp))))
-   (prog-mode . company-mode)
-   (org-mode . company-mode)
-   )
+  ;; :hook
+  ;; ((emacs-lisp-mode . (lambda ()
+  ;;                       (setq-local company-backends '(company-elisp))))
+  ;;  (prog-mode . company-mode)
+  ;;  (org-mode . company-mode)
+  ;;  )
   :config
   (setq company-show-quick-access t
         company-idle-delay 0
@@ -50,10 +50,10 @@
 ;;   (company-quickhelp-mode)
 ;;   )
 
-;; (use-package company-tabnine
-;;   :after company
-;;   :config
-;;   (add-to-list 'company-backends #'company-tabnine))
+(use-package company-tabnine
+  :after company
+  :config
+  (add-to-list 'company-backends #'company-tabnine))
 
 (provide 'completion-company)
 

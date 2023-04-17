@@ -6,12 +6,12 @@
 
 ;;; Code:
 
-(use-package projectile
-  :config
-  (projectile-global-mode)
-  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
-  (setq projectile-indexing-method 'alien
-        projectile-enable-caching t))
+;; (use-package projectile
+;;   :config
+;;   (projectile-global-mode)
+;;   (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+;;   (setq projectile-indexing-method 'alien
+;;         projectile-enable-caching t))
 
 (provide 'workspace)
 

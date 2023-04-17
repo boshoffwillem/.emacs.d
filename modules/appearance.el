@@ -35,7 +35,7 @@
   :init
   (progn
     (setq dashboard-items '((recents . 5)
-                            (projects . 5)
+                            ;; (projects . 5)
                             (bookmarks . 5)
                             (agenda . 5)))
     (setq dashboard-set-file-icons t)

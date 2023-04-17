@@ -18,6 +18,8 @@
   :config
   (ws-butler-mode 1))
 
+(whitespace-mode)
+
 (use-package tree-sitter
   :config
   (require 'tree-sitter-langs)

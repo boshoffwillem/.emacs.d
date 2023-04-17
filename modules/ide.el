@@ -19,14 +19,45 @@
 (use-package flycheck
   :custom
   (flycheck-display-errors-delay 0.1)
-  (flycheck-highlighting-mode 'lines)
   :config
-  (setq flycheck-emacs-lisp-initialize-packages t)
-  (flycheck-set-indication-mode nil)
   (global-flycheck-mode)
   )
 
 ;; LSP
+(use-package yasnippet
+  :defer t
+  :config
+  (yas-reload-all)
+  )
+
+(use-package yasnippet-snippets
+  :after yasnippet)
+
+(require 'yasnippet)
+(yas-global-mode 1)
+
+(unless (package-installed-p 'yasnippet)
+  (package-install 'yasnippet))
+
+;; (unless (display-graphic-p)
+;;   (straight-use-package
+;;    '(popon :host nil :repo "https://codeberg.org/akib/emacs-popon.git"))
+;;   (straight-use-package
+;;    '(acm-terminal :host github :repo "twlz0ne/acm-terminal")))
+
+;; (straight-use-package
+;;  '(lsp-bridge :host github
+;;               :repo "manateelazycat/lsp-bridge"
+;;               ;; :files ("*.el" "*.py" "acm" "core" "langserver"
+;;               ;;         "multiserver" "resources")
+;;               )
+;;  )
+
+;; (add-to-list 'load-path "~/.emacs.d/straight/repos/lsp-bridge")
+
+;; (require 'lsp-bridge)
+;; (global-lsp-bridge-mode)
+
 (defun wb/lsp-setup ()
   "Setup for LSP mode."
   (setq lsp-idle-delay 0.500
@@ -90,28 +121,12 @@
 ;;   :config
 ;;   (require 'dap-cpptools))
 ;; ;; (use-package dap-LANGUAGE) to load the dap adapter for your language
-;; (use-package posframe)
-
-;; .c and and .cpp files
-(defun wb/cc-setup ()
-  "Setup for c and c++ mode."
-  (tree-sitter-mode)
-  (setq-local standard-indent 4)
-  (setq-local tab-width 4))
-
-(use-package ccls
-  :hook (
-         ((c-mode . wb/cc-setup)
-          (c++-mode . wb/cc-setup)
-          ;; (c-mode c++-mode objc-mode cuda-mode) .
-          ;; (lambda () (require 'ccls) (lsp)))
-         ))
-  )
+(use-package posframe)
 
 ;; .cs files
 (defun wb/csharp-setup ()
   "Setup for csharp mode."
-  (setq lsp-csharp-omnisharp-roslyn-download-url "https://github.com/omnisharp/omnisharp-roslyn/releases/latest/download/omnisharp-win-x64-net6.0.zip")
+  ;; (setq lsp-csharp-omnisharp-roslyn-download-url "https://github.com/omnisharp/omnisharp-roslyn/releases/latest/download/omnisharp-win-x64-net6.0.zip")
   (tree-sitter-mode)
   (setq-local standard-indent 4)
   (setq-local tab-width 4))
@@ -119,15 +134,15 @@
 (use-package csharp-mode
   :hook
   ((csharp-mode . wb/csharp-setup)
-   ;; (csharp-mode . lsp-deferred)
+   (csharp-mode . lsp-deferred)
    )
   )
 
 ;; .csproj files
 (defun wb/csproj-setup ()
   "Setup for csproj mode."
-  (setq-local standard-indent 2)
-  (setq-local tab-width 2))
+  (setq-local standard-indent 4)
+  (setq-local tab-width 4))
 
 (use-package csproj-mode
   :hook
@@ -138,8 +153,8 @@
 ;; .sln files
 (defun wb/sln-setup ()
   "Setup for sln mode."
-  (setq-local standard-indent 2)
-  (setq-local tab-width 2))
+  (setq-local standard-indent 4)
+  (setq-local tab-width 4))
 
 (use-package sln-mode
   :hook
@@ -158,37 +173,9 @@
 ;; Markdown files
 (use-package markdown-mode)
 
-(defun wb/js-ts-setup ()
-  "Setup for js and ts mode."
-  (tree-sitter-mode)
-  (setq-local standard-indent 2)
-  (setq-local tab-width 2))
-
-(use-package typescript-mode
-  :mode "\\.ts\\'"
-  :hook ((typescript-mode . wb/js-ts-setup)
-         ;; (typescript-mode . lsp-deferred)
-         )
-  :config
-  (setq typescript-indent-level 2))
-
 (use-package json-mode
   :hook ((json-mode . wb/js-ts-setup)
-         ;; (json-mode . lsp-deferred)
-         )
-  )
-
-(use-package js2-mode
-  :mode "\\.jsx?\\'"
-  :config
-  (setq js-indent-level 2)
-  ;; Use js2-mode for Node scripts
-  ;; (add-to-list 'magic-mode-alist '("#!/usr/bin/env node" . js2-mode))
-
-  ;; Don't use built-in syntax checking
-  (setq js2-mode-show-strict-warnings nil)
-  :hook ((js2-mode. wb/js-ts-setup)
-         ;; (js2-mode . lsp-deferred)
+         (json-mode . lsp-deferred)
          )
   )
 
@@ -202,6 +189,8 @@
   (
    ;; (powershell-mode . lsp-deferred)
    (powershell-mode . wb/powershell-setup)))
+
+(use-package protobuf-mode)
 
 (defun wb/rust-setup ()
   "Setup for rust mode."
@@ -230,18 +219,6 @@
    ;; (terraform-mode . lsp-deferred)
    ))
 
-(use-package web-mode
-  :config
-  (add-to-list 'auto-mode-alist '("\\.html\\'" . web-mode))
-  (setq web-mode-markup-indent-offset 2)
-  (setq web-mode-css-indent-offset 2)
-  (setq web-mode-code-indent-offset 2)
-  (setq web-mode-enable-css-colorization t)
-  (setq web-mode-enable-current-element-highlight t)
-  ;; :hook
-  ;; (web-mode . lsp-deferred)
-  )
-
 ;; .xml files
 (setq nxml-slash-auto-complete-flag t)
 (setq nxml-child-indent 4)
@@ -262,19 +239,10 @@
 (use-package yaml-mode
   :hook
   (
-   ;; (yaml-mode . lsp-deferred)
+   (yaml-mode . lsp-deferred)
    (yaml-mode . wb/yaml-setup)
    )
   )
-
-(use-package yasnippet
-  :defer t
-  :config
-  (yas-reload-all)
-  )
-
-(use-package yasnippet-snippets
-  :after yasnippet)
 
 (provide 'ide)
 

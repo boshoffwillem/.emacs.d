@@ -7,7 +7,10 @@
 ;;; Code:
 
 ;; Set default coding system (especially for Windows)
+(prefer-coding-system 'utf-8)
 (set-default-coding-systems 'utf-8)
+(set-language-environment 'utf-8)
+(set-selection-coding-system 'utf-8)
 (setq visible-bell 1)  ; turn off beeps, make them flash!
 (setq large-file-warning-threshold 100000000) ;; change to ~100 MB
 (setq org-src-preserve-indentation t)
@@ -93,9 +96,9 @@
   (advice-add 'yes-or-no-p :override #'y-or-n-p))
 
 ;; Font
-(set-face-attribute 'default nil :font "JetBrainsMono Nerd Font 10" :weight 'regular)
+(set-face-attribute 'default nil :font "FiraCode Nerd Font 10" :weight 'regular)
 ;; Set the fixed pitch face
-(set-face-attribute 'fixed-pitch nil :font "JetBrainsMono Nerd Font 10" :weight 'regular)
+(set-face-attribute 'fixed-pitch nil :font "FiraCode Nerd Font 10" :weight 'regular)
 ;; Set the variable pitch face
 (set-face-attribute 'variable-pitch nil :font "Cantarell 11" :weight 'regular)
 
