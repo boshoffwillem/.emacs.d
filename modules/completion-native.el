@@ -55,9 +55,6 @@
   (embark-collect-mode . consult-preview-at-point-mode)
   )
 
-(use-package consult-lsp
-  :after (consult lsp))
-
 ;; (use-package corfu
 ;;   :custom
 ;;   (corfu-cycle t)
