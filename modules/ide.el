@@ -34,19 +34,50 @@
 (use-package yasnippet-snippets
   :after t)
 
-(use-package eglot)
+(use-package lsp-mode
+  :init
+  (setq lsp-keymap-prefix "C-c l")
+  :config
+  (setq lsp-lens-place-position 'above-line)
+  :custom
+  (setq lsp-idle-delay 0.5)
+  (setq lsp-log-io nil)
+  (setq lsp-auto-execute-action nil)
+  (setq lsp-enable-file-watchers nil)
+  (setq lsp-lens-enable t)
+  (setq lsp-headerline-breadcrumb-mode t)
+  (setq lsp-headerline-breadcrumb-enable-symbol-numbers t)
+  (setq lsp-modeline-code-actions-enable t)
+  (setq lsp-modeline-diagnostics-enable t)
+  (setq lsp-modeline-diagnostics-scope :workspace)
+  :hook
+  (
+   (lsp-mode . lsp-enable-which-key-integration)
+   (csharp-mode . lsp-deferred)
+   )
+  :commands (lsp lsp-deferred))
+
+(use-package lsp-treemacs
+  :config
+  (lsp-treemacs-sync-mode 1)
+  ;; :bind
+  ;; (:map lsp-mode-map
+  ;;       ("C-c l t" . lsp-treemacs-errors-list))
+  :commands lsp-treemacs-errors-list)
 
 ;; optionally if you want to use debugger
-;; (use-package dap-mode
+(use-package dap-mode
 ;;   :config
 ;;   (require 'dap-cpptools))
+  )
 ;; ;; (use-package dap-LANGUAGE) to load the dap adapter for your language
 (use-package posframe)
 
 ;; .cs files
 (defun wb/csharp-setup ()
   "Setup for csharp mode."
-  (tree-sitter-mode)
+  (define-key lsp-mode-map (kdb "C-c l t r") 'lsp-csharp-run-test-at-point)
+  (define-key lsp-mode-map (kdb "C-c l t a") 'lsp-csharp-run-all-tests-in-buffer)
   (setq-local standard-indent 4)
   (setq-local tab-width 4))
 
@@ -119,7 +150,6 @@
 
 (defun wb/rust-setup ()
   "Setup for rust mode."
-  (tree-sitter-mode)
   (setq-local standard-indent 4)
   (setq-local tab-width 4))
 
@@ -134,7 +164,6 @@
 (defun wb/terraform-setup ()
   "Setup for terraform mode."
   (tree-sitter-require 'hcl)
-  (tree-sitter-mode)
   (setq-local standard-indent 2)
   (setq-local tab-width 2))
 
@@ -142,6 +171,11 @@
   :hook
   ((terraform-mode . wb/terraform-setup)
    ))
+
+(with-eval-after-load 'eglot
+  (add-to-list 'eglot-server-programs
+               '(terraform-mode . ("terraform-ls" "serve"))))
+(add-hook 'terraform-mode-hook 'eglot-ensure)
 
 ;; .xml files
 (setq nxml-slash-auto-complete-flag t)
@@ -156,7 +190,6 @@
   (setq-local tab-width 2)
   (setq-local standard-indent 2)
   (setq yaml-indent-offset 2)
-  (tree-sitter-mode)
   )
 
 (use-package yaml-mode
