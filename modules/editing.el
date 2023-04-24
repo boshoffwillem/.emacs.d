@@ -36,6 +36,8 @@
   :after tree-sitter
   )
 
+(use-package tree-sitter-indent)
+
 (use-package origami
   :config (global-origami-mode))
 

@@ -6,10 +6,6 @@
 
 ;;; Code:
 
-(use-package ripgrep)
-
-(use-package rg)
-
 ;; ==================================== Project wide searching using ripgrep
 (use-package deadgrep)
 
@@ -25,14 +21,29 @@
 
 ;; LSP
 (use-package yasnippet
-  :defer t
+  :after company
   :config
   (yas-reload-all)
   (yas-global-mode 1)
+  (defvar company-mode/enable-yas t
+    "Enable yasnippet for all backends.")
+
+  (defun company-mode/backend-with-yas (backend)
+    (if (or (not company-mode/enable-yas) (and (listp backend) (member 'company-yasnippet backend)))
+        backend
+      (append (if (consp backend) backend (list backend))
+              '(:with company-yasnippet))))
+
+  (setq company-backends (mapcar #'company-mode/backend-with-yas company-backends))
   )
 
 (use-package yasnippet-snippets
-  :after t)
+  :after yasnippet)
+
+(defun wb/lsp-setup ()
+  "Setup when switching to LSP mode."
+  (lsp-enable-which-key-integration)
+  )
 
 (use-package lsp-mode
   :init
@@ -52,18 +63,20 @@
   (setq lsp-modeline-diagnostics-scope :workspace)
   :hook
   (
-   (lsp-mode . lsp-enable-which-key-integration)
-   (csharp-mode . lsp-deferred)
+   (lsp-mode . wb/lsp-setup)
    )
   :commands (lsp lsp-deferred))
 
 (use-package lsp-treemacs
   :config
   (lsp-treemacs-sync-mode 1)
-  ;; :bind
-  ;; (:map lsp-mode-map
-  ;;       ("C-c l t" . lsp-treemacs-errors-list))
   :commands lsp-treemacs-errors-list)
+
+(use-package consult-lsp
+  :config
+  ;; find symbol in project.
+  (define-key lsp-mode-map (kbd "C-c p t") 'consult-lsp-symbols)
+  (define-key lsp-mode-map [remap xref-find-apropos] #'consult-lsp-symbols))
 
 ;; optionally if you want to use debugger
 (use-package dap-mode
@@ -74,17 +87,27 @@
 (use-package posframe)
 
 ;; .cs files
+(defun wb/csharp-lsp ()
+  "Setup for LSP in csharp mode."
+  (csharp-tree-sitter-mode)
+  (lsp-deferred)
+  )
+
 (defun wb/csharp-setup ()
   "Setup for csharp mode."
-  (define-key lsp-mode-map (kdb "C-c l t r") 'lsp-csharp-run-test-at-point)
-  (define-key lsp-mode-map (kdb "C-c l t a") 'lsp-csharp-run-all-tests-in-buffer)
   (setq-local standard-indent 4)
   (setq-local tab-width 4))
 
 (use-package csharp-mode
+  :bind
+  (:map lsp-mode-map
+        ("C-c l t r" . lsp-csharp-run-test-at-point)
+        ("C-c l r a" . lsp-csharp-run-all-tests-in-buffer)
+        )
   :hook
   (
    (csharp-mode . wb/csharp-setup)
+   (csharp-mode . wb/csharp-lsp)
    )
   )
 
@@ -148,6 +171,8 @@
 
 (use-package protobuf-mode)
 
+(use-package restclient)
+
 (defun wb/rust-setup ()
   "Setup for rust mode."
   (setq-local standard-indent 4)
@@ -171,11 +196,6 @@
   :hook
   ((terraform-mode . wb/terraform-setup)
    ))
-
-(with-eval-after-load 'eglot
-  (add-to-list 'eglot-server-programs
-               '(terraform-mode . ("terraform-ls" "serve"))))
-(add-hook 'terraform-mode-hook 'eglot-ensure)
 
 ;; .xml files
 (setq nxml-slash-auto-complete-flag t)

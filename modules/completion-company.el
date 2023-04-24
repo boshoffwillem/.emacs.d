@@ -7,12 +7,11 @@
 ;;; Code:
 
 (use-package company
-  ;; :hook
-  ;; ((emacs-lisp-mode . (lambda ()
-  ;;                       (setq-local company-backends '(company-elisp))))
-  ;;  (prog-mode . company-mode)
-  ;;  (org-mode . company-mode)
-  ;;  )
+  :hook
+  ((emacs-lisp-mode . (lambda ()
+                        (setq-local company-backends '(company-elisp))))
+   (prog-mode . company-mode)
+   )
   :config
   (setq company-show-quick-access t
         company-idle-delay 0
@@ -26,11 +25,6 @@
   (advice-add 'company-complete-common :after (lambda ()
                                                 (when (equal my-company-point (point))
                                                   (yas-expand))))
-  :bind
-  (:map company-active-map
-        ("C-j" . company-select-next)
-        ("C-k" . company-select-previous)
-        )
   )
 
 (use-package company-box
@@ -53,7 +47,17 @@
 (use-package company-tabnine
   :after company
   :config
-  (add-to-list 'company-backends #'company-tabnine))
+  (defvar company-mode/enable-tabnine t
+    "Enable tabnine for all backends.")
+
+  (defun company-mode/backend-with-tabnine (backend)
+    (if (or (not company-mode/enable-tabnine) (and (listp backend) (member 'company-tabnine backend)))
+        backend
+      (append (if (consp backend) backend (list backend))
+              '(:with company-tabnine))))
+
+  (setq company-backends (mapcar #'company-mode/backend-with-tabnine company-backends))
+  )
 
 (provide 'completion-company)
 

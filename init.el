@@ -50,8 +50,9 @@
 (require 'completion-company)
 (require 'completion-native)
 (require 'git)
+(require 'keybindings)
 (require 'ide)
 (require 'editing)
-;; (require 'evil-m)
+(require 'evil-m)
 
 ;;; init.el ends here

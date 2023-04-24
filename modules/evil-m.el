@@ -17,17 +17,19 @@
   :config
   (evil-set-leader '(normal visual) (kbd "<SPC>"))
   (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+  (evil-define-key 'normal 'global (kbd "<leader>x") 'eval-last-sexp)
+
+  ;; editing
   (evil-define-key '(normal visual) 'global (kbd "j") 'evil-backward-char)
   (evil-define-key '(normal visual) 'global (kbd "k") 'evil-next-line)
   (evil-define-key '(normal visual) 'global (kbd "l") 'evil-previous-line)
   (evil-define-key '(normal visual) 'global (kbd ";") 'evil-forward-char)
-  (evil-define-key 'normal 'global (kbd "<leader>x") 'eval-last-sexp)
-  (evil-define-key 'normal 'global (kbd "<leader><SPC>") 'switch-to-buffer)
-  (evil-define-key 'normal 'global (kbd "<leader>br") 'revert-buffer)
-  (evil-define-key 'normal 'global (kbd "<leader>fb") 'dired)
-  (evil-define-key 'normal 'global (kbd "<leader>ff") 'find-file)
-  (evil-define-key 'normal 'global (kbd "<leader>fr") 'recentf-open-files)
-  (evil-define-key 'normal 'global (kbd "/") 'isearch-forward) ;; Search in current buffer
+  (evil-define-key '(normal visual) 'global (kbd "M-k") 'drag-stuff-down)
+  (evil-define-key '(normal visual) 'global (kbd "M-l") 'drag-stuff-up)
+  (evil-define-key 'normal 'global (kbd "zo") 'evil-toggle-fold)
+  (evil-define-key 'normal 'global (kbd "<leader>i") 'yas-insert-snippet)
+
+  ;; LSP actions
   (evil-define-key 'normal 'lsp-mode (kbd "<leader>la") 'lsp-execute-code-action)
   (evil-define-key 'normal 'lsp-mode (kbd "gd") 'lsp-find-definition)
   (evil-define-key 'normal 'lsp-mode (kbd "K") 'lsp-describe-thing-at-point)
@@ -35,20 +37,28 @@
   (evil-define-key 'normal 'lsp-mode (kbd "gr") 'lsp-find-references)
   (evil-define-key 'normal 'lsp-mode (kbd "<leader>lrr") 'lsp-rename)
   (evil-define-key 'normal 'lsp-mode (kbd "<leader>lff") 'lsp-format-buffer)
+
+  ;; git actions
   (evil-define-key 'normal 'global (kbd "<leader>gg") 'magit)
-  (evil-define-key 'normal 'global (kbd "<leader>g=") 'git-gutter:popup-hunk)
-  (evil-define-key 'normal 'global (kbd "<leader>g-") 'git-gutter:revert-hunk)
-  (evil-define-key 'normal 'global (kbd "<leader>gj") 'git-gutter:next-hunk)
-  (evil-define-key 'normal 'global (kbd "<leader>gk") 'git-gutter:previous-hunk)
-  (evil-define-key 'normal 'global (kbd "<leader>pb") 'project-switch-to-buffer) ;; Switch to different project buffer
-  (evil-define-key 'normal 'global (kbd "<leader>pp") 'project-switch-project) ;; Switch to different project
-  (evil-define-key 'normal 'global (kbd "<leader>pf") 'project-find-file) ;; Find file in project
-  (evil-define-key 'normal 'global (kbd "<leader>p/") 'rg) ;; Project-wide search
+
+  ;; file specific actions
+  (evil-define-key 'normal 'global (kbd "/") 'isearch-forward) ;; search in current buffer
+  (evil-define-key 'normal 'global (kbd "<leader><SPC>") 'switch-to-buffer)
+  (evil-define-key 'normal 'global (kbd "<leader>br") 'revert-buffer)
+  (evil-define-key 'normal 'global (kbd "<leader>fd") 'dired) ;; open directory
+  (evil-define-key 'normal 'global (kbd "<leader>ff") 'find-file)
+  (evil-define-key 'normal 'global (kbd "<leader>fr") 'consult-recent-file)
+
+  ;; project specific actions
+  (evil-define-key 'normal 'global (kbd "<leader>pb") 'project-switch-to-buffer) ;; switch to different project buffer
+  (evil-define-key 'normal 'global (kbd "<leader>pp") 'project-switch-project) ;; switch to different project
+  (evil-define-key 'normal 'global (kbd "<leader>pf") 'project-find-file) ;; find file in project
+  (evil-define-key 'normal 'global (kbd "<leader>ps") 'deadgrep) ;; project-wide search
+  (evil-define-key 'normal 'global (kbd "<leader>pS") 'consult-ripgrep) ;; project-wide interactive search
+
   (evil-define-key '(normal visual) 'global (kbd "<leader>sr") 'vr/replace)
-  (evil-define-key '(normal visual) 'global (kbd "<leader>sq") 'vr/query-replace)
   (evil-define-key '(normal visual) 'global (kbd "<leader>sm") 'vr/mc-mark)
-  (evil-define-key 'normal 'global (kbd "zo") 'evil-toggle-fold)
-  (evil-define-key 'normal 'global (kbd "<leader>i") 'yas-insert-snippet)
+
   (evil-define-key 'normal org-mode-map
     (kbd "TAB") 'org-cycle
     ">" 'org-shiftmetaright
@@ -80,6 +90,9 @@
   (evil-commentary-mode))
 
 (use-package org-evil)
+
+
+(define-key dashboard-mode-map (kbd "k") 'dashboard-next-line)
 
 (provide 'evil-m)
 
