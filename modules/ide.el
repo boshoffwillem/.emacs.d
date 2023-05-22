@@ -64,6 +64,9 @@
   :hook
   (
    (lsp-mode . wb/lsp-setup)
+   (csharp-mode . wb/csharp-lsp)
+   (dockerfile-mode . lsp-deferred)
+   (yaml-mode . lsp-deferred)
    )
   :commands (lsp lsp-deferred))
 
@@ -89,12 +92,12 @@
 ;; .cs files
 (defun wb/csharp-lsp ()
   "Setup for LSP in csharp mode."
-  (csharp-tree-sitter-mode)
   (lsp-deferred)
   )
 
 (defun wb/csharp-setup ()
   "Setup for csharp mode."
+  (csharp-tree-sitter-mode)
   (setq-local standard-indent 4)
   (setq-local tab-width 4))
 
@@ -107,7 +110,6 @@
   :hook
   (
    (csharp-mode . wb/csharp-setup)
-   (csharp-mode . wb/csharp-lsp)
    )
   )
 
@@ -136,6 +138,9 @@
    (sln-mode . wb/sln-setup)
    )
   )
+
+;; dockerfiles
+(use-package dockerfile-mode)
 
 ;; .editorconfig files
 (use-package editorconfig
@@ -215,7 +220,7 @@
 (use-package yaml-mode
   :hook
   (
-   (yaml-mode . lsp-deferred)
+   (yaml-mode . wb/yaml-setup)
    )
   )
 

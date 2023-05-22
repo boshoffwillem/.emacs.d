@@ -6,8 +6,8 @@
 
 ;;; Code:
 
-;; find file in project.
 (define-key global-map (kbd "C-c p f") 'project-find-file)
+(define-key global-map (kbd "C-c p p") 'project-switch-project)
 
 ;; find text in project.
 (define-key global-map (kbd "C-c p s") 'consult-ripgrep)

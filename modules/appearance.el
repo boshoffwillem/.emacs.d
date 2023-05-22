@@ -15,9 +15,11 @@
   ;; Corrects (and improves) org-mode's native fontification.
   (doom-themes-org-config))
 
-(use-package doom-modeline
-  :init
-  (doom-modeline-mode 1))
+;; (use-package doom-modeline
+;;   :init
+;;   (doom-modeline-mode 1))
+
+;; (use-package treemacs)
 
 (use-package all-the-icons)
 
