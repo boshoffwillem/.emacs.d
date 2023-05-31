@@ -84,6 +84,7 @@
 (evil-define-key 'normal 'global (kbd "<leader>pg") 'magit)
 (evil-define-key 'normal 'global (kbd "<leader>ps") 'deadgrep) ;; project-wide search
 (evil-define-key 'normal 'global (kbd "<leader>pS") 'consult-ripgrep) ;; project-wide interactive search
+(evil-define-key 'normal 'global (kbd "<leader>pt") 'consult-lsp-symbols) ;; project lsp symbols
 
 (evil-define-key '(normal visual) 'global (kbd "<leader>sr") 'vr/replace)
 (evil-define-key '(normal visual) 'global (kbd "<leader>sm") 'vr/mc-mark)
