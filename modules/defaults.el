@@ -78,7 +78,7 @@
 ;; Set default bookmarks directory.
 (setq bookmark-default-file "~/emacs-files/bookmarks")
 ;; Delete selected text instead of inserting.
-(setq delete-selection-mode t)
+(delete-selection-mode 1)
 ;; Emacs has problems with very long lines. so-long detects them and takes appropriate action.
 ;; Good for minified code and whatnot.
 (global-so-long-mode)

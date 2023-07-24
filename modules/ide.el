@@ -249,8 +249,8 @@
   (setq-local tab-width 4))
 
 (use-package rustic
-  ;; :config
-  ;; (setq rustic-format-on-save t)
+  :config
+  (setq rustic-format-on-save t)
   :hook
   (
    (rust-mode . wb/rust-setup)
