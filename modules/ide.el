@@ -25,20 +25,43 @@
   :config
   (yas-reload-all)
   (yas-global-mode 1)
-  (defvar company-mode/enable-yas t
-    "Enable yasnippet for all backends.")
-
-  (defun company-mode/backend-with-yas (backend)
-    (if (or (not company-mode/enable-yas) (and (listp backend) (member 'company-yasnippet backend)))
-        backend
-      (append (if (consp backend) backend (list backend))
-              '(:with company-yasnippet))))
-
-  (setq company-backends (mapcar #'company-mode/backend-with-yas company-backends))
   )
 
 (use-package yasnippet-snippets
   :after yasnippet)
+
+(use-package company
+  :bind
+  (:map company-mode-map
+        ("<tab>". tab-indent-or-complete)
+        ("TAB". tab-indent-or-complete)))
+
+(defun company-yasnippet-or-completion ()
+  (interactive)
+  (or (do-yas-expand)
+      (company-complete-common)))
+
+(defun check-expansion ()
+  (save-excursion
+    (if (looking-at "\\_>") t
+      (backward-char 1)
+      (if (looking-at "\\.") t
+        (backward-char 1)
+        (if (looking-at "::") t nil)))))
+
+(defun do-yas-expand ()
+  (let ((yas/fallback-behavior 'return-nil))
+    (yas/expand)))
+
+(defun tab-indent-or-complete ()
+  (interactive)
+  (if (minibufferp)
+      (minibuffer-complete)
+    (if (or (not yas/minor-mode)
+            (null (do-yas-expand)))
+        (if (check-expansion)
+            (company-complete-common)
+          (indent-for-tab-command)))))
 
 (defun wb/lsp-setup ()
   "Setup when switching to LSP mode."
@@ -56,17 +79,28 @@
   (setq lsp-auto-execute-action nil)
   (setq lsp-enable-file-watchers nil)
   (setq lsp-lens-enable t)
-  (setq lsp-headerline-breadcrumb-mode t)
-  (setq lsp-headerline-breadcrumb-enable-symbol-numbers t)
+  (setq lsp-headerline-breadcrumb-enable nil)
+  (setq lsp-headerline-breadcrumb-enable-symbol-numbers nil)
   (setq lsp-modeline-code-actions-enable t)
   (setq lsp-modeline-diagnostics-enable t)
   (setq lsp-modeline-diagnostics-scope :workspace)
+  (lsp-eldoc-render-all t)
+  (lsp-rust-analyzer-cargo-watch-command "clippy")
+  ;; enable / disable the hints as you prefer:
+  (lsp-rust-analyzer-server-display-inlay-hints t)
+  (lsp-rust-analyzer-display-lifetime-elision-hints-enable "skip_trivial")
+  (lsp-rust-analyzer-display-chaining-hints t)
+  (lsp-rust-analyzer-display-lifetime-elision-hints-use-parameter-names nil)
+  (lsp-rust-analyzer-display-closure-return-type-hints t)
+  (lsp-rust-analyzer-display-parameter-hints nil)
+  (lsp-rust-analyzer-display-reborrow-hints nil)
   :hook
   (
    (lsp-mode . wb/lsp-setup)
    (csharp-mode . wb/csharp-lsp)
    (dockerfile-mode . lsp-deferred)
    (yaml-mode . lsp-deferred)
+   (nxml-mode . lsp-deferred)
    )
   :commands (lsp lsp-deferred))
 
@@ -81,12 +115,16 @@
   (define-key lsp-mode-map (kbd "C-c p t") 'consult-lsp-symbols)
   (define-key lsp-mode-map [remap xref-find-apropos] #'consult-lsp-symbols))
 
-;; optionally if you want to use debugger
 (use-package dap-mode
-;;   :config
-;;   (require 'dap-cpptools))
-  )
-;; ;; (use-package dap-LANGUAGE) to load the dap adapter for your language
+  :commands (dap-debug dap-breakpoints-add)
+  :init
+  (dap-mode 1)
+  (dap-ui-mode 1)
+  (dap-auto-configure-mode)
+  (require 'dap-netcore)
+  :custom
+  (dap-netcore-install-dir "/home/hoagie/.emacs.d/.cache/"))
+
 (use-package posframe)
 
 ;; .cs files
@@ -100,6 +138,30 @@
   (csharp-tree-sitter-mode)
   (setq-local standard-indent 4)
   (setq-local tab-width 4))
+
+(defun dap-netcore--populate-default-args (conf)
+  "Populate CONF with the default arguments."
+  (dap--put-if-absent conf :cwd default-directory)
+  (dap--put-if-absent conf :program (read-file-name "Select an executable:" (concat (lsp-workspace-root) "bin/Debug")))
+  (dap--put-if-absent conf :dap-server-path (list (dap-netcore--debugger-locate) "--interpreter=vscode")))
+
+;; (dap-register-debug-provider
+;;  "Psicle SERVER_DEBUG"
+;;  'dap-netcore--populate-default-args)
+
+;; (dap-register-debug-template ".Net Core Launch (Psicle SERVER_DEBUG)"
+;;                              (list :type "coreclr"
+;;                                    :request "launch"
+;;                                    :name "NetCoreDbg::Launch"
+;;                                    :stopAtEntry t))
+
+;; (dap-register-debug-template ".Net Core Attach (Psicle SERVER_DEBUG)"
+;;                              (list :type "coreclr"
+;;                                    :request "attach"
+;;                                    :program ""
+;;                                    :processId "${command:pickProcess}"
+;;                                    :name "NetCoreDbg::Launch"
+;;                                    :stopAtEntry f))
 
 (use-package csharp-mode
   :bind
@@ -148,6 +210,9 @@
   (editorconfig-mode 1)
   )
 
+;; Gherkin files
+(use-package feature-mode)
+
 ;; Markdown files
 (use-package markdown-mode)
 
@@ -183,13 +248,13 @@
   (setq-local standard-indent 4)
   (setq-local tab-width 4))
 
-(use-package rust-mode
+(use-package rustic
+  ;; :config
+  ;; (setq rustic-format-on-save t)
   :hook
   (
    (rust-mode . wb/rust-setup)
-   )
-  :config
-  (setq rust-format-on-save t))
+   ))
 
 (defun wb/terraform-setup ()
   "Setup for terraform mode."

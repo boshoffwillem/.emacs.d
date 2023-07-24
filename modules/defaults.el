@@ -60,6 +60,7 @@
 (setq display-line-numbers-type 'relative)
 ;; Disable visual line mode (this causes issues with $ and a few other things in evil)
 (global-visual-line-mode -1)
+(setq-default truncate-lines t)
 
 ;; Use space to indent by default.
 (setq-default indent-tabs-mode nil)

@@ -8,7 +8,8 @@
 
 (use-package doom-themes
   :config
-  (load-theme 'doom-dark+)
+  ;; (load-theme 'doom-dark+)
+  (load-theme 'modus-vivendi)
   ;; Enable flashing mode-line on errors
   (doom-themes-visual-bell-config)
   (doom-themes-treemacs-config)
